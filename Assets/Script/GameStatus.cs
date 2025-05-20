@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,40 +8,40 @@ public class GameStatus : MonoBehaviour
     public static float GAIN_REPAIRMENT_IRON = 0.30f;
     public static float GAIN_REPAIRMENT_PLANT = 0.10f;
 
-    // Ã¶±¤¼®, »ç°ú, ½Ä¹°À» ¿î¹İÇßÀ» ¶§ °¢°¢ÀÇ Ã¼·Â ¼Ò¸ğ Á¤µµ.
+    // ì² ê´‘ì„, ì‚¬ê³¼, ì‹ë¬¼ì„ ìš´ë°˜í–ˆì„ ë•Œ ê°ê°ì˜ ì²´ë ¥ ì†Œëª¨ ì •ë„.
     public static float CONSUME_SATIETY_IRON = 0.05f;
     public static float CONSUME_SATIETY_APPLE = 0.05f;
     public static float CONSUME_SATIETY_PLANT = 0.01f;
 
-    // ½ºÆ®·¹½º, ÈúÅÛÀ» ¿î¹İÇßÀ» ¶§ °¢°¢ÀÇ Ã¼·Â ¼Ò¸ğ Á¤µµ
+    // ìŠ¤íŠ¸ë ˆìŠ¤, íí…œì„ ìš´ë°˜í–ˆì„ ë•Œ ê°ê°ì˜ ì²´ë ¥ ì†Œëª¨ ì •ë„
     public static float CONSUME_SATIETY_STRESS = 0.03f;
     public static float CONSUME_SATIETY_HEAL = 0.05f;
 
-    // Ç×»ó °¨¼ÒÇÏ´Â ¹è°íÇÄ ¼öÄ¡
+    // í•­ìƒ ê°ì†Œí•˜ëŠ” ë°°ê³ í”” ìˆ˜ì¹˜
     public static float CONSUME_SATIETY_ALWAYS = 0.03f;
 
-    // Ç×»ó Áõ°¡ÇÏ´Â °¨Á¤ ¼öÄ¡
+    // í•­ìƒ ì¦ê°€í•˜ëŠ” ê°ì • ìˆ˜ì¹˜
     public static float CONSUME_EMOTION_ALWAYS = 0.02f;
 
-    // ½ºÆ®·¹½º,ÈúÀÌ Â÷´Â ¼Óµµ
+    // ìŠ¤íŠ¸ë ˆìŠ¤,íì´ ì°¨ëŠ” ì†ë„
     public static float CONSUME_EMOTION_STRESS = 0.0f;
     public static float CONSUME_RESCUE_HEAL = 0.0f;
 
-    // »ç°ú, ½Ä¹°À» ¸Ô¾úÀ» ¶§ °¢°¢ÀÇ Ã¼·Â È¸º¹ Á¤µµ.
+    // ì‚¬ê³¼, ì‹ë¬¼ì„ ë¨¹ì—ˆì„ ë•Œ ê°ê°ì˜ ì²´ë ¥ íšŒë³µ ì •ë„.
     public static float REGAIN_SATIETY_APPLE = 0.7f;
     public static float REGAIN_SATIETY_PLANT = 0.2f;
 
-    // ½ºÆ®·¹½º ¾ÆÀÌÅÛÀ» »ç¿ëÇßÀ» ¶§ °ÔÀÌÁö°¡ °¨¼ÒÇÏ´Â Á¤µµ
+    // ìŠ¤íŠ¸ë ˆìŠ¤ ì•„ì´í…œì„ ì‚¬ìš©í–ˆì„ ë•Œ ê²Œì´ì§€ê°€ ê°ì†Œí•˜ëŠ” ì •ë„
     public static float REGAIN_EMOTION_STRESS = 0.25f;
 
 
-    public float repairment = 0.0f; // ¿ìÁÖ¼±ÀÇ ¼ö¸® Á¤µµ(0.0f~1.0f).
-    public float satiety = 1.0f; // ¹è°íÇÄ,Ã¼·Â(0.0f~1.0f).
-    public float emotion = 0.0f; // °¨Á¤ -> stress EMOTION
+    public float repairment = 0.0f; // ìš°ì£¼ì„ ì˜ ìˆ˜ë¦¬ ì •ë„(0.0f~1.0f).
+    public float satiety = 1.0f; // ë°°ê³ í””,ì²´ë ¥(0.0f~1.0f).
+    public float emotion = 0.0f; // ê°ì • -> stress EMOTION
 
-    public GUIStyle guistyle; // ÆùÆ® ½ºÅ¸ÀÏ.
+    public GUIStyle guistyle; // í°íŠ¸ ìŠ¤íƒ€ì¼.
 
-    // ¹è¸¦ °íÇÁ°Ô ÇÏ´Â ¸Ş¼­µå Ãß°¡
+    // ë°°ë¥¼ ê³ í”„ê²Œ í•˜ëŠ” ë©”ì„œë“œ ì¶”ê°€
     public void alwaysSatiety()
     {
         this.satiety = Mathf.Clamp01(this.satiety - CONSUME_SATIETY_ALWAYS * Time.deltaTime);
@@ -52,13 +52,13 @@ public class GameStatus : MonoBehaviour
         this.emotion = Mathf.Clamp01(this.emotion + CONSUME_SATIETY_ALWAYS * Time.deltaTime);
     }
 
-    // ¿ìÁÖ¼± ¼ö¸®¸¦ ÁøÇà
+    // ìš°ì£¼ì„  ìˆ˜ë¦¬ë¥¼ ì§„í–‰
     public void addRepairment(float add)
     {
-        this.repairment = Mathf.Clamp01(this.repairment + add); // 0.0~1.0 °­Á¦ ÁöÁ¤
+        this.repairment = Mathf.Clamp01(this.repairment + add); // 0.0~1.0 ê°•ì œ ì§€ì •
     }
 
-    // Ã¼·ÂÀ» ´Ã¸®°Å³ª ÁÙÀÓ
+    // ì²´ë ¥ì„ ëŠ˜ë¦¬ê±°ë‚˜ ì¤„ì„
     public void addSatiety(float add)
     {
         this.satiety = Mathf.Clamp01(this.satiety + add);
@@ -73,8 +73,8 @@ public class GameStatus : MonoBehaviour
     {
         bool is_clear = false;
         if (this.repairment >= 1.0f)
-        { // ¼ö¸® Á¤µµ°¡ 100% ÀÌ»óÀÌ¸é.
-            is_clear = true; // Å¬¸®¾îÇß´Ù.
+        { // ìˆ˜ë¦¬ ì •ë„ê°€ 100% ì´ìƒì´ë©´.
+            is_clear = true; // í´ë¦¬ì–´í–ˆë‹¤.
         }
         return (is_clear);
     }
@@ -83,8 +83,8 @@ public class GameStatus : MonoBehaviour
     {
         bool is_over = false;
         if (this.satiety <= 0.0f)
-        { // Ã¼·ÂÀÌ 0ÀÌÇÏ¶ó¸é.
-            is_over = true; // °ÔÀÓ ¿À¹ö.
+        { // ì²´ë ¥ì´ 0ì´í•˜ë¼ë©´.
+            is_over = true; // ê²Œì„ ì˜¤ë²„.
         }
         return (is_over);
     }
@@ -93,19 +93,19 @@ public class GameStatus : MonoBehaviour
     {
         float x = Screen.width * 0.2f;
         float y = 20.0f;
-        // Ã¼·ÂÀ» Ç¥½Ã.
+        // ì²´ë ¥ì„ í‘œì‹œ.
         GUI.Label(new Rect(x, y, 200.0f, 20.0f), 
-            "Ã¼·Â: " + (this.satiety * 100.0f).ToString("000"), guistyle);
+            "ì²´ë ¥: " + (this.satiety * 100.0f).ToString("000"), guistyle);
 
         x += 250;
-        // °¨Á¤ ¼öÄ¡¸¦ Ç¥½Ã.
+        // ê°ì • ìˆ˜ì¹˜ë¥¼ í‘œì‹œ.
         GUI.Label(new Rect(x, y, 200.0f, 20.0f),
-            "½ºÆ®·¹½º: " + (this.emotion * 100.0f).ToString("000"), guistyle);
+            "ìŠ¤íŠ¸ë ˆìŠ¤: " + (this.emotion * 100.0f).ToString("000"), guistyle);
 
         x += 350;
-        // ¼ö¸® Á¤µµ¸¦ Ç¥½Ã.
+        // ìˆ˜ë¦¬ ì •ë„ë¥¼ í‘œì‹œ.
         GUI.Label(new Rect(x, y, 200.0f, 20.0f),
-            "·ÎÄÏ: " + (this.repairment * 100.0f).ToString("000"), guistyle);
+            "ë¡œì¼“: " + (this.repairment * 100.0f).ToString("000"), guistyle);
     }
 
     void Start()

@@ -30,7 +30,6 @@ public class SceneControl : MonoBehaviour
 
 
 
-
     void OnGUI()
     {
         float pos_x = Screen.width * 0.1f;

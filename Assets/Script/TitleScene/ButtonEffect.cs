@@ -1,25 +1,25 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ButtonEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler    // ¸¶¿ì½º Æ÷ÀÎÅÍ°¡ µé¾î°¬À» ¶§, ³ª¿ÔÀ» ¶§
+public class ButtonEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler    // ë§ˆìš°ìŠ¤ í¬ì¸í„°ê°€ ë“¤ì–´ê°”ì„ ë•Œ, ë‚˜ì™”ì„ ë•Œ
 {
     private Vector3 OriginalScale;
-    private float LargeFactor = 1.2f;  // Ä¿Áú ¹öÆ° Å©±â
+    private float LargeFactor = 1.2f;  // ì»¤ì§ˆ ë²„íŠ¼ í¬ê¸°
 
     void Start()
     {
         OriginalScale = transform.localScale;
     }
 
-    // ÀÎÅÍÆäÀÌ½º ÇÔ¼ö (ÀÌ¸§ ¼öÁ¤ X)
+    // ì¸í„°í˜ì´ìŠ¤ í•¨ìˆ˜ (ì´ë¦„ ìˆ˜ì • X)
     public void OnPointerEnter(PointerEventData eventData)
     {
         transform.localScale = OriginalScale * LargeFactor;
     }
 
-    // ÀÎÅÍÆäÀÌ½º ÇÔ¼ö (ÀÌ¸§ ¼öÁ¤ X)
+    // ì¸í„°í˜ì´ìŠ¤ í•¨ìˆ˜ (ì´ë¦„ ìˆ˜ì • X)
     public void OnPointerExit(PointerEventData eventData)
     {
         transform.localScale = OriginalScale;

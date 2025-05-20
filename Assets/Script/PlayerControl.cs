@@ -1,48 +1,48 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
-    public static float MOVE_AREA_RADIUS = 33.0f; // ¼¶ÀÇ ¹İÁö¸§.
-    public static float MOVE_SPEED = 7.0f; // ÀÌµ¿ ¼Óµµ.
+    public static float MOVE_AREA_RADIUS = 33.0f; // ì„¬ì˜ ë°˜ì§€ë¦„.
+    public static float MOVE_SPEED = 7.0f; // ì´ë™ ì†ë„.
 
     private struct Key
-    { // Å° Á¶ÀÛ Á¤º¸ ±¸Á¶Ã¼.
-        public bool up; // ¡è.
-        public bool down; // ¡é.
-        public bool right; // ¡æ.
-        public bool left; // ¡ç.
-        public bool pick; // Áİ´Â´Ù£¯¹ö¸°´Ù.
-        public bool action; // ¸Ô´Â´Ù / ¼ö¸®ÇÑ´Ù.
+    { // í‚¤ ì¡°ì‘ ì •ë³´ êµ¬ì¡°ì²´.
+        public bool up; // â†‘.
+        public bool down; // â†“.
+        public bool right; // â†’.
+        public bool left; // â†.
+        public bool pick; // ì¤ëŠ”ë‹¤ï¼ë²„ë¦°ë‹¤.
+        public bool action; // ë¨¹ëŠ”ë‹¤ / ìˆ˜ë¦¬í•œë‹¤.
     };
 
-    private Key key; // Å° Á¶ÀÛ Á¤º¸¸¦ º¸°üÇÏ´Â º¯¼ö.
+    private Key key; // í‚¤ ì¡°ì‘ ì •ë³´ë¥¼ ë³´ê´€í•˜ëŠ” ë³€ìˆ˜.
 
     public enum STEP
-    { // ÇÃ·¹ÀÌ¾îÀÇ »óÅÂ¸¦ ³ªÅ¸³»´Â ¿­°ÅÃ¼.
-        NONE = -1, // »óÅÂ Á¤º¸ ¾øÀ½.
-        MOVE = 0, // ÀÌµ¿ Áß.
-        REPAIRING, // ¼ö¸® Áß.
-        EATING, // ½Ä»ç Áß.
-        EMOTION, // °¨Á¤ °ü·Ã Ã³¸®
-        RESCUE,  // ±¸Á¶ÀÚ Ä¡·á °ü·Ã Ã³¸®
-        NUM, // »óÅÂ°¡ ¸î Á¾·ù ÀÖ´ÂÁö ³ªÅ¸³½´Ù(=3).
+    { // í”Œë ˆì´ì–´ì˜ ìƒíƒœë¥¼ ë‚˜íƒ€ë‚´ëŠ” ì—´ê±°ì²´.
+        NONE = -1, // ìƒíƒœ ì •ë³´ ì—†ìŒ.
+        MOVE = 0, // ì´ë™ ì¤‘.
+        REPAIRING, // ìˆ˜ë¦¬ ì¤‘.
+        EATING, // ì‹ì‚¬ ì¤‘.
+        EMOTION, // ê°ì • ê´€ë ¨ ì²˜ë¦¬
+        RESCUE,  // êµ¬ì¡°ì ì¹˜ë£Œ ê´€ë ¨ ì²˜ë¦¬
+        NUM, // ìƒíƒœê°€ ëª‡ ì¢…ë¥˜ ìˆëŠ”ì§€ ë‚˜íƒ€ë‚¸ë‹¤(=3).
     };
-    public STEP step = STEP.NONE; // ÇöÀç »óÅÂ.
-    public STEP next_step = STEP.NONE; // ´ÙÀ½ »óÅÂ.
-    public float step_timer = 0.0f; // Å¸ÀÌ¸Ó.
+    public STEP step = STEP.NONE; // í˜„ì¬ ìƒíƒœ.
+    public STEP next_step = STEP.NONE; // ë‹¤ìŒ ìƒíƒœ.
+    public float step_timer = 0.0f; // íƒ€ì´ë¨¸.
                                     // Use this for initialization
 
-    // ´ÙÀ½ ³× °³ÀÇ ¸â¹ö º¯¼ö¸¦ PlayerControl class¿¡ Ãß°¡.
-    private GameObject closest_item = null; // ÇÃ·¹ÀÌ¾îÀÇ Á¤¸é¿¡ ÀÖ´Â GameObject.
-    private GameObject carried_item = null; // ÇÃ·¹ÀÌ¾î°¡ µé¾î¿Ã¸° GameObject.
-    private ItemRoot item_root = null; // ItemRoot ½ºÅ©¸³Æ®¸¦ °¡Áü.
-    public GUIStyle guistyle; // ÆùÆ® ½ºÅ¸ÀÏ.
+    // ë‹¤ìŒ ë„¤ ê°œì˜ ë©¤ë²„ ë³€ìˆ˜ë¥¼ PlayerControl classì— ì¶”ê°€.
+    private GameObject closest_item = null; // í”Œë ˆì´ì–´ì˜ ì •ë©´ì— ìˆëŠ” GameObject.
+    private GameObject carried_item = null; // í”Œë ˆì´ì–´ê°€ ë“¤ì–´ì˜¬ë¦° GameObject.
+    private ItemRoot item_root = null; // ItemRoot ìŠ¤í¬ë¦½íŠ¸ë¥¼ ê°€ì§.
+    public GUIStyle guistyle; // í°íŠ¸ ìŠ¤íƒ€ì¼.
 
-    private GameObject closest_event = null;// ÁÖ¸ñÇÏ°í ÀÖ´Â ÀÌº¥Æ®¸¦ ÀúÀå
-    private EventRoot event_root = null; // EventRoot Å¬·¡½º¸¦ »ç¿ë
-    private GameObject rocket_model = null; // ¿ìÁÖ¼±ÀÇ ¸ğµ¨À» »ç¿ë
+    private GameObject closest_event = null;// ì£¼ëª©í•˜ê³  ìˆëŠ” ì´ë²¤íŠ¸ë¥¼ ì €ì¥
+    private EventRoot event_root = null; // EventRoot í´ë˜ìŠ¤ë¥¼ ì‚¬ìš©
+    private GameObject rocket_model = null; // ìš°ì£¼ì„ ì˜ ëª¨ë¸ì„ ì‚¬ìš©
 
     private GameStatus game_status = null;
 
@@ -52,37 +52,37 @@ public class PlayerControl : MonoBehaviour
         this.key.down = false;
         this.key.right = false;
         this.key.left = false;
-        // ¡èÅ°°¡ ´­·ÈÀ¸¸é true¸¦ ´ëÀÔ.
+        // â†‘í‚¤ê°€ ëˆŒë ¸ìœ¼ë©´ trueë¥¼ ëŒ€ì….
         this.key.up |= Input.GetKey(KeyCode.UpArrow);
         this.key.up |= Input.GetKey(KeyCode.Keypad8);
 
-        // ¡éÅ°°¡ ´­·ÈÀ¸¸é true¸¦ ´ëÀÔ.
+        // â†“í‚¤ê°€ ëˆŒë ¸ìœ¼ë©´ trueë¥¼ ëŒ€ì….
         this.key.down |= Input.GetKey(KeyCode.DownArrow);
         this.key.down |= Input.GetKey(KeyCode.Keypad2);
 
-        // ¡æÅ°°¡ ´­·ÈÀ¸¸é true¸¦ ´ëÀÔ.
+        // â†’í‚¤ê°€ ëˆŒë ¸ìœ¼ë©´ trueë¥¼ ëŒ€ì….
         this.key.right |= Input.GetKey(KeyCode.RightArrow);
         this.key.right |= Input.GetKey(KeyCode.Keypad6);
 
-        // ¡çÅ°°¡ ´­·ÈÀ¸¸é true¸¦ ´ëÀÔ..
+        // â†í‚¤ê°€ ëˆŒë ¸ìœ¼ë©´ trueë¥¼ ëŒ€ì…..
         this.key.left |= Input.GetKey(KeyCode.LeftArrow);
         this.key.left |= Input.GetKey(KeyCode.Keypad4);
 
-        // Z Å°°¡ ´­·ÈÀ¸¸é true¸¦ ´ëÀÔ.
+        // Z í‚¤ê°€ ëˆŒë ¸ìœ¼ë©´ trueë¥¼ ëŒ€ì….
         this.key.pick = Input.GetKeyDown(KeyCode.Z);
 
-        // X Å°°¡ ´­·ÈÀ¸¸é true¸¦ ´ëÀÔ.
+        // X í‚¤ê°€ ëˆŒë ¸ìœ¼ë©´ trueë¥¼ ëŒ€ì….
         this.key.action = Input.GetKeyDown(KeyCode.X);
     }
     private void move_control()
     {
-        Vector3 move_vector = Vector3.zero; // ÀÌµ¿¿ë º¤ÅÍ.
-        Vector3 position = this.transform.position; // ÇöÀç À§Ä¡¸¦ º¸°ü.
+        Vector3 move_vector = Vector3.zero; // ì´ë™ìš© ë²¡í„°.
+        Vector3 position = this.transform.position; // í˜„ì¬ ìœ„ì¹˜ë¥¼ ë³´ê´€.
         bool is_moved = false;
         if (this.key.right)
-        { // ¡æÅ°°¡ ´­·ÈÀ¸¸é.
-            move_vector += Vector3.right; // ÀÌµ¿¿ë º¤ÅÍ¸¦ ¿À¸¥ÂÊÀ¸·Î ÇâÇÑ´Ù.
-            is_moved = true; // 'ÀÌµ¿ Áß' ÇÃ·¡±×.
+        { // â†’í‚¤ê°€ ëˆŒë ¸ìœ¼ë©´.
+            move_vector += Vector3.right; // ì´ë™ìš© ë²¡í„°ë¥¼ ì˜¤ë¥¸ìª½ìœ¼ë¡œ í–¥í•œë‹¤.
+            is_moved = true; // 'ì´ë™ ì¤‘' í”Œë˜ê·¸.
         }
         if (this.key.left)
         {
@@ -101,147 +101,147 @@ public class PlayerControl : MonoBehaviour
         }
         if (is_moved)
         {
-            // µé°í ÀÖ´Â ¾ÆÀÌÅÛ¿¡ µû¶ó 'Ã¼·Â ¼Ò¸ğ Á¤µµ'¸¦ Á¶»çÇÑ´Ù.
+            // ë“¤ê³  ìˆëŠ” ì•„ì´í…œì— ë”°ë¼ 'ì²´ë ¥ ì†Œëª¨ ì •ë„'ë¥¼ ì¡°ì‚¬í•œë‹¤.
             float consume = this.item_root.getConsumeSatiety(this.carried_item);
 
-            // °¡Á®¿Â '¼Ò¸ğ Á¤µµ'¸¦ Ã¼·Â¿¡¼­ »«´Ù.
+            // ê°€ì ¸ì˜¨ 'ì†Œëª¨ ì •ë„'ë¥¼ ì²´ë ¥ì—ì„œ ëº€ë‹¤.
             this.game_status.addSatiety(-consume * Time.deltaTime);
         }
 
-        move_vector.Normalize(); // ±æÀÌ¸¦ 1·Î.
-        move_vector *= MOVE_SPEED * Time.deltaTime; // ¼Óµµ¡¿½Ã°££½°Å¸®.
-        position += move_vector; // À§Ä¡¸¦ ÀÌµ¿.
-        position.y = 0.0f; // ³ôÀÌ¸¦ 0À¸·Î ÇÑ´Ù.
+        move_vector.Normalize(); // ê¸¸ì´ë¥¼ 1ë¡œ.
+        move_vector *= MOVE_SPEED * Time.deltaTime; // ì†ë„Ã—ì‹œê°„ï¼ê±°ë¦¬.
+        position += move_vector; // ìœ„ì¹˜ë¥¼ ì´ë™.
+        position.y = 0.0f; // ë†’ì´ë¥¼ 0ìœ¼ë¡œ í•œë‹¤.
 
-        // ¼¼°èÀÇ Áß¾Ó¿¡¼­ °»½ÅÇÑ À§Ä¡±îÁöÀÇ °Å¸®°¡ ¼¶ÀÇ ¹İÁö¸§º¸´Ù Å©¸é.
+        // ì„¸ê³„ì˜ ì¤‘ì•™ì—ì„œ ê°±ì‹ í•œ ìœ„ì¹˜ê¹Œì§€ì˜ ê±°ë¦¬ê°€ ì„¬ì˜ ë°˜ì§€ë¦„ë³´ë‹¤ í¬ë©´.
         if (position.magnitude > MOVE_AREA_RADIUS)
         {
             position.Normalize();
-            position *= MOVE_AREA_RADIUS; // À§Ä¡¸¦ ¼¶ÀÇ ³¡ÀÚ¶ô¿¡ ¸Ó¹°°Ô ÇÑ´Ù.
+            position *= MOVE_AREA_RADIUS; // ìœ„ì¹˜ë¥¼ ì„¬ì˜ ëìë½ì— ë¨¸ë¬¼ê²Œ í•œë‹¤.
         }
-        // »õ·Î ±¸ÇÑ À§Ä¡(position)ÀÇ ³ôÀÌ¸¦ ÇöÀç ³ôÀÌ·Î µÇµ¹¸°´Ù.
+        // ìƒˆë¡œ êµ¬í•œ ìœ„ì¹˜(position)ì˜ ë†’ì´ë¥¼ í˜„ì¬ ë†’ì´ë¡œ ë˜ëŒë¦°ë‹¤.
         position.y = this.transform.position.y;
 
-        // ½ÇÁ¦ À§Ä¡¸¦ »õ·Î ±¸ÇÑ À§Ä¡·Î º¯°æÇÑ´Ù.
+        // ì‹¤ì œ ìœ„ì¹˜ë¥¼ ìƒˆë¡œ êµ¬í•œ ìœ„ì¹˜ë¡œ ë³€ê²½í•œë‹¤.
         this.transform.position = position;
 
-        // ÀÌµ¿ º¤ÅÍÀÇ ±æÀÌ°¡ 0.01º¸´Ù Å« °æ¿ì.
-        // =¾î´À Á¤µµ ÀÌ»óÀÇ ÀÌµ¿ÇÑ °æ¿ì.
+        // ì´ë™ ë²¡í„°ì˜ ê¸¸ì´ê°€ 0.01ë³´ë‹¤ í° ê²½ìš°.
+        // =ì–´ëŠ ì •ë„ ì´ìƒì˜ ì´ë™í•œ ê²½ìš°.
         if (move_vector.magnitude > 0.01f)
         {
-            // Ä³¸¯ÅÍÀÇ ¹æÇâÀ» ÃµÃµÈ÷ ¹Ù²Û´Ù.
+            // ìºë¦­í„°ì˜ ë°©í–¥ì„ ì²œì²œíˆ ë°”ê¾¼ë‹¤.
             Quaternion q = Quaternion.LookRotation(move_vector, Vector3.up);
             this.transform.rotation =
             Quaternion.Lerp(this.transform.rotation, q, 0.2f);
         }
     }
 
-    // ÀÔ·Â Á¤º¸¸¦ °¡Á®¿À°í »óÅÂ¿¡ º¯È­°¡ ÀÖÀ» ¶§ÀÇ Ã³¸®¸¦ °ÅÃÄ °¢ »óÅÂº°·Î ½ÇÇà.
-    // Æ®¸®°Å¿¡ °É¸° °ÔÀÓ ¿ÀºêÁ§Æ®°¡ Item ·¹ÀÌ¾î¿¡ ¼³Á¤µÇ¾î ÀÖ°í,
-    // ÇÃ·¹ÀÌ¾îÀÇ Á¤¸é¿¡ ÀÖÀ» ¶§, ±× °ÔÀÓ ¿ÀºêÁ§Æ®¸¦ ÁÖ¸ñÇÏ°Ô ÇÑ´Ù.
+    // ì…ë ¥ ì •ë³´ë¥¼ ê°€ì ¸ì˜¤ê³  ìƒíƒœì— ë³€í™”ê°€ ìˆì„ ë•Œì˜ ì²˜ë¦¬ë¥¼ ê±°ì³ ê° ìƒíƒœë³„ë¡œ ì‹¤í–‰.
+    // íŠ¸ë¦¬ê±°ì— ê±¸ë¦° ê²Œì„ ì˜¤ë¸Œì íŠ¸ê°€ Item ë ˆì´ì–´ì— ì„¤ì •ë˜ì–´ ìˆê³ ,
+    // í”Œë ˆì´ì–´ì˜ ì •ë©´ì— ìˆì„ ë•Œ, ê·¸ ê²Œì„ ì˜¤ë¸Œì íŠ¸ë¥¼ ì£¼ëª©í•˜ê²Œ í•œë‹¤.
     void OnTriggerStay(Collider other)
     {
         GameObject other_go = other.gameObject;
-        // Æ®¸®°ÅÀÇ GameObject ·¹ÀÌ¾î ¼³Á¤ÀÌ ItemÀÌ¶ó¸é.
+        // íŠ¸ë¦¬ê±°ì˜ GameObject ë ˆì´ì–´ ì„¤ì •ì´ Itemì´ë¼ë©´.
         if (other_go.layer == LayerMask.NameToLayer("Item"))
         {
-            // ¾Æ¹« °Íµµ ÁÖ¸ñÇÏ°í ÀÖÁö ¾ÊÀ¸¸é.
+            // ì•„ë¬´ ê²ƒë„ ì£¼ëª©í•˜ê³  ìˆì§€ ì•Šìœ¼ë©´.
             if (this.closest_item == null)
             {
                 if (this.is_other_in_view(other_go))
-                { // Á¤¸é¿¡ ÀÖÀ¸¸é.
-                    this.closest_item = other_go; // ÁÖ¸ñÇÑ´Ù.
+                { // ì •ë©´ì— ìˆìœ¼ë©´.
+                    this.closest_item = other_go; // ì£¼ëª©í•œë‹¤.
                 }
-                // ¹º°¡ ÁÖ¸ñÇÏ°í ÀÖÀ¸¸é.
+                // ë­”ê°€ ì£¼ëª©í•˜ê³  ìˆìœ¼ë©´.
             }
             else if (this.closest_item == other_go)
             {
                 if (!this.is_other_in_view(other_go))
-                { // Á¤¸é¿¡ ¾øÀ¸¸é.
-                    this.closest_item = null; // ÁÖ¸ñÀ» ±×¸¸µĞ´Ù.
+                { // ì •ë©´ì— ì—†ìœ¼ë©´.
+                    this.closest_item = null; // ì£¼ëª©ì„ ê·¸ë§Œë‘”ë‹¤.
                 }
             }
         }
-        // Æ®¸®°ÅÀÇ GameObjectÀÇ ·¹ÀÌ¾î ¼³Á¤ÀÌ Event¶ó¸é.
+        // íŠ¸ë¦¬ê±°ì˜ GameObjectì˜ ë ˆì´ì–´ ì„¤ì •ì´ Eventë¼ë©´.
         else if (other_go.layer == LayerMask.NameToLayer("Event"))
         {
-            // ¾Æ¹«°Íµµ ÁÖ¸ñÇÏ°í ÀÖÁö ¾ÊÀ¸¸é.
+            // ì•„ë¬´ê²ƒë„ ì£¼ëª©í•˜ê³  ìˆì§€ ì•Šìœ¼ë©´.
             if (this.closest_event == null)
             {
                 if (this.is_other_in_view(other_go))
-                {// Á¤¸é¿¡ ÀÖÀ¸¸é
-                    this.closest_event = other_go; // ÁÖ¸ñÇÑ´Ù.
+                {// ì •ë©´ì— ìˆìœ¼ë©´
+                    this.closest_event = other_go; // ì£¼ëª©í•œë‹¤.
                 }
-                // ¹º°¡¿¡ ÁÖ¸ñÇÏ°í ÀÖÀ¸¸é.
+                // ë­”ê°€ì— ì£¼ëª©í•˜ê³  ìˆìœ¼ë©´.
             }
             else if (this.closest_event == other_go)
             {
                 if (!this.is_other_in_view(other_go))
-                {// Á¤¸é¿¡ ¾øÀ¸¸é
-                    this.closest_event = null; // ÁÖ¸ñÀ» ±×¸¸µĞ´Ù.
+                {// ì •ë©´ì— ì—†ìœ¼ë©´
+                    this.closest_event = null; // ì£¼ëª©ì„ ê·¸ë§Œë‘”ë‹¤.
                 }
             }
         }
     }
 
-    // ÁÖ¸ñÀ» ±×¸¸µÎ°Ô ÇÑ´Ù.
+    // ì£¼ëª©ì„ ê·¸ë§Œë‘ê²Œ í•œë‹¤.
     void OnTriggerExit(Collider other)
     {
         if (this.closest_item == other.gameObject)
         {
-            this.closest_item = null; // ÁÖ¸ñÀ» ±×¸¸µĞ´Ù.
+            this.closest_item = null; // ì£¼ëª©ì„ ê·¸ë§Œë‘”ë‹¤.
         }
     }
 
-    // ÁÖ¸ñ ÁßÀÌ°Å³ª µé°í ÀÖ´Â ¾ÆÀÌÅÛÀÌ ÀÖÀ» ¶§ Ç¥½Ã
+    // ì£¼ëª© ì¤‘ì´ê±°ë‚˜ ë“¤ê³  ìˆëŠ” ì•„ì´í…œì´ ìˆì„ ë•Œ í‘œì‹œ
     void OnGUI()
     {
         float x = 20.0f;
         float y = Screen.height - 40.0f;
-        // µé°í ÀÖ´Â ¾ÆÀÌÅÛÀÌ ÀÖ´Ù¸é.
+        // ë“¤ê³  ìˆëŠ” ì•„ì´í…œì´ ìˆë‹¤ë©´.
         if (this.carried_item != null)
         {
-            GUI.Label(new Rect(x, y, 200.0f, 20.0f), "Z:¹ö¸°´Ù", guistyle);
-            // ¾ÆÀÌÅÛ Á¾·ù¿¡ µû¶ó ¸Ş¼¼Áö¸¦ ³ª´®.
+            GUI.Label(new Rect(x, y, 200.0f, 20.0f), "Z:ë²„ë¦°ë‹¤", guistyle);
+            // ì•„ì´í…œ ì¢…ë¥˜ì— ë”°ë¼ ë©”ì„¸ì§€ë¥¼ ë‚˜ëˆ”.
             if (this.carried_item.tag == "Stress")
             {
-                GUI.Label(new Rect(x + 100.0f, y, 200.0f, 20.0f), "X:ÇØ¼ÒÇÑ´Ù", guistyle);
+                GUI.Label(new Rect(x + 100.0f, y, 200.0f, 20.0f), "X:í•´ì†Œí•œë‹¤", guistyle);
             }
             else if (this.carried_item.tag == "Heal")
             {
-                GUI.Label(new Rect(x + 100.0f, y, 200.0f, 20.0f), "X:±¸ÃâÇÑ´Ù", guistyle);
+                GUI.Label(new Rect(x + 100.0f, y, 200.0f, 20.0f), "X:êµ¬ì¶œí•œë‹¤", guistyle);
             }
-            GUI.Label(new Rect(x + 100.0f, y, 200.0f, 20.0f), "X:¸Ô´Â´Ù", guistyle);
+            GUI.Label(new Rect(x + 100.0f, y, 200.0f, 20.0f), "X:ë¨¹ëŠ”ë‹¤", guistyle);
         }
         else
         {
-            // ÁÖ¸ñÇÏ°í ÀÖ´Â ¾ÆÀÌÅÛÀÌ ÀÖ´Ù¸é.
+            // ì£¼ëª©í•˜ê³  ìˆëŠ” ì•„ì´í…œì´ ìˆë‹¤ë©´.
             if (this.closest_item != null)
             {
-                GUI.Label(new Rect(x, y, 200.0f, 20.0f), "Z:Áİ´Â´Ù", guistyle);
+                GUI.Label(new Rect(x, y, 200.0f, 20.0f), "Z:ì¤ëŠ”ë‹¤", guistyle);
             }
         }
         switch (this.step)
         {
             case STEP.EATING:
                 GUI.Label(new Rect(x, y, 200.0f, 20.0f),
-                 "¿ìÀû¿ìÀû¿ì¹°¿ì¹°¡¦¡¦", guistyle);
+                 "ìš°ì ìš°ì ìš°ë¬¼ìš°ë¬¼â€¦â€¦", guistyle);
                 break;
             case STEP.EMOTION:
                 GUI.Label(new Rect(x, y, 200.0f, 20.0f),
-                 "½ÀÇÏ...½ÀÇÏ....", guistyle);
+                 "ìŠµí•˜...ìŠµí•˜....", guistyle);
                 break;
             case STEP.RESCUE:
                 GUI.Label(new Rect(x, y, 200.0f, 20.0f),
-                 "±¸ÇØµå¸±²²¿ä!", guistyle);
+                 "êµ¬í•´ë“œë¦´ê»˜ìš”!", guistyle);
                 break;
             case STEP.REPAIRING:
-                GUI.Label(new Rect(x + 200.0f, y, 200.0f, 20.0f), "¼ö¸®Áß", guistyle);
+                GUI.Label(new Rect(x + 200.0f, y, 200.0f, 20.0f), "ìˆ˜ë¦¬ì¤‘", guistyle);
                 break;
         }
-        if (this.is_event_ignitable()) // ÀÌº¥Æ®°¡ ½ÃÀÛ °¡´ÉÇÑ °æ¿ì.
+        if (this.is_event_ignitable()) // ì´ë²¤íŠ¸ê°€ ì‹œì‘ ê°€ëŠ¥í•œ ê²½ìš°.
         {
-            // ÀÌº¥Æ®¿ë ¸Ş½ÃÁö¸¦ Ãëµæ.
+            // ì´ë²¤íŠ¸ìš© ë©”ì‹œì§€ë¥¼ ì·¨ë“.
             string message =
             this.event_root.getIgnitableMessage(this.closest_event);
             GUI.Label(new Rect(x + 200.0f, y, 200.0f, 20.0f),
@@ -249,97 +249,97 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    // ¹°°ÇÀ» Áİ°Å³ª ¶³¾î¶ß¸°´Ù.
+    // ë¬¼ê±´ì„ ì¤ê±°ë‚˜ ë–¨ì–´ëœ¨ë¦°ë‹¤.
     private void pick_or_drop_control()
     {
         do
         {
             if (!this.key.pick)
-            { // 'Áİ±â/¹ö¸®±â'Å°°¡ ´­¸®Áö ¾Ê¾ÒÀ¸¸é.
-                break; // ¾Æ¹«°Íµµ ÇÏÁö ¾Ê°í ¸Ş¼Òµå Á¾·á.
+            { // 'ì¤ê¸°/ë²„ë¦¬ê¸°'í‚¤ê°€ ëˆŒë¦¬ì§€ ì•Šì•˜ìœ¼ë©´.
+                break; // ì•„ë¬´ê²ƒë„ í•˜ì§€ ì•Šê³  ë©”ì†Œë“œ ì¢…ë£Œ.
             }
             if (this.carried_item == null)
-            { // µé°í ÀÖ´Â ¾ÆÀÌÅÛÀÌ ¾ø°í.
+            { // ë“¤ê³  ìˆëŠ” ì•„ì´í…œì´ ì—†ê³ .
                 if (this.closest_item == null)
-                {// ÁÖ¸ñ ÁßÀÎ ¾ÆÀÌÅÛÀÌ ¾øÀ¸¸é.
-                    break; // ¾Æ¹«°Íµµ ÇÏÁö ¾Ê°í ¸Ş¼Òµå Á¾·á.
+                {// ì£¼ëª© ì¤‘ì¸ ì•„ì´í…œì´ ì—†ìœ¼ë©´.
+                    break; // ì•„ë¬´ê²ƒë„ í•˜ì§€ ì•Šê³  ë©”ì†Œë“œ ì¢…ë£Œ.
                 }
-                // ÁÖ¸ñ ÁßÀÎ ¾ÆÀÌÅÛÀ» µé¾î¿Ã¸°´Ù.
+                // ì£¼ëª© ì¤‘ì¸ ì•„ì´í…œì„ ë“¤ì–´ì˜¬ë¦°ë‹¤.
                 this.carried_item = this.closest_item;
 
-                // µé°í ÀÖ´Â ¾ÆÀÌÅÛÀ» ÀÚ½ÅÀÇ ÀÚ½ÄÀ¸·Î ¼³Á¤.
+                // ë“¤ê³  ìˆëŠ” ì•„ì´í…œì„ ìì‹ ì˜ ìì‹ìœ¼ë¡œ ì„¤ì •.
                 this.carried_item.transform.parent = this.transform;
 
-                // 2.0f À§¿¡ ¹èÄ¡(¸Ó¸® À§·Î ÀÌµ¿).
+                // 2.0f ìœ„ì— ë°°ì¹˜(ë¨¸ë¦¬ ìœ„ë¡œ ì´ë™).
                 this.carried_item.transform.localPosition = Vector3.up * 2.0f;
 
-                // ÁÖ¸ñ Áß ¾ÆÀÌÅÛÀ» ¾ø¾Ø´Ù.
+                // ì£¼ëª© ì¤‘ ì•„ì´í…œì„ ì—†ì•¤ë‹¤.
                 this.closest_item = null;
             }
             else
-            { // µé°í ÀÖ´Â ¾ÆÀÌÅÛÀÌ ÀÖÀ» °æ¿ì.
-              // µé°í ÀÖ´Â ¾ÆÀÌÅÛÀ» ¾à°£(1.0f) ¾ÕÀ¸·Î ÀÌµ¿½ÃÄÑ¼­.
+            { // ë“¤ê³  ìˆëŠ” ì•„ì´í…œì´ ìˆì„ ê²½ìš°.
+              // ë“¤ê³  ìˆëŠ” ì•„ì´í…œì„ ì•½ê°„(1.0f) ì•ìœ¼ë¡œ ì´ë™ì‹œì¼œì„œ.
                 this.carried_item.transform.localPosition = Vector3.forward * 1.0f;
-                this.carried_item.transform.parent = null;// ÀÚ½Ä ¼³Á¤À» ÇØÁ¦.
-                this.carried_item = null; // µé°í ÀÖ´ø ¾ÆÀÌÅÛÀ» ¾ø¾Ø´Ù.
+                this.carried_item.transform.parent = null;// ìì‹ ì„¤ì •ì„ í•´ì œ.
+                this.carried_item = null; // ë“¤ê³  ìˆë˜ ì•„ì´í…œì„ ì—†ì•¤ë‹¤.
             }
         } while (false);
     }
 
-    // Á¢ÃËÇÑ ¹°°ÇÀÌ ÀÚ½ÅÀÇ Á¤¸é¿¡ ÀÖ´ÂÁö ÆÇ´ÜÇÑ´Ù.
+    // ì ‘ì´‰í•œ ë¬¼ê±´ì´ ìì‹ ì˜ ì •ë©´ì— ìˆëŠ”ì§€ íŒë‹¨í•œë‹¤.
     private bool is_other_in_view(GameObject other)
     {
         bool ret = false;
         do
         {
-            Vector3 heading = // ÀÚ½ÅÀÌ ÇöÀç ÇâÇÏ°í ÀÖ´Â ¹æÇâÀ» º¸°ü.
+            Vector3 heading = // ìì‹ ì´ í˜„ì¬ í–¥í•˜ê³  ìˆëŠ” ë°©í–¥ì„ ë³´ê´€.
            this.transform.TransformDirection(Vector3.forward);
-            Vector3 to_other = // ÀÚ½Å ÂÊ¿¡¼­ º» ¾ÆÀÌÅÛÀÇ ¹æÇâÀ» º¸°ü.
+            Vector3 to_other = // ìì‹  ìª½ì—ì„œ ë³¸ ì•„ì´í…œì˜ ë°©í–¥ì„ ë³´ê´€.
            other.transform.position - this.transform.position;
             heading.y = 0.0f;
             to_other.y = 0.0f;
-            heading.Normalize(); // ±æÀÌ¸¦ 1·Î ÇÏ°í ¹æÇâ¸¸ º¤ÅÍ·Î.
-            to_other.Normalize(); // ±æÀÌ¸¦ 1·Î ÇÏ°í ¹æÇâ¸¸ º¤ÅÍ·Î.
-            float dp = Vector3.Dot(heading, to_other); // ¾çÂÊ º¤ÅÍÀÇ ³»ÀûÀ» Ãëµæ.
-            if (dp < Mathf.Cos(45.0f)) // ³»ÀûÀÌ 45µµÀÎ ÄÚ»çÀÎ °ª ¹Ì¸¸ÀÌ¸é.
+            heading.Normalize(); // ê¸¸ì´ë¥¼ 1ë¡œ í•˜ê³  ë°©í–¥ë§Œ ë²¡í„°ë¡œ.
+            to_other.Normalize(); // ê¸¸ì´ë¥¼ 1ë¡œ í•˜ê³  ë°©í–¥ë§Œ ë²¡í„°ë¡œ.
+            float dp = Vector3.Dot(heading, to_other); // ì–‘ìª½ ë²¡í„°ì˜ ë‚´ì ì„ ì·¨ë“.
+            if (dp < Mathf.Cos(45.0f)) // ë‚´ì ì´ 45ë„ì¸ ì½”ì‚¬ì¸ ê°’ ë¯¸ë§Œì´ë©´.
             { 
-                break; // ·çÇÁ¸¦ ºüÁ®³ª°£´Ù.
+                break; // ë£¨í”„ë¥¼ ë¹ ì ¸ë‚˜ê°„ë‹¤.
             }
-            ret = true; // ³»ÀûÀÌ 45µµÀÎ ÄÚ»çÀÎ °ª ÀÌ»óÀÌ¸é Á¤¸é¿¡ ÀÖ´Ù.
+            ret = true; // ë‚´ì ì´ 45ë„ì¸ ì½”ì‚¬ì¸ ê°’ ì´ìƒì´ë©´ ì •ë©´ì— ìˆë‹¤.
         } while (false);
         return (ret);
     }
 
-    // µé°í ÀÖ´Â ¾ÆÀÌÅÛÀÇ Á¾·ù¿Í ÁÖ¸ñÇÏ´Â ÀÌº¥Æ®ÀÇ Á¾·ù¸¦ º¸°í ÀÌº¥Æ® ½ÃÀÛ
+    // ë“¤ê³  ìˆëŠ” ì•„ì´í…œì˜ ì¢…ë¥˜ì™€ ì£¼ëª©í•˜ëŠ” ì´ë²¤íŠ¸ì˜ ì¢…ë¥˜ë¥¼ ë³´ê³  ì´ë²¤íŠ¸ ì‹œì‘
     private bool is_event_ignitable()
     {
         bool ret = false;
         do
         {
             if (this.closest_event == null)
-            { // ÁÖ¸ñ ÀÌº¥Æ®°¡ ¾øÀ¸¸é.
-                break; // false¸¦ ¹İÈ¯ÇÑ´Ù.
+            { // ì£¼ëª© ì´ë²¤íŠ¸ê°€ ì—†ìœ¼ë©´.
+                break; // falseë¥¼ ë°˜í™˜í•œë‹¤.
             }
-            // µé°í ÀÖ´Â ¾ÆÀÌÅÛ Á¾·ù¸¦ °¡Á®¿Â´Ù.
+            // ë“¤ê³  ìˆëŠ” ì•„ì´í…œ ì¢…ë¥˜ë¥¼ ê°€ì ¸ì˜¨ë‹¤.
             Item.TYPE carried_item_type =
             this.item_root.getItemType(this.carried_item);
 
-            // µé°í ÀÖ´Â ¾ÆÀÌÅÛ Á¾·ù¿Í ÁÖ¸ñÇÏ´Â ÀÌº¥Æ®ÀÇ Á¾·ù¿¡¼­.
-            // ÀÌº¥Æ®°¡ °¡´ÉÇÑÁö ÆÇÁ¤ÇÏ°í, ÀÌº¥Æ® ºÒ°¡¶ó¸é false¸¦ ¹İÈ¯ÇÑ´Ù.
+            // ë“¤ê³  ìˆëŠ” ì•„ì´í…œ ì¢…ë¥˜ì™€ ì£¼ëª©í•˜ëŠ” ì´ë²¤íŠ¸ì˜ ì¢…ë¥˜ì—ì„œ.
+            // ì´ë²¤íŠ¸ê°€ ê°€ëŠ¥í•œì§€ íŒì •í•˜ê³ , ì´ë²¤íŠ¸ ë¶ˆê°€ë¼ë©´ falseë¥¼ ë°˜í™˜í•œë‹¤.
             if (!this.event_root.isEventIgnitable(
             carried_item_type, this.closest_event))
             {
                 break;
             }
-            ret = true; // ¿©±â±îÁö ¿À¸é ÀÌº¥Æ®¸¦ ½ÃÀÛÇÒ ¼ö ÀÖ´Ù°í ÆÇÁ¤!.
+            ret = true; // ì—¬ê¸°ê¹Œì§€ ì˜¤ë©´ ì´ë²¤íŠ¸ë¥¼ ì‹œì‘í•  ìˆ˜ ìˆë‹¤ê³  íŒì •!.
         } while (false);
         return (ret);
     }
 
     void Start()
     {
-        this.step = STEP.NONE; // Çö ´Ü°è »óÅÂ¸¦ ÃÊ±âÈ­.
-        this.next_step = STEP.MOVE; // ´ÙÀ½ ´Ü°è »óÅÂ¸¦ ÃÊ±âÈ­.
+        this.step = STEP.NONE; // í˜„ ë‹¨ê³„ ìƒíƒœë¥¼ ì´ˆê¸°í™”.
+        this.next_step = STEP.MOVE; // ë‹¤ìŒ ë‹¨ê³„ ìƒíƒœë¥¼ ì´ˆê¸°í™”.
         this.item_root = GameObject.Find("GameRoot").GetComponent<ItemRoot>();
         this.guistyle.fontSize = 16;
 
@@ -353,42 +353,42 @@ public class PlayerControl : MonoBehaviour
 
     void Update()
     {
-        this.get_input(); // ÀÔ·Â Á¤º¸ Ãëµæ.
-                          // »óÅÂ°¡ º¯È­ÇßÀ» ¶§------------.
+        this.get_input(); // ì…ë ¥ ì •ë³´ ì·¨ë“.
+                          // ìƒíƒœê°€ ë³€í™”í–ˆì„ ë•Œ------------.
 
         this.step_timer += Time.deltaTime;
-        float eat_time = 0.5f; // »ç°ú´Â 2ÃÊ¿¡ °ÉÃÄ ¸Ô´Â´Ù.
-        float repair_time = 0.5f; // ¼ö¸®¿¡ °É¸®´Â ½Ã°£µµ 2ÃÊ.
+        float eat_time = 0.5f; // ì‚¬ê³¼ëŠ” 2ì´ˆì— ê±¸ì³ ë¨¹ëŠ”ë‹¤.
+        float repair_time = 0.5f; // ìˆ˜ë¦¬ì— ê±¸ë¦¬ëŠ” ì‹œê°„ë„ 2ì´ˆ.
 
         float stress_time = 1.0f;
         float rescue_time = 1.0f;
 
-        // »óÅÂ¸¦ º¯È­½ÃÅ²´Ù---------------------.
+        // ìƒíƒœë¥¼ ë³€í™”ì‹œí‚¨ë‹¤---------------------.
         if (this.next_step == STEP.NONE)
-        { // ´ÙÀ½ ¿¹Á¤ÀÌ ¾øÀ¸¸é.
+        { // ë‹¤ìŒ ì˜ˆì •ì´ ì—†ìœ¼ë©´.
             switch (this.step)
             {
-                case STEP.MOVE: // 'ÀÌµ¿ Áß' »óÅÂÀÇ Ã³¸®.
+                case STEP.MOVE: // 'ì´ë™ ì¤‘' ìƒíƒœì˜ ì²˜ë¦¬.
                     do
                     {
                         if (!this.key.action)
-                        { // ¾×¼Ç Å°°¡ ´­·ÁÀÖÁö ¾Ê´Ù.
-                            break; // ·çÇÁ Å»Ãâ.
+                        { // ì•¡ì…˜ í‚¤ê°€ ëˆŒë ¤ìˆì§€ ì•Šë‹¤.
+                            break; // ë£¨í”„ íƒˆì¶œ.
                         }
-                        // ÁÖ¸ñÇÏ´Â ÀÌº¥Æ®°¡ ÀÖÀ» ¶§.
+                        // ì£¼ëª©í•˜ëŠ” ì´ë²¤íŠ¸ê°€ ìˆì„ ë•Œ.
                         if (this.closest_event != null)
                         {
                             if (!this.is_event_ignitable())
-                            { // ÀÌº¥Æ®¸¦ ½ÃÀÛÇÒ ¼ö ¾øÀ¸¸é.
-                                break; // ¾Æ¹« °Íµµ ÇÏÁö ¾Ê´Â´Ù.
+                            { // ì´ë²¤íŠ¸ë¥¼ ì‹œì‘í•  ìˆ˜ ì—†ìœ¼ë©´.
+                                break; // ì•„ë¬´ ê²ƒë„ í•˜ì§€ ì•ŠëŠ”ë‹¤.
                             }
-                            // ÀÌº¥Æ® Á¾·ù¸¦ °¡Á®¿Â´Ù.
+                            // ì´ë²¤íŠ¸ ì¢…ë¥˜ë¥¼ ê°€ì ¸ì˜¨ë‹¤.
                             Event.TYPE ignitable_event =
                             this.event_root.getEventType(this.closest_event);
                             switch (ignitable_event)
                             {
-                                case Event.TYPE.ROCKET: // ÀÌº¥Æ®ÀÇ Á¾·ù°¡ ROCKETÀÌ¸é.
-                                                        // REPAIRING(¼ö¸®) »óÅÂ·Î ÀÌÇà.
+                                case Event.TYPE.ROCKET: // ì´ë²¤íŠ¸ì˜ ì¢…ë¥˜ê°€ ROCKETì´ë©´.
+                                                        // REPAIRING(ìˆ˜ë¦¬) ìƒíƒœë¡œ ì´í–‰.
                                     this.next_step = STEP.REPAIRING;
                                     break;
                             }
@@ -396,22 +396,22 @@ public class PlayerControl : MonoBehaviour
                         }
                         if (this.carried_item != null)
                         {
-                            // °¡Áö°í ÀÖ´Â ¾ÆÀÌÅÛ ÆÇº°.
+                            // ê°€ì§€ê³  ìˆëŠ” ì•„ì´í…œ íŒë³„.
                             Item.TYPE carried_item_type =
                             this.item_root.getItemType(this.carried_item);
                             switch (carried_item_type)
                             {
-                                case Item.TYPE.APPLE: // »ç°ú¶ó¸é.
-                                    this.next_step = STEP.EATING; // £§½Ä»ç Áß£§ »óÅÂ·Î ÀÌÇà.
+                                case Item.TYPE.APPLE: // ì‚¬ê³¼ë¼ë©´.
+                                    this.next_step = STEP.EATING; // ï¼‡ì‹ì‚¬ ì¤‘ï¼‡ ìƒíƒœë¡œ ì´í–‰.
                                     break;
-                                case Item.TYPE.PLANT: // ½Ä¹°ÀÌ¶ó¸é.
-                                    this.next_step = STEP.EATING; // £§½Ä»ç Áß£§ »óÅÂ·Î ÀÌÇà.
+                                case Item.TYPE.PLANT: // ì‹ë¬¼ì´ë¼ë©´.
+                                    this.next_step = STEP.EATING; // ï¼‡ì‹ì‚¬ ì¤‘ï¼‡ ìƒíƒœë¡œ ì´í–‰.
                                     break;
-                                case Item.TYPE.STRESS: // ½ºÆ®·¹½º ¾ÆÀÌÅÛ ÀÌ¶ó¸é
-                                    this.next_step = STEP.EMOTION; // £§°¨Á¤£§ »óÅÂ·Î ÀÌÇà.
+                                case Item.TYPE.STRESS: // ìŠ¤íŠ¸ë ˆìŠ¤ ì•„ì´í…œ ì´ë¼ë©´
+                                    this.next_step = STEP.EMOTION; // ï¼‡ê°ì •ï¼‡ ìƒíƒœë¡œ ì´í–‰.
                                     break;
-                                case Item.TYPE.HEAL: // ±¸Á¶ÀÚ ±¸Ãâ ¾ÆÀÌÅÛ ÀÌ¶ó¸é.
-                                    this.next_step = STEP.RESCUE; // £§±¸Á¶£§ »óÅÂ·Î ÀÌÇà.
+                                case Item.TYPE.HEAL: // êµ¬ì¡°ì êµ¬ì¶œ ì•„ì´í…œ ì´ë¼ë©´.
+                                    this.next_step = STEP.RESCUE; // ï¼‡êµ¬ì¡°ï¼‡ ìƒíƒœë¡œ ì´í–‰.
                                     break;
 
                             }
@@ -419,34 +419,34 @@ public class PlayerControl : MonoBehaviour
                     } while (false);
                     break;
 
-                case STEP.EATING: // '½Ä»ç Áß' »óÅÂÀÇ Ã³¸®.
+                case STEP.EATING: // 'ì‹ì‚¬ ì¤‘' ìƒíƒœì˜ ì²˜ë¦¬.
                     if (this.step_timer > eat_time)
-                    { // 2ÃÊ ´ë±â.
-                        this.next_step = STEP.MOVE; // 'ÀÌµ¿' »óÅÂ·Î ÀÌÇà.
+                    { // 2ì´ˆ ëŒ€ê¸°.
+                        this.next_step = STEP.MOVE; // 'ì´ë™' ìƒíƒœë¡œ ì´í–‰.
                     }
                     break;
-                case STEP.EMOTION: // '°¨Á¤' »óÅÂÀÇ Ã³¸®.
+                case STEP.EMOTION: // 'ê°ì •' ìƒíƒœì˜ ì²˜ë¦¬.
                     if (this.step_timer > stress_time)
                     { 
-                        this.next_step = STEP.MOVE; // 'ÀÌµ¿' »óÅÂ·Î ÀÌÇà.
+                        this.next_step = STEP.MOVE; // 'ì´ë™' ìƒíƒœë¡œ ì´í–‰.
                     }
                     break;
-                case STEP.RESCUE: // '±¸Á¶' »óÅÂÀÇ Ã³¸®.
+                case STEP.RESCUE: // 'êµ¬ì¡°' ìƒíƒœì˜ ì²˜ë¦¬.
                     if (this.step_timer > rescue_time)
                     { 
-                        this.next_step = STEP.MOVE; // 'ÀÌµ¿' »óÅÂ·Î ÀÌÇà.
+                        this.next_step = STEP.MOVE; // 'ì´ë™' ìƒíƒœë¡œ ì´í–‰.
                     }
                     break;
-                case STEP.REPAIRING: // '¼ö¸® Áß' »óÅÂÀÇ Ã³¸®.
+                case STEP.REPAIRING: // 'ìˆ˜ë¦¬ ì¤‘' ìƒíƒœì˜ ì²˜ë¦¬.
                     if (this.step_timer > repair_time)
-                    { // 2ÃÊ ´ë±â.
-                        this.next_step = STEP.MOVE; // 'ÀÌµ¿' »óÅÂ·Î ÀÌÇà.
+                    { // 2ì´ˆ ëŒ€ê¸°.
+                        this.next_step = STEP.MOVE; // 'ì´ë™' ìƒíƒœë¡œ ì´í–‰.
                     }
                     break;
             }
         }
 
-        // »óÅÂ°¡ º¯È­ÇßÀ» ¶§------------.
+        // ìƒíƒœê°€ ë³€í™”í–ˆì„ ë•Œ------------.
         while (this.next_step != STEP.NONE)
         {
             this.step = this.next_step;
@@ -458,7 +458,7 @@ public class PlayerControl : MonoBehaviour
                 case STEP.EATING:
                     if (this.carried_item != null)
                     {
-                        // µé°í ÀÖ´Â ¾ÆÀÌÅÛÀÇ 'Ã¼·Â È¸º¹ Á¤µµ'¸¦ °¡Á®¿Í¼­ ¼³Á¤.
+                        // ë“¤ê³  ìˆëŠ” ì•„ì´í…œì˜ 'ì²´ë ¥ íšŒë³µ ì •ë„'ë¥¼ ê°€ì ¸ì™€ì„œ ì„¤ì •.
                         this.game_status.addSatiety(this.item_root.getRegainSatiety(this.carried_item));
 
                         GameObject.Destroy(this.carried_item);
@@ -468,7 +468,7 @@ public class PlayerControl : MonoBehaviour
                 case STEP.EMOTION:
                     if (this.carried_item != null)
                     {
-                        // ½ºÆ®·¹½º ¼öÄ¡ ³·Ãß±â
+                        // ìŠ¤íŠ¸ë ˆìŠ¤ ìˆ˜ì¹˜ ë‚®ì¶”ê¸°
                         this.game_status.subtractEmotion(this.item_root.getRegainEmotion(this.carried_item));
 
                         GameObject.Destroy(this.carried_item);
@@ -478,7 +478,7 @@ public class PlayerControl : MonoBehaviour
                 case STEP.RESCUE:
                     if (this.carried_item != null)
                     {
-                        // µé°í ÀÖ´Â ¾ÆÀÌÅÛÀÇ 'Ã¼·Â È¸º¹ Á¤µµ'¸¦ °¡Á®¿Í¼­ ¼³Á¤.
+                        // ë“¤ê³  ìˆëŠ” ì•„ì´í…œì˜ 'ì²´ë ¥ íšŒë³µ ì •ë„'ë¥¼ ê°€ì ¸ì™€ì„œ ì„¤ì •.
                         this.game_status.addSatiety(this.item_root.getRegainSatiety(this.carried_item));
 
                         GameObject.Destroy(this.carried_item);
@@ -486,10 +486,10 @@ public class PlayerControl : MonoBehaviour
                     }
                     break;
 
-                case STEP.REPAIRING: // ¡®¼ö¸® Áß¡¯ÀÌ µÇ¸é.
+                case STEP.REPAIRING: // â€˜ìˆ˜ë¦¬ ì¤‘â€™ì´ ë˜ë©´.
                     if (this.carried_item != null)
                     {
-                        // µé°í ÀÖ´Â ¾ÆÀÌÅÛÀÇ '¼ö¸® ÁøÃ´ »óÅÂ'¸¦ °¡Á®¿Í¼­ ¼³Á¤.
+                        // ë“¤ê³  ìˆëŠ” ì•„ì´í…œì˜ 'ìˆ˜ë¦¬ ì§„ì²™ ìƒíƒœ'ë¥¼ ê°€ì ¸ì™€ì„œ ì„¤ì •.
                         this.game_status.addRepairment(this.item_root.getGainRepairment(this.carried_item));
 
                         GameObject.Destroy(this.carried_item);
@@ -500,20 +500,20 @@ public class PlayerControl : MonoBehaviour
             }
             this.step_timer = 0.0f;
         }
-        // °¢ »óÈ²¿¡¼­ ¹İº¹ÇÒ °Í----------.
+        // ê° ìƒí™©ì—ì„œ ë°˜ë³µí•  ê²ƒ----------.
         switch (this.step)
         {
             case STEP.MOVE:
                 this.move_control();
                 this.pick_or_drop_control();
 
-                // ÀÌµ¿ °¡´ÉÇÑ °æ¿ì´Â Ç×»ó ¹è°¡ °íÆÄÁø´Ù.
+                // ì´ë™ ê°€ëŠ¥í•œ ê²½ìš°ëŠ” í•­ìƒ ë°°ê°€ ê³ íŒŒì§„ë‹¤.
                 this.game_status.alwaysSatiety();
                 this.game_status.alwaysEmotion();
 
                 break;
             case STEP.REPAIRING:
-                // ¿ìÁÖ¼±À» È¸Àü½ÃÅ²´Ù.
+                // ìš°ì£¼ì„ ì„ íšŒì „ì‹œí‚¨ë‹¤.
                 this.rocket_model.transform.localRotation *=
                 Quaternion.AngleAxis(360.0f / 10.0f * Time.deltaTime, Vector3.up);
                 break;

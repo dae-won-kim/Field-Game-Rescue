@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,7 +15,7 @@ public class CameraSetting : MonoBehaviour
 
     void LateUpdate()
     {
-        // À§Ä¡´Â µû¶ó°¡°í, È¸ÀüÀº °íÁ¤
+        // ìœ„ì¹˜ëŠ” ë”°ë¼ê°€ê³ , íšŒì „ì€ ê³ ì •
         this.transform.position = playerTransform.position + offset;
     }
 }

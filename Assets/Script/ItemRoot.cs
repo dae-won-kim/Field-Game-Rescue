@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,16 +6,16 @@ using UnityEngine;
 public class Item
 {
     public enum TYPE
-    { // ¾ÆÀÌÅÛ Á¾·ù.
-        NONE = -1, IRON = 0, APPLE, PLANT, // ¾øÀ½, Ã¶±¤¼®, »ç°ú, ½Ä¹°.
+    { // ì•„ì´í…œ ì¢…ë¥˜.
+        NONE = -1, IRON = 0, APPLE, PLANT, // ì—†ìŒ, ì² ê´‘ì„, ì‚¬ê³¼, ì‹ë¬¼.
         STRESS,HEAL,
         NUM,
-    }; // ¾ÆÀÌÅÛÀÌ ¸î Á¾·ùÀÎ°¡ ³ªÅ¸³½´Ù(3+2). ½ºÆ®·¹½º ¾ÆÀÌÅÛ, ±¸Á¶ÀÚ Ä¡·á 
+    }; // ì•„ì´í…œì´ ëª‡ ì¢…ë¥˜ì¸ê°€ ë‚˜íƒ€ë‚¸ë‹¤(3+2). ìŠ¤íŠ¸ë ˆìŠ¤ ì•„ì´í…œ, êµ¬ì¡°ì ì¹˜ë£Œ 
 };
 
 public class ItemRoot : MonoBehaviour
     {
-    protected List<Vector3> plant_respawn_points; // Plant ÃâÇö ÁöÁ¡ List.
+    protected List<Vector3> plant_respawn_points; // Plant ì¶œí˜„ ì§€ì  List.
     protected List<Vector3> stress_respawn_points;
 
     public GameObject ironPrefab = null; // Prefab 'Iron'
@@ -27,30 +27,30 @@ public class ItemRoot : MonoBehaviour
 
     public float step_timer = 0.0f;
 
-    public static float RESPAWN_TIME_APPLE = 20.0f; // »ç°ú ÃâÇö ½Ã°£ »ó¼ö.
-    public static float RESPAWN_TIME_IRON = 12.0f; // Ã¶±¤¼® ÃâÇö ½Ã°£ »ó¼ö.
-    public static float RESPAWN_TIME_PLANT = 6.0f; // ½Ä¹° ÃâÇö ½Ã°£ »ó¼ö.
+    public static float RESPAWN_TIME_APPLE = 20.0f; // ì‚¬ê³¼ ì¶œí˜„ ì‹œê°„ ìƒìˆ˜.
+    public static float RESPAWN_TIME_IRON = 12.0f; // ì² ê´‘ì„ ì¶œí˜„ ì‹œê°„ ìƒìˆ˜.
+    public static float RESPAWN_TIME_PLANT = 6.0f; // ì‹ë¬¼ ì¶œí˜„ ì‹œê°„ ìƒìˆ˜.
 
-    // ½ºÆ®·¹½º, ÈúÅÛ ÃâÇö ½Ã°£ »ó¼ö.
+    // ìŠ¤íŠ¸ë ˆìŠ¤, íí…œ ì¶œí˜„ ì‹œê°„ ìƒìˆ˜.
     public static float RESPAWN_TIME_STRESS = 10.0f;
     public static float RESPAWN_TIME_HEAL = 10.0f;
 
-    private float respawn_timer_apple = 0.0f; // »ç°úÀÇ ÃâÇö ½Ã°£.
-    private float respawn_timer_iron = 0.0f; // Ã¶±¤¼®ÀÇ ÃâÇö ½Ã°£.
-    private float respawn_timer_plant = 0.0f; // ½Ä¹°ÀÇ ÃâÇö ½Ã°£.
+    private float respawn_timer_apple = 0.0f; // ì‚¬ê³¼ì˜ ì¶œí˜„ ì‹œê°„.
+    private float respawn_timer_iron = 0.0f; // ì² ê´‘ì„ì˜ ì¶œí˜„ ì‹œê°„.
+    private float respawn_timer_plant = 0.0f; // ì‹ë¬¼ì˜ ì¶œí˜„ ì‹œê°„.
 
-    // ½ºÆ®·¹½º, ÈúÅÛ ÃâÇö ½Ã°£.
+    // ìŠ¤íŠ¸ë ˆìŠ¤, íí…œ ì¶œí˜„ ì‹œê°„.
     private float respawn_timer_stress = 0.0f;
     private float respawn_timer_heal = 0.0f;
 
-    // ¾ÆÀÌÅÛÀÇ Á¾·ù¸¦ Item.TYPEÇüÀ¸·Î ¹İÈ¯ÇÏ´Â ¸Ş¼Òµå.
+    // ì•„ì´í…œì˜ ì¢…ë¥˜ë¥¼ Item.TYPEí˜•ìœ¼ë¡œ ë°˜í™˜í•˜ëŠ” ë©”ì†Œë“œ.
     public Item.TYPE getItemType(GameObject item_go)
     {
         Item.TYPE type = Item.TYPE.NONE;
         if (item_go != null)
-        { // ÀÎ¼ö·Î ¹ŞÀº GameObject°¡ ºñ¾îÀÖÁö ¾ÊÀ¸¸é.
+        { // ì¸ìˆ˜ë¡œ ë°›ì€ GameObjectê°€ ë¹„ì–´ìˆì§€ ì•Šìœ¼ë©´.
             switch (item_go.tag)
-            { // ÅÂ±×·Î ºĞ±â.
+            { // íƒœê·¸ë¡œ ë¶„ê¸°.
                 case "Iron": type = Item.TYPE.IRON; break;
                 case "Apple": type = Item.TYPE.APPLE; break;
                 case "Plant": type = Item.TYPE.PLANT; break;
@@ -63,46 +63,46 @@ public class ItemRoot : MonoBehaviour
 
     public void respawnIron()
     {
-        // Ã¶±¤¼® ÇÁ¸®ÆÕÀ» ÀÎ½ºÅÏ½ºÈ­.
+        // ì² ê´‘ì„ í”„ë¦¬íŒ¹ì„ ì¸ìŠ¤í„´ìŠ¤í™”.
         GameObject go = GameObject.Instantiate(this.ironPrefab) as GameObject;
-        // Ã¶±¤¼®ÀÇ ÃâÇö Æ÷ÀÎÆ®¸¦ Ãëµæ.
+        // ì² ê´‘ì„ì˜ ì¶œí˜„ í¬ì¸íŠ¸ë¥¼ ì·¨ë“.
         Vector3 pos = GameObject.Find("IronRespawn").transform.position;
-        // ÃâÇö À§Ä¡¸¦ Á¶Á¤.
+        // ì¶œí˜„ ìœ„ì¹˜ë¥¼ ì¡°ì •.
         pos.y = 1.0f;
         pos.x += Random.Range(-1.0f, 1.0f);
         pos.z += Random.Range(-1.0f, 1.0f);
-        // Ã¶±¤¼®ÀÇ À§Ä¡¸¦ ÀÌµ¿.
+        // ì² ê´‘ì„ì˜ ìœ„ì¹˜ë¥¼ ì´ë™.
         go.transform.position = pos;
     }
 
     public void respawnApple()
     {
-        // »ç°ú ÇÁ¸®ÆÕÀ» ÀÎ½ºÅÏ½ºÈ­.
+        // ì‚¬ê³¼ í”„ë¦¬íŒ¹ì„ ì¸ìŠ¤í„´ìŠ¤í™”.
         GameObject go = GameObject.Instantiate(this.applePrefab) as GameObject;
-        // »ç°úÀÇ ÃâÇö Æ÷ÀÎÆ®¸¦ Ãëµæ.
+        // ì‚¬ê³¼ì˜ ì¶œí˜„ í¬ì¸íŠ¸ë¥¼ ì·¨ë“.
         Vector3 pos = GameObject.Find("AppleRespawn").transform.position;
-        // ÃâÇö À§Ä¡¸¦ Á¶Á¤.
+        // ì¶œí˜„ ìœ„ì¹˜ë¥¼ ì¡°ì •.
         pos.y = 1.0f;
         pos.x += Random.Range(-1.0f, 1.0f);
         pos.z += Random.Range(-1.0f, 1.0f);
-        // »ç°úÀÇ À§Ä¡¸¦ ÀÌµ¿.
+        // ì‚¬ê³¼ì˜ ìœ„ì¹˜ë¥¼ ì´ë™.
         go.transform.position = pos;
     }
 
     public void respawnPlant()
     {
         if (this.plant_respawn_points.Count > 0)
-        { // List°¡ ºñ¾îÀÖÁö ¾ÊÀ¸¸é.
-          // ½Ä¹° ÇÁ¸®ÆÕÀ» ÀÎ½ºÅÏ½ºÈ­.
+        { // Listê°€ ë¹„ì–´ìˆì§€ ì•Šìœ¼ë©´.
+          // ì‹ë¬¼ í”„ë¦¬íŒ¹ì„ ì¸ìŠ¤í„´ìŠ¤í™”.
             GameObject go = GameObject.Instantiate(this.plantPrefab) as GameObject;
-            // ½Ä¹°ÀÇ ÃâÇö Æ÷ÀÎÆ®¸¦ ·£´ıÇÏ°Ô Ãëµæ.
+            // ì‹ë¬¼ì˜ ì¶œí˜„ í¬ì¸íŠ¸ë¥¼ ëœë¤í•˜ê²Œ ì·¨ë“.
             int n = Random.Range(0, this.plant_respawn_points.Count);
             Vector3 pos = this.plant_respawn_points[n];
-            // ÃâÇö À§Ä¡¸¦ Á¶Á¤.
+            // ì¶œí˜„ ìœ„ì¹˜ë¥¼ ì¡°ì •.
             pos.y = 1.0f;
             pos.x += Random.Range(-1.0f, 1.0f);
             pos.z += Random.Range(-1.0f, 1.0f);
-            // ½Ä¹°ÀÇ À§Ä¡¸¦ ÀÌµ¿.
+            // ì‹ë¬¼ì˜ ìœ„ì¹˜ë¥¼ ì´ë™.
             go.transform.position = pos;
         }
     }
@@ -110,35 +110,35 @@ public class ItemRoot : MonoBehaviour
     public void respawnStress() 
     {
         if (this.stress_respawn_points.Count > 0)
-        { // List°¡ ºñ¾îÀÖÁö ¾ÊÀ¸¸é.
-          // ½ºÆ®·¹½º ÇÁ¸®ÆÕÀ» ÀÎ½ºÅÏ½ºÈ­.
+        { // Listê°€ ë¹„ì–´ìˆì§€ ì•Šìœ¼ë©´.
+          // ìŠ¤íŠ¸ë ˆìŠ¤ í”„ë¦¬íŒ¹ì„ ì¸ìŠ¤í„´ìŠ¤í™”.
             GameObject go = GameObject.Instantiate(this.stressPrefab) as GameObject;
-            // ½Ä¹°ÀÇ ÃâÇö Æ÷ÀÎÆ®¸¦ ·£´ıÇÏ°Ô Ãëµæ.
+            // ì‹ë¬¼ì˜ ì¶œí˜„ í¬ì¸íŠ¸ë¥¼ ëœë¤í•˜ê²Œ ì·¨ë“.
             int n = Random.Range(0, this.stress_respawn_points.Count);
             Vector3 pos = this.stress_respawn_points[n];
-            // ÃâÇö À§Ä¡¸¦ Á¶Á¤.
+            // ì¶œí˜„ ìœ„ì¹˜ë¥¼ ì¡°ì •.
             pos.y = 1.0f;
             pos.x += Random.Range(-1.0f, 1.0f);
             pos.z += Random.Range(-1.0f, 1.0f);
-            // ½ºÆ®·¹½ºÀÇ À§Ä¡¸¦ ÀÌµ¿.
+            // ìŠ¤íŠ¸ë ˆìŠ¤ì˜ ìœ„ì¹˜ë¥¼ ì´ë™.
             go.transform.position = pos;
         }
     }
     public void respawnHeal() 
     {
-        // Èú ÇÁ¸®ÆÕÀ» ÀÎ½ºÅÏ½ºÈ­.
+        // í í”„ë¦¬íŒ¹ì„ ì¸ìŠ¤í„´ìŠ¤í™”.
         GameObject go = GameObject.Instantiate(this.healPrefab) as GameObject;
-        // ÈúÀÇ ÃâÇö Æ÷ÀÎÆ®¸¦ Ãëµæ.
+        // íì˜ ì¶œí˜„ í¬ì¸íŠ¸ë¥¼ ì·¨ë“.
         Vector3 pos = GameObject.Find("HealRespawn").transform.position;
-        // ÃâÇö À§Ä¡¸¦ Á¶Á¤.
+        // ì¶œí˜„ ìœ„ì¹˜ë¥¼ ì¡°ì •.
         pos.y = 1.0f;
         pos.x += Random.Range(-1.0f, 1.0f);
         pos.z += Random.Range(-1.0f, 1.0f);
-        // ÈúÀÇ À§Ä¡¸¦ ÀÌµ¿.
+        // íì˜ ìœ„ì¹˜ë¥¼ ì´ë™.
         go.transform.position = pos;
     }
 
-    // µé°í ÀÖ´Â ¾ÆÀÌÅÛ¿¡ µû¸¥ ¡®¼ö¸® ÁøÃ´ »óÅÂ¡¯¸¦ ¹İÈ¯
+    // ë“¤ê³  ìˆëŠ” ì•„ì´í…œì— ë”°ë¥¸ â€˜ìˆ˜ë¦¬ ì§„ì²™ ìƒíƒœâ€™ë¥¼ ë°˜í™˜
     public float getGainRepairment(GameObject item_go)
     {
         float gain = 0.0f;
@@ -150,7 +150,7 @@ public class ItemRoot : MonoBehaviour
         {
             Item.TYPE type = this.getItemType(item_go);
             switch (type)
-            { // µé°í ÀÖ´Â ¾ÆÀÌÅÛÀÇ Á¾·ù·Î °¥¶óÁø´Ù.
+            { // ë“¤ê³  ìˆëŠ” ì•„ì´í…œì˜ ì¢…ë¥˜ë¡œ ê°ˆë¼ì§„ë‹¤.
                 case Item.TYPE.IRON:
                     gain = GameStatus.GAIN_REPAIRMENT_IRON; break;
                 case Item.TYPE.PLANT:
@@ -160,7 +160,7 @@ public class ItemRoot : MonoBehaviour
         return (gain);
     }
 
-    // µé°í ÀÖ´Â ¾ÆÀÌÅÛ¿¡ µû¸¥ ¡®Ã¼·Â °¨¼Ò »óÅÂ¡¯¸¦ ¹İÈ¯
+    // ë“¤ê³  ìˆëŠ” ì•„ì´í…œì— ë”°ë¥¸ â€˜ì²´ë ¥ ê°ì†Œ ìƒíƒœâ€™ë¥¼ ë°˜í™˜
     public float getConsumeSatiety(GameObject item_go)
     {
         float consume = 0.0f;
@@ -172,7 +172,7 @@ public class ItemRoot : MonoBehaviour
         {
             Item.TYPE type = this.getItemType(item_go);
             switch (type)
-            { // µé°í ÀÖ´Â ¾ÆÀÌÅÛÀÇ Á¾·ù·Î °¥¶óÁø´Ù.
+            { // ë“¤ê³  ìˆëŠ” ì•„ì´í…œì˜ ì¢…ë¥˜ë¡œ ê°ˆë¼ì§„ë‹¤.
                 case Item.TYPE.IRON:
                     consume = GameStatus.CONSUME_SATIETY_IRON; break;
                 case Item.TYPE.APPLE:
@@ -188,7 +188,7 @@ public class ItemRoot : MonoBehaviour
         return (consume);
     }
 
-    // µé°í ÀÖ´Â ¾ÆÀÌÅÛ¿¡ µû¸¥ ¡®Ã¼·Â È¸º¹ »óÅÂ¡¯¸¦ ¹İÈ¯
+    // ë“¤ê³  ìˆëŠ” ì•„ì´í…œì— ë”°ë¥¸ â€˜ì²´ë ¥ íšŒë³µ ìƒíƒœâ€™ë¥¼ ë°˜í™˜
     public float getRegainSatiety(GameObject item_go)
     {
         float regain = 0.0f;
@@ -200,7 +200,7 @@ public class ItemRoot : MonoBehaviour
         {
             Item.TYPE type = this.getItemType(item_go);
             switch (type)
-            { // µé°í ÀÖ´Â ¾ÆÀÌÅÛÀÇ Á¾·ù·Î °¥¶óÁø´Ù.
+            { // ë“¤ê³  ìˆëŠ” ì•„ì´í…œì˜ ì¢…ë¥˜ë¡œ ê°ˆë¼ì§„ë‹¤.
                 case Item.TYPE.APPLE:
                     regain = GameStatus.REGAIN_SATIETY_APPLE; break;
                 case Item.TYPE.PLANT:
@@ -209,7 +209,7 @@ public class ItemRoot : MonoBehaviour
         }
         return (regain);
     }
-    // ½ºÆ®·¹½º ¾ÆÀÌÅÛ¿¡ ´ëÇÑ ¼öÄ¡ ¹İÈ¯ 
+    // ìŠ¤íŠ¸ë ˆìŠ¤ ì•„ì´í…œì— ëŒ€í•œ ìˆ˜ì¹˜ ë°˜í™˜ 
     public float getRegainEmotion(GameObject item_go)
     {
         float regain = 0.0f;
@@ -221,7 +221,7 @@ public class ItemRoot : MonoBehaviour
         {
             Item.TYPE type = this.getItemType(item_go);
             switch (type)
-            { // µé°í ÀÖ´Â ¾ÆÀÌÅÛÀÇ Á¾·ù·Î °¥¶óÁø´Ù.
+            { // ë“¤ê³  ìˆëŠ” ì•„ì´í…œì˜ ì¢…ë¥˜ë¡œ ê°ˆë¼ì§„ë‹¤.
                 case Item.TYPE.STRESS:
                     regain = GameStatus.REGAIN_EMOTION_STRESS; break;
             }
@@ -232,61 +232,61 @@ public class ItemRoot : MonoBehaviour
     void Start()
     {
         // Plant ----------------------------
-        // ¸Ş¸ğ¸® ¿µ¿ª È®º¸.
+        // ë©”ëª¨ë¦¬ ì˜ì—­ í™•ë³´.
         this.plant_respawn_points = new List<Vector3>();
-        // "PlantRespawn" ÅÂ±×°¡ ºÙÀº ¸ğµç ¿ÀºêÁ§Æ®¸¦ ¹è¿­¿¡ ÀúÀå.
+        // "PlantRespawn" íƒœê·¸ê°€ ë¶™ì€ ëª¨ë“  ì˜¤ë¸Œì íŠ¸ë¥¼ ë°°ì—´ì— ì €ì¥.
         GameObject[] plantRespawns = GameObject.FindGameObjectsWithTag("PlantRespawn");
 
-        // ¹è¿­ respawns ³» °¢°¢ÀÇ GameObject¸¦ ¼ø¼­´ë·Î Ã³¸®ÇÑ´Ù.
+        // ë°°ì—´ respawns ë‚´ ê°ê°ì˜ GameObjectë¥¼ ìˆœì„œëŒ€ë¡œ ì²˜ë¦¬í•œë‹¤.
         foreach (GameObject go in plantRespawns)
         {
-            // ·»´õ·¯ È¹µæ.
+            // ë Œë”ëŸ¬ íšë“.
             MeshRenderer renderer = go.GetComponentInChildren<MeshRenderer>();
             if (renderer != null)
-            { // ·»´õ·¯°¡ Á¸ÀçÇÏ¸é.
-                renderer.enabled = false; // ±× ·»´õ·¯¸¦ º¸ÀÌÁö ¾Ê°Ô.
+            { // ë Œë”ëŸ¬ê°€ ì¡´ì¬í•˜ë©´.
+                renderer.enabled = false; // ê·¸ ë Œë”ëŸ¬ë¥¼ ë³´ì´ì§€ ì•Šê²Œ.
             }
-            // ÃâÇö Æ÷ÀÎÆ® List¿¡ À§Ä¡ Á¤º¸¸¦ Ãß°¡.
+            // ì¶œí˜„ í¬ì¸íŠ¸ Listì— ìœ„ì¹˜ ì •ë³´ë¥¼ ì¶”ê°€.
             this.plant_respawn_points.Add(go.transform.position);
         }
 
         // ----------------------------------
 
         // Stress ----------------------------
-        // ¸Ş¸ğ¸® ¿µ¿ª È®º¸.
+        // ë©”ëª¨ë¦¬ ì˜ì—­ í™•ë³´.
         this.stress_respawn_points = new List<Vector3>();
-        // "StressRespawn" ÅÂ±×°¡ ºÙÀº ¸ğµç ¿ÀºêÁ§Æ®¸¦ ¹è¿­¿¡ ÀúÀå.
+        // "StressRespawn" íƒœê·¸ê°€ ë¶™ì€ ëª¨ë“  ì˜¤ë¸Œì íŠ¸ë¥¼ ë°°ì—´ì— ì €ì¥.
         GameObject[] stressRespawns = GameObject.FindGameObjectsWithTag("StressRespawn");
 
-        // ¹è¿­ respawns ³» °¢°¢ÀÇ GameObject¸¦ ¼ø¼­´ë·Î Ã³¸®ÇÑ´Ù.
+        // ë°°ì—´ respawns ë‚´ ê°ê°ì˜ GameObjectë¥¼ ìˆœì„œëŒ€ë¡œ ì²˜ë¦¬í•œë‹¤.
         foreach (GameObject go in stressRespawns)
         {
-            // ·»´õ·¯ È¹µæ.
+            // ë Œë”ëŸ¬ íšë“.
             MeshRenderer renderer = go.GetComponentInChildren<MeshRenderer>();
             if (renderer != null)
-            { // ·»´õ·¯°¡ Á¸ÀçÇÏ¸é.
-                renderer.enabled = false; // ±× ·»´õ·¯¸¦ º¸ÀÌÁö ¾Ê°Ô.
+            { // ë Œë”ëŸ¬ê°€ ì¡´ì¬í•˜ë©´.
+                renderer.enabled = false; // ê·¸ ë Œë”ëŸ¬ë¥¼ ë³´ì´ì§€ ì•Šê²Œ.
             }
-            // ÃâÇö Æ÷ÀÎÆ® List¿¡ À§Ä¡ Á¤º¸¸¦ Ãß°¡.
+            // ì¶œí˜„ í¬ì¸íŠ¸ Listì— ìœ„ì¹˜ ì •ë³´ë¥¼ ì¶”ê°€.
             this.stress_respawn_points.Add(go.transform.position);
         }
 
         // ----------------------------------
 
-        // »ç°úÀÇ ÃâÇö Æ÷ÀÎÆ®¸¦ ÃëµæÇÏ°í, ·»´õ·¯¸¦ º¸ÀÌÁö ¾Ê°Ô.
+        // ì‚¬ê³¼ì˜ ì¶œí˜„ í¬ì¸íŠ¸ë¥¼ ì·¨ë“í•˜ê³ , ë Œë”ëŸ¬ë¥¼ ë³´ì´ì§€ ì•Šê²Œ.
         GameObject applerespawn = GameObject.Find("AppleRespawn");
         applerespawn.GetComponent<MeshRenderer>().enabled = false;
 
-        // Ã¶±¤¼®ÀÇ ÃâÇö Æ÷ÀÎÆ®¸¦ ÃëµæÇÏ°í, ·»´õ·¯¸¦ º¸ÀÌÁö ¾Ê°Ô.
+        // ì² ê´‘ì„ì˜ ì¶œí˜„ í¬ì¸íŠ¸ë¥¼ ì·¨ë“í•˜ê³ , ë Œë”ëŸ¬ë¥¼ ë³´ì´ì§€ ì•Šê²Œ.
         GameObject ironrespawn = GameObject.Find("IronRespawn");
         ironrespawn.GetComponent<MeshRenderer>().enabled = false;
 
         GameObject healrespawn = GameObject.Find("HealRespawn");
         healrespawn.GetComponent<MeshRenderer>().enabled = false;
 
-        this.respawnIron(); // ½ÃÀÛ½Ã Ã¶±¤¼®À» ÇÏ³ª »ı¼º.
+        this.respawnIron(); // ì‹œì‘ì‹œ ì² ê´‘ì„ì„ í•˜ë‚˜ ìƒì„±.
 
-        this.respawnPlant(); // ½ÃÀÛ½Ã ½Ä¹°À» ÇÏ³ª »ı¼º.
+        this.respawnPlant(); // ì‹œì‘ì‹œ ì‹ë¬¼ì„ í•˜ë‚˜ ìƒì„±.
 
 
     }
@@ -303,28 +303,28 @@ public class ItemRoot : MonoBehaviour
         if (respawn_timer_apple > RESPAWN_TIME_APPLE)
         {
             respawn_timer_apple = 0.0f;
-            this.respawnApple(); // »ç°ú¸¦ ÃâÇö½ÃÅ²´Ù.
+            this.respawnApple(); // ì‚¬ê³¼ë¥¼ ì¶œí˜„ì‹œí‚¨ë‹¤.
         }
         if (respawn_timer_iron > RESPAWN_TIME_IRON)
         {
             respawn_timer_iron = 0.0f;
-            this.respawnIron(); // Ã¶±¤¼®À» ÃâÇö½ÃÅ²´Ù.
+            this.respawnIron(); // ì² ê´‘ì„ì„ ì¶œí˜„ì‹œí‚¨ë‹¤.
         }
         if (respawn_timer_plant > RESPAWN_TIME_PLANT)
         {
             respawn_timer_plant = 0.0f;
-            this.respawnPlant(); // ½Ä¹°À» ÃâÇö½ÃÅ²´Ù.
+            this.respawnPlant(); // ì‹ë¬¼ì„ ì¶œí˜„ì‹œí‚¨ë‹¤.
         }
 
         if (respawn_timer_stress > RESPAWN_TIME_STRESS)
         {
             respawn_timer_stress = 0.0f;
-            this.respawnStress(); // ½ºÆ®·¹½º ¾ÆÀÌÅÛÀ» ÃâÇö½ÃÅ²´Ù.
+            this.respawnStress(); // ìŠ¤íŠ¸ë ˆìŠ¤ ì•„ì´í…œì„ ì¶œí˜„ì‹œí‚¨ë‹¤.
         }
         if (respawn_timer_heal > RESPAWN_TIME_HEAL)
         {
             respawn_timer_heal = 0.0f;
-            this.respawnHeal(); // ÈúÅÛÀ» ÃâÇö½ÃÅ²´Ù.
+            this.respawnHeal(); // íí…œì„ ì¶œí˜„ì‹œí‚¨ë‹¤.
         }
     }
 }
