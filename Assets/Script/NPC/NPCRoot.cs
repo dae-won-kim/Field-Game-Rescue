@@ -42,6 +42,17 @@ public class NPCRoot : MonoBehaviour
         }
         FillRenderer = GaugeFill.GetComponent<MeshRenderer>();
     }
+
+    public void addGauge(float number)
+    {
+        Gauge += number;
+    }
+
+    public void subTractGauge(float number)
+    {
+        Gauge -= number;
+    }
+
     public NPC.TYPE getNPCType(GameObject npc)
     {
         NPC.TYPE type = NPC.TYPE.NONE;
@@ -49,7 +60,7 @@ public class NPCRoot : MonoBehaviour
         {
             switch (npc.tag)
             {
-                case "RescueNPC":
+                case "Rescue":
                     type = NPC.TYPE.RESCUE;
                     break;
             }

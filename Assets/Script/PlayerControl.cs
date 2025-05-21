@@ -219,6 +219,14 @@ public class PlayerControl : MonoBehaviour
     {
         float x = 20.0f;
         float y = Screen.height - 40.0f;
+        if (this.is_event_ignitable()) // 이벤트가 시작 가능한 경우.
+        {
+            // 이벤트용 메시지를 취득.
+            string message =
+            this.event_root.getIgnitableMessage(this.closest_event);
+            GUI.Label(new Rect(x + 100.0f, y, 200.0f, 20.0f),
+            "X:" + message, guistyle);
+        }
         // 들고 있는 아이템이 있다면.
         if (this.carried_item != null)
         {
@@ -232,7 +240,8 @@ public class PlayerControl : MonoBehaviour
             {
                 GUI.Label(new Rect(x + 100.0f, y, 200.0f, 20.0f), "X:구출한다", guistyle);
             }
-            GUI.Label(new Rect(x + 100.0f, y, 200.0f, 20.0f), "X:먹는다", guistyle);
+            else if(this.carried_item.tag == "Iron")
+                GUI.Label(new Rect(x + 100.0f, y, 200.0f, 20.0f), "", guistyle);
         }
         else
         {
@@ -260,14 +269,7 @@ public class PlayerControl : MonoBehaviour
                 GUI.Label(new Rect(x + 200.0f, y, 200.0f, 20.0f), "수리중", guistyle);
                 break;
         }
-        if (this.is_event_ignitable()) // 이벤트가 시작 가능한 경우.
-        {
-            // 이벤트용 메시지를 취득.
-            string message =
-            this.event_root.getIgnitableMessage(this.closest_event);
-            GUI.Label(new Rect(x + 200.0f, y, 200.0f, 20.0f),
-            "X:" + message, guistyle);
-        }
+        
     }
 
     // 물건을 줍거나 떨어뜨린다.

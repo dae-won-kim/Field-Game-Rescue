@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class GameStatus : MonoBehaviour
 {
-
     public static float GAIN_REPAIRMENT_IRON = 0.30f;
     public static float GAIN_REPAIRMENT_PLANT = 0.10f;
 
@@ -47,6 +46,7 @@ public class GameStatus : MonoBehaviour
         this.satiety = Mathf.Clamp01(this.satiety - CONSUME_SATIETY_ALWAYS * Time.deltaTime);
     }
 
+    // 스트레스 증가 추가
     public void alwaysEmotion()
     {
         this.emotion = Mathf.Clamp01(this.emotion + CONSUME_SATIETY_ALWAYS * Time.deltaTime);
@@ -64,6 +64,7 @@ public class GameStatus : MonoBehaviour
         this.satiety = Mathf.Clamp01(this.satiety + add);
     }
 
+    // 감정 수치 조절
     public void subtractEmotion(float amount)
     {
         this.emotion = Mathf.Clamp01(this.emotion - amount);

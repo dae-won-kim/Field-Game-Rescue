@@ -10,7 +10,8 @@ public class Event
     {
         NONE = -1, // 없음.
         ROCKET = 0, // 우주선 수리.
-        NUM, // 이벤트가 몇 종류 있는지 나타낸다(=1).
+        RESCUE,
+        NUM, // 이벤트가 몇 종류 있는지 나타낸다(=2).
     };
 };
 public class EventRoot : MonoBehaviour
@@ -23,6 +24,11 @@ public class EventRoot : MonoBehaviour
             if (event_go.tag == "Rocket")
             {
                 type = Event.TYPE.ROCKET;
+            }
+            else if (event_go.tag == "NPC")
+            {
+                if(event_go.name.Contains("Rescue"))
+                    type = Event.TYPE.RESCUE;
             }
         }
         return (type);
@@ -51,6 +57,12 @@ public class EventRoot : MonoBehaviour
                     ret = true; // '이벤트할 수 있어요！'라고 응답한다.
                 }
                 break;
+            case Event.TYPE.RESCUE:
+                if (carried_item == Item.TYPE.HEAL)
+                {
+                    ret = true; // '이벤트할 수 있어요！'라고 응답한다.
+                }
+                break;
         }
         return (ret);
     }
@@ -68,6 +80,9 @@ public class EventRoot : MonoBehaviour
         {
             case Event.TYPE.ROCKET:
                 message = "수리한다";
+                break;
+            case Event.TYPE.RESCUE:
+                message = "치료한다";
                 break;
         }
         return (message);
