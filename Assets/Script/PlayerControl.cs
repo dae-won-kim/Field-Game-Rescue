@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
-    public static float MOVE_AREA_RADIUS = 33.0f; // 섬의 반지름.
-    public static float MOVE_SPEED = 7.0f; // 이동 속도.
+    public static float MOVE_AREA_RADIUS = 30.0f; // 섬의 반지름.
+    private static float MoveSpeed = 7.0f; // 이동 속도.
 
     private struct Key
     { // 키 조작 정보 구조체.
@@ -46,6 +46,25 @@ public class PlayerControl : MonoBehaviour
 
     private GameStatus game_status = null;
 
+    private void set_MoveSpeed()
+    {
+        if (game_status.emotion <= 0.4f) 
+        {
+            MoveSpeed = 7.5f;
+        }
+        else if (game_status.emotion <= 0.65f)
+        {
+            MoveSpeed = 6.5f;
+        }
+        else if (game_status.emotion <= 0.8f)
+        {
+            MoveSpeed = 5.5f;
+        }
+        else
+        {
+            MoveSpeed = 5.0f;
+        }
+    }
     private void get_input()
     {
         this.key.up = false;
@@ -109,7 +128,8 @@ public class PlayerControl : MonoBehaviour
         }
 
         move_vector.Normalize(); // 길이를 1로.
-        move_vector *= MOVE_SPEED * Time.deltaTime; // 속도×시간＝거리.
+        set_MoveSpeed();
+        move_vector *= MoveSpeed * Time.deltaTime; // 속도×시간＝거리.
         position += move_vector; // 위치를 이동.
         position.y = 0.0f; // 높이를 0으로 한다.
 
@@ -152,8 +172,9 @@ public class PlayerControl : MonoBehaviour
                 { // 정면에 있으면.
                     this.closest_item = other_go; // 주목한다.
                 }
-                // 뭔가 주목하고 있으면.
             }
+
+            // 뭔가 주목하고 있으면.
             else if (this.closest_item == other_go)
             {
                 if (!this.is_other_in_view(other_go))
@@ -302,7 +323,7 @@ public class PlayerControl : MonoBehaviour
             to_other.Normalize(); // 길이를 1로 하고 방향만 벡터로.
             float dp = Vector3.Dot(heading, to_other); // 양쪽 벡터의 내적을 취득.
             if (dp < Mathf.Cos(45.0f)) // 내적이 45도인 코사인 값 미만이면.
-            { 
+            {
                 break; // 루프를 빠져나간다.
             }
             ret = true; // 내적이 45도인 코사인 값 이상이면 정면에 있다.
@@ -347,7 +368,6 @@ public class PlayerControl : MonoBehaviour
         this.event_root =
         GameObject.Find("GameRoot").GetComponent<EventRoot>();
         this.rocket_model = GameObject.Find("rocket").transform.Find("rocket_model").gameObject;
-
         this.game_status = GameObject.Find("GameRoot").GetComponent<GameStatus>();
     }
 

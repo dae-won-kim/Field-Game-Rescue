@@ -86,6 +86,9 @@ public class TitleScene : MonoBehaviour
 
     void Update()
     {
-
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            BackButtonClicked();
+        }
     }
 }

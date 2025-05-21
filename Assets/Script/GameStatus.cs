@@ -21,7 +21,7 @@ public class GameStatus : MonoBehaviour
     public static float CONSUME_SATIETY_ALWAYS = 0.03f;
 
     // 항상 증가하는 감정 수치
-    public static float CONSUME_EMOTION_ALWAYS = 0.02f;
+    public static float CONSUME_EMOTION_ALWAYS = 0.01f;
 
     // 스트레스,힐이 차는 속도
     public static float CONSUME_EMOTION_STRESS = 0.0f;
@@ -94,7 +94,7 @@ public class GameStatus : MonoBehaviour
         float x = Screen.width * 0.2f;
         float y = 20.0f;
         // 체력을 표시.
-        GUI.Label(new Rect(x, y, 200.0f, 20.0f), 
+        GUI.Label(new Rect(x, y, 200.0f, 20.0f),
             "체력: " + (this.satiety * 100.0f).ToString("000"), guistyle);
 
         x += 250;
@@ -116,6 +116,6 @@ public class GameStatus : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

@@ -69,8 +69,8 @@ public class ItemRoot : MonoBehaviour
         Vector3 pos = GameObject.Find("IronRespawn").transform.position;
         // 출현 위치를 조정.
         pos.y = 1.0f;
-        pos.x += Random.Range(-1.0f, 1.0f);
-        pos.z += Random.Range(-1.0f, 1.0f);
+        pos.x += Random.Range(-3.0f, 3.0f);
+        pos.z += Random.Range(-3.0f, 3.0f);
         // 철광석의 위치를 이동.
         go.transform.position = pos;
     }
@@ -83,8 +83,8 @@ public class ItemRoot : MonoBehaviour
         Vector3 pos = GameObject.Find("AppleRespawn").transform.position;
         // 출현 위치를 조정.
         pos.y = 1.0f;
-        pos.x += Random.Range(-1.0f, 1.0f);
-        pos.z += Random.Range(-1.0f, 1.0f);
+        pos.x += Random.Range(-3.0f, 3.0f);
+        pos.z += Random.Range(-3.0f, 3.0f);
         // 사과의 위치를 이동.
         go.transform.position = pos;
     }
@@ -100,8 +100,8 @@ public class ItemRoot : MonoBehaviour
             Vector3 pos = this.plant_respawn_points[n];
             // 출현 위치를 조정.
             pos.y = 1.0f;
-            pos.x += Random.Range(-1.0f, 1.0f);
-            pos.z += Random.Range(-1.0f, 1.0f);
+            pos.x += Random.Range(-3.0f, 3.0f);
+            pos.z += Random.Range(-3.0f, 3.0f);
             // 식물의 위치를 이동.
             go.transform.position = pos;
         }
@@ -118,8 +118,8 @@ public class ItemRoot : MonoBehaviour
             Vector3 pos = this.stress_respawn_points[n];
             // 출현 위치를 조정.
             pos.y = 1.0f;
-            pos.x += Random.Range(-1.0f, 1.0f);
-            pos.z += Random.Range(-1.0f, 1.0f);
+            pos.x += Random.Range(-3.0f, 3.0f);
+            pos.z += Random.Range(-3.0f, 3.0f);
             // 스트레스의 위치를 이동.
             go.transform.position = pos;
         }
@@ -132,8 +132,8 @@ public class ItemRoot : MonoBehaviour
         Vector3 pos = GameObject.Find("HealRespawn").transform.position;
         // 출현 위치를 조정.
         pos.y = 1.0f;
-        pos.x += Random.Range(-1.0f, 1.0f);
-        pos.z += Random.Range(-1.0f, 1.0f);
+        pos.x += Random.Range(-3.0f, 3.0f);
+        pos.z += Random.Range(-3.0f, 3.0f);
         // 힐의 위치를 이동.
         go.transform.position = pos;
     }
