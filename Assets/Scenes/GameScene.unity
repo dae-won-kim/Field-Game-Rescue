@@ -729,14 +729,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.40673664, y: 0, z: 0, w: 0.9135455}
-  m_LocalPosition: {x: 0, y: 20.43, z: -19.53}
+  m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
+  m_LocalPosition: {x: 0, y: 13.76, z: -7.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 48, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
 --- !u!114 &963194229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1197,7 +1197,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1502833124}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.3, z: 7.93}
+  m_LocalPosition: {x: 0, y: 2.3, z: 9.85}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1287,6 +1287,7 @@ MonoBehaviour:
     m_FixedHeight: 0
     m_StretchWidth: 1
     m_StretchHeight: 0
+  RescueNPC: {fileID: 0}
 --- !u!1 &1664119815
 GameObject:
   m_ObjectHideFlags: 0
@@ -1966,7 +1967,7 @@ Transform:
   m_GameObject: {fileID: 2097950958}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -1, z: 0}
-  m_LocalScale: {x: 120, y: 1, z: 120}
+  m_LocalScale: {x: 100, y: 1, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -2085,6 +2086,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 280129353681582392, guid: 25c12d9efb345674ab9239f1694374d4, type: 3}
+      propertyPath: Gauge
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 280129353681582392, guid: 25c12d9efb345674ab9239f1694374d4, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 749952846391813215, guid: 25c12d9efb345674ab9239f1694374d4, type: 3}
       propertyPath: m_RootOrder
       value: 13
@@ -2158,7 +2167,8 @@ PrefabInstance:
       value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 8217894621589636344, guid: 25c12d9efb345674ab9239f1694374d4, type: 3}
+    - {fileID: 0}
+    - {fileID: 280129353681582392, guid: 25c12d9efb345674ab9239f1694374d4, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:

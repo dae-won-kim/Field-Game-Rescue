@@ -33,6 +33,8 @@ public class GameStatus : MonoBehaviour
     // 스트레스 아이템을 사용했을 때 게이지가 감소하는 정도
     public static float REGAIN_EMOTION_STRESS = 0.25f;
 
+    public static float REGAIN_GAUGE_HEAL = 0.1f;
+
 
     public float repairment = 0.0f; // 우주선의 수리 정도(0.0f~1.0f).
     public float satiety = 1.0f; // 배고픔,체력(0.0f~1.0f).

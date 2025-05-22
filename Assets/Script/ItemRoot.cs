@@ -124,6 +124,7 @@ public class ItemRoot : MonoBehaviour
             go.transform.position = pos;
         }
     }
+
     public void respawnHeal() 
     {
         // 힐 프리팹을 인스턴스화.
@@ -228,6 +229,26 @@ public class ItemRoot : MonoBehaviour
         }
         return (regain);
     }
+
+    public float getRegainNPCGauge(GameObject item_go)
+    {
+        float regain = 0.0f;
+        if (item_go == null)
+        {
+            regain = 0.0f;
+        }
+        else
+        {
+            Item.TYPE type = this.getItemType(item_go);
+            switch (type)
+            { // 들고 있는 아이템의 종류로 갈라진다.
+                case Item.TYPE.HEAL:
+                    regain = GameStatus.REGAIN_GAUGE_HEAL; break;
+            }
+        }
+        return (regain);
+    }
+
 
     void Start()
     {

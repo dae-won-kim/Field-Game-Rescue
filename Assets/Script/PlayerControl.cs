@@ -44,6 +44,7 @@ public class PlayerControl : MonoBehaviour
     private EventRoot event_root = null; // EventRoot 클래스를 사용
     private GameObject rocket_model = null; // 우주선의 모델을 사용
 
+    [SerializeField] NPCRoot RescueNPC = null;
     private GameStatus game_status = null;
 
     private void set_MoveSpeed()
@@ -251,6 +252,7 @@ public class PlayerControl : MonoBehaviour
                 GUI.Label(new Rect(x, y, 200.0f, 20.0f), "Z:줍는다", guistyle);
             }
         }
+        guistyle.fontSize = 24;
         switch (this.step)
         {
             case STEP.EATING:
@@ -366,11 +368,12 @@ public class PlayerControl : MonoBehaviour
         this.item_root = GameObject.Find("GameRoot").GetComponent<ItemRoot>();
         this.guistyle.fontSize = 16;
 
-        this.guistyle.fontSize = 16;
         this.event_root =
         GameObject.Find("GameRoot").GetComponent<EventRoot>();
         this.rocket_model = GameObject.Find("rocket").transform.Find("rocket_model").gameObject;
         this.game_status = GameObject.Find("GameRoot").GetComponent<GameStatus>();
+
+        this.RescueNPC = GameObject.Find("RescueNPC").GetComponentInChildren<NPCRoot>();
     }
 
     void Update()
@@ -500,11 +503,12 @@ public class PlayerControl : MonoBehaviour
                 case STEP.RESCUE:
                     if (this.carried_item != null)
                     {
-                        // 들고 있는 아이템의 '체력 회복 정도'를 가져와서 설정.
-                        this.game_status.addSatiety(this.item_root.getRegainSatiety(this.carried_item));
+                        // NPC의 게이지 채우기
+                        this.RescueNPC.addGauge(this.item_root.getRegainNPCGauge(this.carried_item));
 
                         GameObject.Destroy(this.carried_item);
                         this.carried_item = null;
+                        this.closest_item = null;
                     }
                     break;
 

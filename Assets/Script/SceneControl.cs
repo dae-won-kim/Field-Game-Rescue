@@ -38,9 +38,6 @@ public class SceneControl : MonoBehaviour
         {
             case STEP.PLAY:
                 GUI.color = Color.black;
-                //GUI.Label(new Rect(pos_x, pos_y + 64, 200, 20), // 경과 시간을 표시.
-                //this.step_timer.ToString("000.00"), guistyle);
-
                 // 제한 시간에 도달할 때까지 남은 시간을 표시.
                 float blast_time = GAME_OVER_TIME - this.step_timer;
                 GUI.Label(new Rect(pos_x, pos_y, 200, 20),
@@ -54,32 +51,32 @@ public class SceneControl : MonoBehaviour
                  "탈출" + this.clear_time.ToString("000.00"), guistyle);
                 pos_y -= 32;
                 int ct = (int)clear_time; // 클리어 시간(float)를 int로 변환.
-                if (ct > 50)
-                { // 50초?제한시간내.
+                if (ct < 50)
+                { 
                     GUI.Label(new Rect(pos_x, pos_y, 200, 20),
-                     "아슬 아슬 탈출! 50초 이내를 목표로 하세요!");
+                     "다음 번에 더 빨리 단축할 듯?");
                 }
-                else if (ct > 40)
-                { // 40?50초.
+                else if (ct < 40)
+                { 
                     GUI.Label(new Rect(pos_x, pos_y, 200, 20),
-                     "멋져요！40초 안을 목표로 하세요");
+                     "좋아요!");
                 }
-                else if (ct > 30)
-                { // 30?40초.
+                else if (ct < 30)
+                { 
                     GUI.Label(new Rect(pos_x, pos_y, 200, 20),
-                     "대단해요！30초 이내를 목표로 하세요!");
+                     "30초도 안남기고 아슬아슬!");
                 }
                 else
-                { // 30초이내！
+                { // 제일 빨리 탈출 
                     GUI.Label(new Rect(pos_x, pos_y, 200, 20),
-                     "빨라요！플라플라 마스터 -!");
+                     "제일 빠르게 성공!");
                 }
                 break;
             case STEP.GAMEOVER:
                 GUI.color = Color.black;
                 // 게임 오버 메시지를 표시.
                 GUI.Label(new Rect(pos_x, pos_y, 200, 20),
-                 "게임 오버", guistyle);
+                 "게임 오버, 좌클릭시 시작 전 화면으로 이동", guistyle);
                 break;
         }
     }
