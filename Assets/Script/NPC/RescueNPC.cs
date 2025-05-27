@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RescueNPC : NPCRoot
 {
-    [SerializeField] bool isRescued = false;
+    [SerializeField] bool isRescued;
 
     void setGauges()
     {
@@ -23,11 +23,18 @@ public class RescueNPC : NPCRoot
             GaugeFill.transform.localScale = new Vector3(0.05f, 0.5f, 0.25f * Gauge);
         }
     }
+    public override void addGauge(float number) 
+    {
+        Gauge += number;
+        // Debug.Log($"[addGauge] 호출됨, 기존 Gauge: {Gauge}, 증가량: {number}");
+    }
 
     void Start()
     {
         this.Gauge = 0f;
+        this.isRescued = false;
         base.setVariable();
+        setGauges();    
 
     }
 

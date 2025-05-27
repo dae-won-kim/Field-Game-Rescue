@@ -27,13 +27,13 @@ public class ItemRoot : MonoBehaviour
 
     public float step_timer = 0.0f;
 
-    public static float RESPAWN_TIME_APPLE = 20.0f; // 사과 출현 시간 상수.
-    public static float RESPAWN_TIME_IRON = 12.0f; // 철광석 출현 시간 상수.
-    public static float RESPAWN_TIME_PLANT = 6.0f; // 식물 출현 시간 상수.
+    public static float RESPAWN_TIME_APPLE = 22.0f; // 사과 출현 시간 상수.
+    public static float RESPAWN_TIME_IRON = 21.0f; // 철광석 출현 시간 상수.
+    public static float RESPAWN_TIME_PLANT = 15.0f; // 식물 출현 시간 상수.
 
     // 스트레스, 힐템 출현 시간 상수.
-    public static float RESPAWN_TIME_STRESS = 10.0f;
-    public static float RESPAWN_TIME_HEAL = 10.0f;
+    public static float RESPAWN_TIME_STRESS = 15.0f;
+    public static float RESPAWN_TIME_HEAL = 20.0f;
 
     private float respawn_timer_apple = 0.0f; // 사과의 출현 시간.
     private float respawn_timer_iron = 0.0f; // 철광석의 출현 시간.
@@ -154,8 +154,6 @@ public class ItemRoot : MonoBehaviour
             { // 들고 있는 아이템의 종류로 갈라진다.
                 case Item.TYPE.IRON:
                     gain = GameStatus.GAIN_REPAIRMENT_IRON; break;
-                case Item.TYPE.PLANT:
-                    gain = GameStatus.GAIN_REPAIRMENT_PLANT; break;
             }
         }
         return (gain);
@@ -305,9 +303,8 @@ public class ItemRoot : MonoBehaviour
         GameObject healrespawn = GameObject.Find("HealRespawn");
         healrespawn.GetComponent<MeshRenderer>().enabled = false;
 
-        this.respawnIron(); // 시작시 철광석을 하나 생성.
+        this.respawnIron(); // 시작 시 철광석을 하나 생성.
 
-        this.respawnPlant(); // 시작시 식물을 하나 생성.
 
 
     }

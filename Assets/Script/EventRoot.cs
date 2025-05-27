@@ -27,14 +27,25 @@ public class EventRoot : MonoBehaviour
             }
             else if (event_go.tag == "NPC")
             {
-                if(event_go.name.Contains("Rescue"))
-                    type = Event.TYPE.RESCUE;
+                Transform parent = event_go.transform.parent;
+                if (parent != null)
+                {
+                    string parentName = parent.name;
+
+                    if (parentName.Contains("Rescue")) 
+                    {
+                        type = Event.TYPE.RESCUE;
+                    }
+                    /*
+                     다른 NPC는 여기서 처리
+                     */
+                }
             }
         }
         return (type);
     }
 
-    // 철광석이나 식물을 든 상태에서 우주선에 접촉했는지 확인
+    // 이벤트가 발생하는 아이템인지 설정
     public bool isEventIgnitable(Item.TYPE carried_item, GameObject event_go)
     {
         bool ret = false;
@@ -48,11 +59,6 @@ public class EventRoot : MonoBehaviour
             case Event.TYPE.ROCKET:
                 // 가지고 있는 것이 철광석이라면.
                 if (carried_item == Item.TYPE.IRON)
-                {
-                    ret = true; // '이벤트할 수 있어요！'라고 응답한다.
-                }
-                // 가지고 있는 것이 식물이라면.
-                if (carried_item == Item.TYPE.PLANT)
                 {
                     ret = true; // '이벤트할 수 있어요！'라고 응답한다.
                 }

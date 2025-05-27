@@ -44,7 +44,7 @@ public class PlayerControl : MonoBehaviour
     private EventRoot event_root = null; // EventRoot 클래스를 사용
     private GameObject rocket_model = null; // 우주선의 모델을 사용
 
-    [SerializeField] NPCRoot RescueNPC = null;
+    [SerializeField] RescueNPC rescueNPC = null;
     private GameStatus game_status = null;
 
     private void set_MoveSpeed()
@@ -156,6 +156,94 @@ public class PlayerControl : MonoBehaviour
             Quaternion.Lerp(this.transform.rotation, q, 0.2f);
         }
     }
+
+    // 물건을 줍거나 떨어뜨린다.
+    private void pick_or_drop_control()
+    {
+        do
+        {
+            if (!this.key.pick)
+            { // '줍기/버리기'키가 눌리지 않았으면.
+                break; // 아무것도 하지 않고 메소드 종료.
+            }
+            if (this.carried_item == null)
+            { // 들고 있는 아이템이 없고.
+                if (this.closest_item == null)
+                {// 주목 중인 아이템이 없으면.
+                    break; // 아무것도 하지 않고 메소드 종료.
+                }
+                // 주목 중인 아이템을 들어올린다.
+                this.carried_item = this.closest_item;
+
+                // 들고 있는 아이템을 자신의 자식으로 설정.
+                this.carried_item.transform.parent = this.transform;
+
+                // 2.0f 위에 배치(머리 위로 이동).
+                this.carried_item.transform.localPosition = Vector3.up * 2.0f;
+
+                // 주목 중 아이템을 없앤다.
+                this.closest_item = null;
+            }
+            else
+            { // 들고 있는 아이템이 있을 경우.
+              // 들고 있는 아이템을 약간(1.0f) 앞으로 이동시켜서.
+                this.carried_item.transform.localPosition = Vector3.forward * 1.0f;
+                this.carried_item.transform.parent = null;// 자식 설정을 해제.
+                this.carried_item = null; // 들고 있던 아이템을 없앤다.
+            }
+        } while (false);
+    }
+
+    // 접촉한 물건이 자신의 정면에 있는지 판단한다.
+    private bool is_other_in_view(GameObject other)
+    {
+        bool ret = false;
+        do
+        {
+            Vector3 heading = // 자신이 현재 향하고 있는 방향을 보관.
+           this.transform.TransformDirection(Vector3.forward);
+            Vector3 to_other = // 자신 쪽에서 본 아이템의 방향을 보관.
+           other.transform.position - this.transform.position;
+            heading.y = 0.0f;
+            to_other.y = 0.0f;
+            heading.Normalize(); // 길이를 1로 하고 방향만 벡터로.
+            to_other.Normalize(); // 길이를 1로 하고 방향만 벡터로.
+            float dp = Vector3.Dot(heading, to_other); // 양쪽 벡터의 내적을 취득.
+            if (dp < Mathf.Cos(45.0f)) // 내적이 45도인 코사인 값 미만이면.
+            {
+                break; // 루프를 빠져나간다.
+            }
+            ret = true; // 내적이 45도인 코사인 값 이상이면 정면에 있다.
+        } while (false);
+        return (ret);
+    }
+
+    // 들고 있는 아이템의 종류와 주목하는 이벤트의 종류를 보고 이벤트 시작
+    private bool is_event_ignitable()
+    {
+        bool ret = false;
+        do
+        {
+            if (this.closest_event == null)
+            { // 주목 이벤트가 없으면.
+                break; // false를 반환한다.
+            }
+            // 들고 있는 아이템 종류를 가져온다.
+            Item.TYPE carried_item_type =
+            this.item_root.getItemType(this.carried_item);
+
+            // 들고 있는 아이템 종류와 주목하는 이벤트의 종류에서.
+            // 이벤트가 가능한지 판정하고, 이벤트 불가라면 false를 반환한다.
+            if (!this.event_root.isEventIgnitable(
+            carried_item_type, this.closest_event))
+            {
+                break;
+            }
+            ret = true; // 여기까지 오면 이벤트를 시작할 수 있다고 판정!.
+        } while (false);
+        return (ret);
+    }
+
 
     // 입력 정보를 가져오고 상태에 변화가 있을 때의 처리를 거쳐 각 상태별로 실행.
     // 트리거에 걸린 게임 오브젝트가 Item 레이어에 설정되어 있고,
@@ -274,92 +362,7 @@ public class PlayerControl : MonoBehaviour
         
     }
 
-    // 물건을 줍거나 떨어뜨린다.
-    private void pick_or_drop_control()
-    {
-        do
-        {
-            if (!this.key.pick)
-            { // '줍기/버리기'키가 눌리지 않았으면.
-                break; // 아무것도 하지 않고 메소드 종료.
-            }
-            if (this.carried_item == null)
-            { // 들고 있는 아이템이 없고.
-                if (this.closest_item == null)
-                {// 주목 중인 아이템이 없으면.
-                    break; // 아무것도 하지 않고 메소드 종료.
-                }
-                // 주목 중인 아이템을 들어올린다.
-                this.carried_item = this.closest_item;
 
-                // 들고 있는 아이템을 자신의 자식으로 설정.
-                this.carried_item.transform.parent = this.transform;
-
-                // 2.0f 위에 배치(머리 위로 이동).
-                this.carried_item.transform.localPosition = Vector3.up * 2.0f;
-
-                // 주목 중 아이템을 없앤다.
-                this.closest_item = null;
-            }
-            else
-            { // 들고 있는 아이템이 있을 경우.
-              // 들고 있는 아이템을 약간(1.0f) 앞으로 이동시켜서.
-                this.carried_item.transform.localPosition = Vector3.forward * 1.0f;
-                this.carried_item.transform.parent = null;// 자식 설정을 해제.
-                this.carried_item = null; // 들고 있던 아이템을 없앤다.
-            }
-        } while (false);
-    }
-
-    // 접촉한 물건이 자신의 정면에 있는지 판단한다.
-    private bool is_other_in_view(GameObject other)
-    {
-        bool ret = false;
-        do
-        {
-            Vector3 heading = // 자신이 현재 향하고 있는 방향을 보관.
-           this.transform.TransformDirection(Vector3.forward);
-            Vector3 to_other = // 자신 쪽에서 본 아이템의 방향을 보관.
-           other.transform.position - this.transform.position;
-            heading.y = 0.0f;
-            to_other.y = 0.0f;
-            heading.Normalize(); // 길이를 1로 하고 방향만 벡터로.
-            to_other.Normalize(); // 길이를 1로 하고 방향만 벡터로.
-            float dp = Vector3.Dot(heading, to_other); // 양쪽 벡터의 내적을 취득.
-            if (dp < Mathf.Cos(45.0f)) // 내적이 45도인 코사인 값 미만이면.
-            {
-                break; // 루프를 빠져나간다.
-            }
-            ret = true; // 내적이 45도인 코사인 값 이상이면 정면에 있다.
-        } while (false);
-        return (ret);
-    }
-
-    // 들고 있는 아이템의 종류와 주목하는 이벤트의 종류를 보고 이벤트 시작
-    private bool is_event_ignitable()
-    {
-        bool ret = false;
-        do
-        {
-            if (this.closest_event == null)
-            { // 주목 이벤트가 없으면.
-                break; // false를 반환한다.
-            }
-            // 들고 있는 아이템 종류를 가져온다.
-            Item.TYPE carried_item_type =
-            this.item_root.getItemType(this.carried_item);
-
-            // 들고 있는 아이템 종류와 주목하는 이벤트의 종류에서.
-            // 이벤트가 가능한지 판정하고, 이벤트 불가라면 false를 반환한다.
-            if (!this.event_root.isEventIgnitable(
-            carried_item_type, this.closest_event))
-            {
-                break;
-            }
-            ret = true; // 여기까지 오면 이벤트를 시작할 수 있다고 판정!.
-        } while (false);
-        return (ret);
-    }
 
     void Start()
     {
@@ -373,7 +376,7 @@ public class PlayerControl : MonoBehaviour
         this.rocket_model = GameObject.Find("rocket").transform.Find("rocket_model").gameObject;
         this.game_status = GameObject.Find("GameRoot").GetComponent<GameStatus>();
 
-        this.RescueNPC = GameObject.Find("RescueNPC").GetComponentInChildren<NPCRoot>();
+        this.rescueNPC = GameObject.Find("RescueNPC").GetComponentInChildren<RescueNPC>();
     }
 
     void Update()
@@ -382,11 +385,11 @@ public class PlayerControl : MonoBehaviour
                           // 상태가 변화했을 때------------.
 
         this.step_timer += Time.deltaTime;
-        float eat_time = 0.5f; // 사과는 2초에 걸쳐 먹는다.
-        float repair_time = 0.5f; // 수리에 걸리는 시간도 2초.
+        float eat_time = 1.0f; // 사과는 2초에 걸쳐 먹는다.
+        float repair_time = 1.0f; // 수리에 걸리는 시간도 2초.
 
-        float stress_time = 1.0f;
-        float rescue_time = 1.0f;
+        float stress_time = 1.5f;
+        float rescue_time = 2.0f;
 
         // 상태를 변화시킨다---------------------.
         if (this.next_step == STEP.NONE)
@@ -416,6 +419,9 @@ public class PlayerControl : MonoBehaviour
                                                         // REPAIRING(수리) 상태로 이행.
                                     this.next_step = STEP.REPAIRING;
                                     break;
+                                case Event.TYPE.RESCUE:
+                                    this.next_step = STEP.RESCUE; 
+                                    break;
                             }
                             break;
                         }
@@ -435,10 +441,6 @@ public class PlayerControl : MonoBehaviour
                                 case Item.TYPE.STRESS: // 스트레스 아이템 이라면
                                     this.next_step = STEP.EMOTION; // ＇감정＇ 상태로 이행.
                                     break;
-                                case Item.TYPE.HEAL: // 구조자 구출 아이템 이라면.
-                                    this.next_step = STEP.RESCUE; // ＇구조＇ 상태로 이행.
-                                    break;
-
                             }
                         }
                     } while (false);
@@ -504,7 +506,8 @@ public class PlayerControl : MonoBehaviour
                     if (this.carried_item != null)
                     {
                         // NPC의 게이지 채우기
-                        this.RescueNPC.addGauge(this.item_root.getRegainNPCGauge(this.carried_item));
+                        // this.RescueNPC.addGauge(this.item_root.getRegainNPCGauge(this.carried_item));
+                        this.rescueNPC.addGauge(0.2f);
 
                         GameObject.Destroy(this.carried_item);
                         this.carried_item = null;

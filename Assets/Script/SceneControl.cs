@@ -37,11 +37,14 @@ public class SceneControl : MonoBehaviour
         switch (this.step)
         {
             case STEP.PLAY:
-                GUI.color = Color.black;
+                GUIStyle timeStyle = new GUIStyle(GUI.skin.label);
+                timeStyle.fontSize = 40;
+                timeStyle.normal.textColor = Color.black;
+
                 // 제한 시간에 도달할 때까지 남은 시간을 표시.
                 float blast_time = GAME_OVER_TIME - this.step_timer;
-                GUI.Label(new Rect(pos_x, pos_y, 200, 20),
-                blast_time.ToString("000.00"));
+                GUI.Label(new Rect(pos_x, pos_y, 200, 60),
+                blast_time.ToString("000.00"), timeStyle);
 
                 break;
             case STEP.CLEAR:
@@ -49,34 +52,37 @@ public class SceneControl : MonoBehaviour
                 // 클리어 메시지와 클리어 시간 표시.
                 GUI.Label(new Rect(pos_x, pos_y, 200, 20),
                  "탈출" + this.clear_time.ToString("000.00"), guistyle);
-                pos_y -= 32;
+                pos_y -= 52;
                 int ct = (int)clear_time; // 클리어 시간(float)를 int로 변환.
+
+                this.guistyle.fontSize = 60;
                 if (ct < 50)
                 { 
-                    GUI.Label(new Rect(pos_x, pos_y, 200, 20),
-                     "다음 번에 더 빨리 단축할 듯?");
+                    GUI.Label(new Rect(pos_x, pos_y, 200, 120),
+                     "성공! 다음 번에 더 빨리 단축할 듯?", guistyle);
                 }
                 else if (ct < 40)
                 { 
-                    GUI.Label(new Rect(pos_x, pos_y, 200, 20),
-                     "좋아요!");
+                    GUI.Label(new Rect(pos_x, pos_y, 200, 120),
+                     "성공! 실력이 좋으신 데요?", guistyle);
                 }
                 else if (ct < 30)
                 { 
-                    GUI.Label(new Rect(pos_x, pos_y, 200, 20),
-                     "30초도 안남기고 아슬아슬!");
+                    GUI.Label(new Rect(pos_x, pos_y, 200, 120),
+                     "30초도 안남기고 아슬아슬하게 성공!", guistyle);
                 }
                 else
                 { // 제일 빨리 탈출 
-                    GUI.Label(new Rect(pos_x, pos_y, 200, 20),
-                     "제일 빠르게 성공!");
+                    GUI.Label(new Rect(pos_x, pos_y, 200, 120),
+                     "엄청난 속도로 성공!", guistyle);
                 }
                 break;
             case STEP.GAMEOVER:
                 GUI.color = Color.black;
+                this.guistyle.fontSize = 60;
                 // 게임 오버 메시지를 표시.
-                GUI.Label(new Rect(pos_x, pos_y, 200, 20),
-                 "게임 오버, 좌클릭시 시작 전 화면으로 이동", guistyle);
+                GUI.Label(new Rect(pos_x, pos_y, 200, 120),
+                 "게임 오버, 좌클릭 시 시작 전 화면으로 이동", guistyle);
                 break;
         }
     }
@@ -88,7 +94,7 @@ public class SceneControl : MonoBehaviour
         GameObject.Find("Player").GetComponent<PlayerControl>();
         this.step = STEP.PLAY;
         this.next_step = STEP.PLAY;
-        this.guistyle.fontSize = 128;
+        this.guistyle.fontSize = 100;
     }
 
     // Update is called once per frame
@@ -118,6 +124,12 @@ public class SceneControl : MonoBehaviour
                     break;
                 // 클리어 시 및 게임 오버 시의 처리.
                 case STEP.CLEAR:
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        // 마우스 버튼이 눌렸으면 TitleScene을 다시 읽는다.
+                        SceneManager.LoadScene("TitleScene");
+                    }
+                    break;
                 case STEP.GAMEOVER:
                     if (Input.GetMouseButtonDown(0))
                     {

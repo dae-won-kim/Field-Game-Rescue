@@ -28,10 +28,10 @@ public class NPCRoot : MonoBehaviour
     {
         // GameObject는 Component가 아니기 때문에
         // Transform으로 접근해 gameObject로 타고 가야함.
-        Transform[] children = this.GetComponentsInChildren<Transform>();
+        Transform[] children = this.transform.root.GetComponentsInChildren<Transform>();
         foreach (Transform child in children)
         {
-            switch (child.gameObject.name)
+            switch (child.name)
             {
                 case "GaugeBackGround":
                     GaugeBackGround = child.gameObject;
@@ -41,8 +41,11 @@ public class NPCRoot : MonoBehaviour
                     break;
             }
         }
-        FillRenderer = GaugeFill.GetComponent<MeshRenderer>();
-        Event_Area = this.GetComponentInChildren<Collider>();
+        if (GaugeFill != null)
+            FillRenderer = GaugeFill.GetComponent<MeshRenderer>();
+
+        Event_Area = this.GetComponent<Collider>();
+
     }
 
     public virtual void addGauge(float number)

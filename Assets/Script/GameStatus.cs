@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class GameStatus : MonoBehaviour
 {
-    public static float GAIN_REPAIRMENT_IRON = 0.30f;
-    public static float GAIN_REPAIRMENT_PLANT = 0.10f;
+    public static float GAIN_REPAIRMENT_IRON = 0.20f;
+    //  static float GAIN_REPAIRMENT_PLANT = 0.10f;
 
     // 철광석, 사과, 식물을 운반했을 때 각각의 체력 소모 정도.
-    public static float CONSUME_SATIETY_IRON = 0.05f;
+    public static float CONSUME_SATIETY_IRON = 0.02f;
     public static float CONSUME_SATIETY_APPLE = 0.05f;
     public static float CONSUME_SATIETY_PLANT = 0.01f;
 
@@ -27,8 +27,8 @@ public class GameStatus : MonoBehaviour
     public static float CONSUME_RESCUE_HEAL = 0.0f;
 
     // 사과, 식물을 먹었을 때 각각의 체력 회복 정도.
-    public static float REGAIN_SATIETY_APPLE = 0.7f;
-    public static float REGAIN_SATIETY_PLANT = 0.2f;
+    public static float REGAIN_SATIETY_APPLE = 0.6f;
+    public static float REGAIN_SATIETY_PLANT = 0.15f;
 
     // 스트레스 아이템을 사용했을 때 게이지가 감소하는 정도
     public static float REGAIN_EMOTION_STRESS = 0.25f;
@@ -41,6 +41,8 @@ public class GameStatus : MonoBehaviour
     public float emotion = 0.0f; // 감정 -> stress EMOTION
 
     public GUIStyle guistyle; // 폰트 스타일.
+
+    [SerializeField] RescueNPC rescueNPC;
 
     // 배를 고프게 하는 메서드 추가
     public void alwaysSatiety()
@@ -75,8 +77,8 @@ public class GameStatus : MonoBehaviour
     public bool isGameClear()
     {
         bool is_clear = false;
-        if (this.repairment >= 1.0f)
-        { // 수리 정도가 100% 이상이면.
+        if (this.repairment >= 1.0f && rescueNPC.Gauge >=1.0f)
+        { // 수리 정도가 100% 이상 && NPC 게이지가 100%
             is_clear = true; // 클리어했다.
         }
         return (is_clear);
@@ -108,12 +110,13 @@ public class GameStatus : MonoBehaviour
         x += 350;
         // 수리 정도를 표시.
         GUI.Label(new Rect(x, y, 200.0f, 20.0f),
-            "로켓: " + (this.repairment * 100.0f).ToString("000"), guistyle);
+            "구급차 " + (this.repairment * 100.0f).ToString("000"), guistyle);
     }
 
     void Start()
     {
         this.guistyle.fontSize = 48;
+        rescueNPC = GameObject.Find("RescueNPC").GetComponentInChildren<RescueNPC>();
     }
 
     // Update is called once per frame
