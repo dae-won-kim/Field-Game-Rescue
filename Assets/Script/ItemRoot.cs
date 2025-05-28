@@ -305,8 +305,6 @@ public class ItemRoot : MonoBehaviour
 
         this.respawnIron(); // 시작 시 철광석을 하나 생성.
 
-
-
     }
 
     void Update()
