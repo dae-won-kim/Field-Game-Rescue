@@ -15,6 +15,7 @@ TagManager:
   - StressRespawn
   - NPC
   - Rescue
+  - Trap
   layers:
   - Default
   - TransparentFX
