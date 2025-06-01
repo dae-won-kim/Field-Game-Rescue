@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerControl : MonoBehaviour
 {
     public static float MOVE_AREA_RADIUS = 30.0f; // 섬의 반지름.
-    private static float MoveSpeed = 7.0f; // 이동 속도.
+    public static float MoveSpeed = 7.0f; // 이동 속도.
 
     private struct Key
     { // 키 조작 정보 구조체.
@@ -47,7 +47,11 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] RescueNPC rescueNPC = null;
     private GameStatus game_status = null;
 
-    private void set_MoveSpeed()
+    public void setMoveSpeed(float speed)
+    {
+        MoveSpeed = speed;
+    }
+    private void ChangeMoveSpeedByStress()
     {
         if (game_status.emotion <= 0.4f) 
         {
@@ -129,7 +133,7 @@ public class PlayerControl : MonoBehaviour
         }
 
         move_vector.Normalize(); // 길이를 1로.
-        set_MoveSpeed();
+        ChangeMoveSpeedByStress();
         move_vector *= MoveSpeed * Time.deltaTime; // 속도×시간＝거리.
         position += move_vector; // 위치를 이동.
         position.y = 0.0f; // 높이를 0으로 한다.

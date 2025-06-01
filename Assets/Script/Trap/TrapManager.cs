@@ -4,41 +4,46 @@ using UnityEngine;
 
 public class TrapManager : MonoBehaviour
 {
-    public GameObject island;
-    public List<GameObject> Traps = new List<GameObject>();
+    public Trap trapPrefab;
+    private GameObject island;
 
-    public GameObject TrapPrefab;
-    public static float TRAP_SPAWN_TIME = 30.0f;
-    public float respawn_trap_time = 0.0f;
+    private float TRAP_RESPAWN_TIME = 60f;  // 1분 마다 트랩 2개 생성
 
-    Vector3 GetRandomPositionInIsland()
+    private ObjectPool trapPool;
+    private float timer;
+
+    private void SpawnTrapAtRandomPosition()
     {
-        Bounds bounds = island.GetComponent<Renderer>().bounds;
+        Renderer islandRenderer = island.GetComponent<Renderer>();
+        if (islandRenderer == null) return;
+
+        Bounds bounds = islandRenderer.bounds;
 
         float x = Random.Range(bounds.min.x, bounds.max.x);
         float z = Random.Range(bounds.min.z, bounds.max.z);
-        float y = bounds.max.y;  // 트랩이 땅 위에 생성되도록
+        float y = bounds.max.y;
 
-        return new Vector3(x, y, z);
+        Vector3 spawnPos = new Vector3(x, y, z);
+        trapPool.GetObjectAtPosition(spawnPos);
     }
-    void respawnTrap()
-    {
-        Vector3 spawnPos = GetRandomPositionInIsland();
-        GameObject trap = Instantiate(TrapPrefab, spawnPos, Quaternion.identity);
-        Traps.Add(trap);
-    }
+
     void Start()
     {
-        
+        island = GameObject.Find("Island");
+        trapPool = new ObjectPool(trapPrefab, this.transform, 10);
+        timer = 0f;
     }
 
     void Update()
     {
-        respawn_trap_time += Time.deltaTime;
-        if(respawn_trap_time > TRAP_SPAWN_TIME)
+        timer += Time.deltaTime;
+
+        if (timer >= TRAP_RESPAWN_TIME)
         {
-            respawnTrap();
-            respawn_trap_time = 0.0f;
+            SpawnTrapAtRandomPosition();
+            SpawnTrapAtRandomPosition();
+            timer = 0f;
         }
     }
+  
 }
