@@ -40,6 +40,7 @@ public class TrapManager : MonoBehaviour
 
         if (timer >= TRAP_RESPAWN_TIME)
         {
+            // 1분마다 2개 생성 
             SpawnTrapAtRandomPosition();
             SpawnTrapAtRandomPosition();
             timer = 0f;
