@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
 public class TitleScene : MonoBehaviour
 {
@@ -11,80 +12,24 @@ public class TitleScene : MonoBehaviour
     [SerializeField] GameObject PressAnyKey;
 
     // How To Play Images
-    [SerializeField] GameObject appleImage;
-    [SerializeField] GameObject stressImage;
-    [SerializeField] GameObject plantImage;
+    [SerializeField] GameObject GoalUI;
+    [SerializeField] GameObject PlayerItemUI;
+    [SerializeField] GameObject CarItemUI;
+    [SerializeField] GameObject HealItemUI;
 
-    [SerializeField] GameObject healImage;
-    [SerializeField] GameObject healUseImage;
-
-    [SerializeField] GameObject carImage;
-    [SerializeField] GameObject carUseImage;
+    [SerializeField] int PageNum;
+    [SerializeField] bool isPressed;
+    // prevent skipping first image
+    [SerializeField] bool firstInputHandled;
+    
+    // How to Play Text UI position
+    Vector2 textPos1 = new Vector2(239f, 195f);
+    Vector2 textPos2 = new Vector2(-201f, 367f);
+    Vector2 textPos3 = new Vector2(-164f, 367f);
 
     [SerializeField] GameObject CopyRight;
+    [SerializeField] GameObject ScreenResolution;
 
-
-    //[SerializeField] GameObject HowToPlayButton;
-    //[SerializeField] GameObject GameStartButton;
-    //[SerializeField] GameObject BackButton;
-    //[SerializeField] GameObject PlayMethodImg;
-     
-
-    // Button Functions
-    /* public void HowToPlayClicked()
-     {
-         Title.SetActive(false);
-         HowToPlayButton.SetActive(false);
-         GameStartButton.SetActive(false);
-
-         PlayMethodImg.SetActive(true);
-         CopyRight.SetActive(false);
-
-         BackButton.SetActive(true);
-     }
-     public void GameStartClicked()
-     {
-         SceneManager.LoadScene("GameScene");
-     }
-     public void BackButtonClicked()
-     {
-         Title.SetActive(true);
-         HowToPlayButton.SetActive(true);
-         GameStartButton.SetActive(true);
-
-         PlayMethodImg.SetActive(false);
-         CopyRight.SetActive(true);
-
-         BackButton.SetActive(false);
-     }
-    */
-
-    // Set Button
-    /*
-    void SetButtonTexts()
-    {
-        BackButton.SetActive(false);
-
-        TextMeshProUGUI TitleText = Title.GetComponent<TextMeshProUGUI>();
-        TextMeshProUGUI HowToPlayText = HowToPlayButton.GetComponentInChildren<TextMeshProUGUI>();
-        TextMeshProUGUI GameStartText = GameStartButton.GetComponentInChildren<TextMeshProUGUI>();
-        TextMeshProUGUI BackButtonText = BackButton.GetComponentInChildren<TextMeshProUGUI>();
-
-        TitleText.text = "RESCUE!!";
-        TitleText.fontStyle = FontStyles.Bold;
-        TitleText.fontSize = 150;
-        TitleText.alignment = TextAlignmentOptions.Center;
-
-        HowToPlayText.text = "How To Play";
-        HowToPlayText.fontSize = 50;
-
-        GameStartText.text = "Start";
-        GameStartText.fontSize = 50;
-
-        BackButtonText.text = "Back";
-        BackButtonText.fontSize = 50;
-    }
-    */
 
     void SetTexts()
     {
@@ -99,38 +44,174 @@ public class TitleScene : MonoBehaviour
         // Press Key Message
         TextMeshProUGUI KeyMessage = PressAnyKey.GetComponent<TextMeshProUGUI>();
 
-        KeyMessage.text = "Press Any Key to Continue";
+        KeyMessage.text = "Press Spacebar to Continue";
         KeyMessage.fontStyle = FontStyles.Normal;
         KeyMessage.fontSize = 50;
         KeyMessage.alignment = TextAlignmentOptions.Center;
+
+        // Gaol UI
+        TextMeshProUGUI GoalMessage = GoalUI.GetComponentInChildren<TextMeshProUGUI>();
+        GoalMessage.rectTransform.localPosition = Vector2.zero + new Vector2(-133f,0f);
+        GoalMessage.text =
+           "Goal\n" +
+           "Repair Car and Rescue injured person in 5 Min\n"+
+           "Move: Arrow Keys\n"+
+           "Pick Item: Z key, Interaction: X key\n"+
+           "\n"+
+           "Game Over Conditions\n"+
+           "Health goes 0 or time over ";
+        GoalMessage.enableAutoSizing = true;
+        GoalMessage.alignment = TextAlignmentOptions.Center;
+
+        // Default Item UI
+        TextMeshProUGUI PlayerItemMessage = PlayerItemUI.GetComponentInChildren<TextMeshProUGUI>();
+        PlayerItemMessage.rectTransform.localPosition = textPos1;
+        PlayerItemMessage.text =
+           "Red: Health item, +70\n"+
+           "Green: Health item, +20\n" +
+           "Orange: Stress item, -25\n"+
+           "How To Use: Pick item and Press X Key";
+        PlayerItemMessage.enableAutoSizing = true;
+        PlayerItemMessage.alignment = TextAlignmentOptions.Center;
+
+        // Car Item UI
+        TextMeshProUGUI CarItemMessage = CarItemUI.GetComponentInChildren<TextMeshProUGUI>();
+        CarItemMessage.rectTransform.localPosition = textPos2;
+        CarItemMessage.text =
+           "White: Fix Item, Can Only Use to Car\n"+
+           "How To Use: Pick item and Go To the Car Object and Press X key";
+        CarItemMessage.enableAutoSizing = true;
+        CarItemMessage.alignment = TextAlignmentOptions.Center;
+
+        // Heal Item UI
+        TextMeshProUGUI HealItemMessage = HealItemUI.GetComponentInChildren<TextMeshProUGUI>();
+        HealItemMessage.rectTransform.localPosition = textPos3;
+        HealItemMessage.text =
+           "Purple: Heal Item, Can Only Use to NPC \n"+
+           "How To Use: Pick item and Go to the NPC and Press X key\n"+
+           "\n"+
+           "Press Enter to Start Game!";
+        HealItemMessage.enableAutoSizing= true;
+        HealItemMessage.alignment = TextAlignmentOptions.Center;
+
     }
 
-    void HowToPlay()
+    // Explanations for Game
+    void HowToPlay(bool isPressed)
     {
-
+        if (isPressed)
+        {
+            switch (PageNum)
+            {
+                case 1:
+                    GoalUI.SetActive(true);
+                    PlayerItemUI.SetActive(false);
+                    CarItemUI.SetActive(false);
+                    HealItemUI.SetActive(false);
+                    if (Input.GetKeyDown(KeyCode.Space))
+                    {
+                        PageNum = 2;
+                    }
+                    break;
+                case 2:
+                    GoalUI.SetActive(false);
+                    PlayerItemUI.SetActive(true);
+                    CarItemUI.SetActive(false);
+                    HealItemUI.SetActive(false);
+                    if (Input.GetKeyDown(KeyCode.Space))
+                    {
+                        PageNum=3;
+                    }
+                    else if (Input.GetKeyDown(KeyCode.Backspace))
+                    {
+                        PageNum = 1;
+                    }
+                    break;
+                case 3:
+                    GoalUI.SetActive(false);
+                    PlayerItemUI.SetActive(false);
+                    CarItemUI.SetActive(true);
+                    HealItemUI.SetActive(false);
+                    if (Input.GetKeyDown(KeyCode.Space))
+                    {
+                        PageNum=4;
+                    }
+                    else if (Input.GetKeyDown(KeyCode.Backspace))
+                    {
+                        PageNum=2;
+                    }
+                    break;
+                case 4:
+                    GoalUI.SetActive(false);
+                    PlayerItemUI.SetActive(false);
+                    CarItemUI.SetActive(false);
+                    HealItemUI.SetActive(true);
+                    if (Input.GetKeyDown(KeyCode.Backspace))
+                    {
+                        PageNum=3;
+                    }
+                    else if(Input.GetKeyDown(KeyCode.Return))
+                    {
+                        SceneManager.LoadScene("LoadingScene");
+                    }
+                    break;
+            }
+        }
     }
-    void Start()
+    void Awake()
     {
         Title = GameObject.Find("Title");
         PressAnyKey = GameObject.Find("PressAnyKey");
         CopyRight = GameObject.Find("CopyRight");
+        ScreenResolution = GameObject.Find("Resolution");
 
-        //HowToPlayButton = GameObject.Find("HowToPlayButton");
-        //GameStartButton = GameObject.Find("GameStartButton");
-        //BackButton = GameObject.Find("BackButton");
+        GoalUI = GameObject.Find("GoalUI");
+        PlayerItemUI = GameObject.Find("PlayerItemUI");
+        CarItemUI = GameObject.Find("CarItemUI");
+        HealItemUI = GameObject.Find("HealItemUI");
 
-        //PlayMethodImg = GameObject.Find("PlayMethodImg");
-        //PlayMethodImg.SetActive(false);
+        PageNum = 0;
+        isPressed = false;
+        firstInputHandled = false;
+    }
+    void Start()
+    {
+        // Initialize
+        Title.SetActive(true);
+        PressAnyKey.SetActive(true);
+        CopyRight.SetActive(true);
+        ScreenResolution.SetActive(true);
 
+        GoalUI.SetActive(false);
+        PlayerItemUI.SetActive(false);
+        CarItemUI.SetActive(false);
+        HealItemUI.SetActive(false);
 
-        // SetButtonTexts();
+        SetTexts();
     }
 
     void Update()
     {
-        //if (Input.GetKey(KeyCode.Escape))
-        //{
-        //    BackButtonClicked();
-        //}
+        if (Input.GetKeyDown(KeyCode.Space) && !isPressed && PageNum == 0)
+        {
+            isPressed = true;
+            PageNum = 1;
+
+            Title.SetActive(false);
+            PressAnyKey.SetActive(false);
+            CopyRight.SetActive(false);
+            ScreenResolution.SetActive(false);
+
+            firstInputHandled = true;
+            return;
+        }
+
+        if (firstInputHandled)
+        {
+            firstInputHandled = false;
+            return;
+        }
+
+        HowToPlay(isPressed);
     }
 }
