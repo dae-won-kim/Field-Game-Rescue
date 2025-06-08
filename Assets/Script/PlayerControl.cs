@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
-    public static float MOVE_AREA_RADIUS = 30.0f; // 섬의 반지름.
+    public static float MOVE_AREA_RADIUS = 20.0f; // 섬의 반지름.
     public static float MoveSpeed = 7.0f; // 이동 속도.
 
     private struct Key
