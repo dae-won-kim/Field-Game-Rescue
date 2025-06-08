@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPool : Component
+public class ObjectPool : MonoBehaviour
 {
     // Field 式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式
     // Pool Queue煎 婦葬
@@ -85,7 +85,6 @@ public class ObjectPool : Component
         {
             obj.transform.LookAt(lookAtTrans);
         }
-
 
         obj.OnInit();
 

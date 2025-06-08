@@ -6,6 +6,7 @@ public class PlayerControl : MonoBehaviour
 {
     public static float MOVE_AREA_RADIUS = 20.0f; // 섬의 반지름.
     public static float MoveSpeed = 7.0f; // 이동 속도.
+    public bool isTrapped = false;
 
     private struct Key
     { // 키 조작 정보 구조체.
@@ -47,12 +48,16 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] RescueNPC rescueNPC = null;
     private GameStatus game_status = null;
 
-    public void setMoveSpeed(float speed)
+    public void SetTrapped(bool value)
     {
-        MoveSpeed = speed;
+        isTrapped = value;
+        if (value) MoveSpeed = 0f;
     }
     private void ChangeMoveSpeedByStress()
     {
+        // 트랩에 걸렸을 때의 예외처리
+        if(isTrapped) return;
+
         if (game_status.emotion <= 0.4f) 
         {
             MoveSpeed = 7.5f;

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Trap : IObject
+public class Trap : IObject // 풀링할 오브젝트라서 상속
 {
     [SerializeField] Collider Event_Area;
     [SerializeField] bool isInTrap = false;
@@ -14,11 +14,17 @@ public class Trap : IObject
         if(other.tag.Contains("Player") && !isInTrap)
         {
             isInTrap = true;
-            PlayerControl player_control = other.gameObject.GetComponent<PlayerControl>(); 
-            ChangePlayerSetting(player_control);
+            Transform[] transform = other.transform.GetComponentsInParent<Transform>();
+            foreach (Transform t in transform)
+            {
+                if(t.name == "Player")
+                { 
+                    PlayerControl player_control = t.GetComponent<PlayerControl>();
+                    Debug.Log(player_control.name);
+                    StartCoroutine(ChangePlayerSetting(player_control));
+                }
+            }
 
-            // Debug.Log(other.gameObject.name);
-            // Destroy(this);
         }
     }
 
@@ -32,8 +38,11 @@ public class Trap : IObject
 
     IEnumerator ChangePlayerSetting(PlayerControl player)
     {
-        player.setMoveSpeed(0f);
-        yield return waitTime;
+        
+        player.SetTrapped(true);      // 트랩에 걸림
+        player.MoveSpeed = 0f;       
+        yield return new WaitForSeconds(2f);
+        player.SetTrapped(false);     // 트랩 해제
 
     }
 
@@ -53,6 +62,8 @@ public class Trap : IObject
         isInTrap = false;
         Vector3 pos = this.transform.position;
         pos.y = 2.3f;
+
+        waitTime = new WaitForSeconds(1);
         this.transform.position = pos;
     }
 

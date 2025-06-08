@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+// For Effect
 public class FXObject : IObject
 {
     private ParticleSystem fxSystem;
