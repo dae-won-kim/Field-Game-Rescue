@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TrapManager : MonoBehaviour
@@ -7,10 +5,12 @@ public class TrapManager : MonoBehaviour
     public Trap trapPrefab;
     private GameObject island;
 
-    private float TRAP_RESPAWN_TIME = 60f;  // 1분 마다 트랩 2개 생성
-
+    private float TRAP_RESPAWN_TIME = 40f;
     private ObjectPool trapPool;
     private float timer;
+
+    [Header("Trap Spawn Margin")]
+    public float trapSpawnMargin = 8f; // x, z 방향에서 얼마나 안쪽으로 제한할지 설정
 
     private void SpawnTrapAtRandomPosition()
     {
@@ -19,8 +19,8 @@ public class TrapManager : MonoBehaviour
 
         Bounds bounds = islandRenderer.bounds;
 
-        float x = Random.Range(bounds.min.x, bounds.max.x);
-        float z = Random.Range(bounds.min.z, bounds.max.z);
+        float x = Random.Range(bounds.min.x + trapSpawnMargin, bounds.max.x - trapSpawnMargin);
+        float z = Random.Range(bounds.min.z + trapSpawnMargin, bounds.max.z - trapSpawnMargin);
         float y = bounds.max.y;
 
         Vector3 spawnPos = new Vector3(x, y, z);
@@ -40,11 +40,29 @@ public class TrapManager : MonoBehaviour
 
         if (timer >= TRAP_RESPAWN_TIME)
         {
-            // 1분마다 2개 생성 
             SpawnTrapAtRandomPosition();
             SpawnTrapAtRandomPosition();
             timer = 0f;
         }
     }
-  
+
+    // 트랩 생성 범위 시각화
+    private void OnDrawGizmos()
+    {
+        if (island == null) return;
+
+        Renderer islandRenderer = island.GetComponent<Renderer>();
+        if (islandRenderer == null) return;
+
+        Bounds originalBounds = islandRenderer.bounds;
+
+        // 제한된 트랩 생성 범위: 초록색
+        Vector3 marginVec = new Vector3(trapSpawnMargin * 2f, 0f, trapSpawnMargin * 2f);
+        Vector3 adjustedSize = originalBounds.size - marginVec;
+        Vector3 adjustedCenter = originalBounds.center;
+
+        // 트랩 생성 범위
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(adjustedCenter, adjustedSize);
+    }
 }

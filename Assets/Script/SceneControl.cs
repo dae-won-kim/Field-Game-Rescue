@@ -48,6 +48,7 @@ public class SceneControl : MonoBehaviour
 
                 break;
             case STEP.CLEAR:
+                AudioController.Instance?.PlayGameClear();
                 GUI.color = Color.black;
                 // 클리어 메시지와 클리어 시간 표시.
                 GUI.Label(new Rect(pos_x, pos_y, 200, 20),
@@ -78,6 +79,7 @@ public class SceneControl : MonoBehaviour
                 }
                 break;
             case STEP.GAMEOVER:
+                AudioController.Instance?.PlayGameOver();
                 GUI.color = Color.black;
                 this.guistyle.fontSize = 60;
                 // 게임 오버 메시지를 표시.

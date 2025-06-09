@@ -7,6 +7,7 @@ public class PlayerControl : MonoBehaviour
     public static float MOVE_AREA_RADIUS = 20.0f; // 섬의 반지름.
     public float MoveSpeed = 7.0f; // 이동 속도.
     public bool isTrapped = false;
+    public bool isFeverTime = false;
 
     private struct Key
     { // 키 조작 정보 구조체.
@@ -53,26 +54,30 @@ public class PlayerControl : MonoBehaviour
         isTrapped = value;
         if (value) MoveSpeed = 0f;
     }
-    private void ChangeMoveSpeedByStress()
+    private void ChangeMoveSpeed()
     {
         // 트랩에 걸렸을 때의 예외처리
-        if(isTrapped) return;
+        if(isFeverTime)
+        {
+            MoveSpeed = 10.0f;
+        }
+        else if(isTrapped) return;
 
         if (game_status.emotion <= 0.4f) 
         {
-            MoveSpeed = 7.5f;
+            MoveSpeed = 7.0f;
         }
         else if (game_status.emotion <= 0.65f)
         {
-            MoveSpeed = 6.5f;
+            MoveSpeed = 6.0f;
         }
         else if (game_status.emotion <= 0.8f)
         {
-            MoveSpeed = 5.5f;
+            MoveSpeed = 5.0f;
         }
         else
         {
-            MoveSpeed = 5.0f;
+            MoveSpeed = 4.5f;
         }
     }
     private void get_input()
@@ -138,7 +143,7 @@ public class PlayerControl : MonoBehaviour
         }
 
         move_vector.Normalize(); // 길이를 1로.
-        ChangeMoveSpeedByStress();
+        ChangeMoveSpeed();
         move_vector *= MoveSpeed * Time.deltaTime; // 속도×시간＝거리.
         position += move_vector; // 위치를 이동.
         position.y = 0.0f; // 높이를 0으로 한다.
@@ -372,7 +377,6 @@ public class PlayerControl : MonoBehaviour
     }
 
 
-
     void Start()
     {
         this.step = STEP.NONE; // 현 단계 상태를 초기화.
@@ -394,8 +398,8 @@ public class PlayerControl : MonoBehaviour
                           // 상태가 변화했을 때------------.
 
         this.step_timer += Time.deltaTime;
-        float eat_time = 1.0f; // 사과는 2초에 걸쳐 먹는다.
-        float repair_time = 1.0f; // 수리에 걸리는 시간도 2초.
+        float eat_time = 1.0f; 
+        float repair_time = 1.0f; 
 
         float stress_time = 1.5f;
         float rescue_time = 2.0f;
@@ -457,7 +461,7 @@ public class PlayerControl : MonoBehaviour
 
                 case STEP.EATING: // '식사 중' 상태의 처리.
                     if (this.step_timer > eat_time)
-                    { // 2초 대기.
+                    { 
                         this.next_step = STEP.MOVE; // '이동' 상태로 이행.
                     }
                     break;
@@ -475,7 +479,7 @@ public class PlayerControl : MonoBehaviour
                     break;
                 case STEP.REPAIRING: // '수리 중' 상태의 처리.
                     if (this.step_timer > repair_time)
-                    { // 2초 대기.
+                    { 
                         this.next_step = STEP.MOVE; // '이동' 상태로 이행.
                     }
                     break;
@@ -494,6 +498,8 @@ public class PlayerControl : MonoBehaviour
                 case STEP.EATING:
                     if (this.carried_item != null)
                     {
+                        AudioController.Instance?.PlayerEating();
+
                         // 들고 있는 아이템의 '체력 회복 정도'를 가져와서 설정.
                         this.game_status.addSatiety(this.item_root.getRegainSatiety(this.carried_item));
 
@@ -505,6 +511,7 @@ public class PlayerControl : MonoBehaviour
                     if (this.carried_item != null)
                     {
                         // 스트레스 수치 낮추기
+                        AudioController.Instance?.PlayerStressDown();
                         this.game_status.subtractEmotion(this.item_root.getRegainEmotion(this.carried_item));
 
                         GameObject.Destroy(this.carried_item);
@@ -515,6 +522,7 @@ public class PlayerControl : MonoBehaviour
                     if (this.carried_item != null)
                     {
                         // NPC의 게이지 채우기
+                        AudioController.Instance?.PlayerHealing();
                         // this.RescueNPC.addGauge(this.item_root.getRegainNPCGauge(this.carried_item));
                         this.rescueNPC.addGauge(0.2f);
 
@@ -528,6 +536,7 @@ public class PlayerControl : MonoBehaviour
                     if (this.carried_item != null)
                     {
                         // 들고 있는 아이템의 '수리 진척 상태'를 가져와서 설정.
+                        AudioController.Instance?.PlayerRepairing();
                         this.game_status.addRepairment(this.item_root.getGainRepairment(this.carried_item));
 
                         GameObject.Destroy(this.carried_item);

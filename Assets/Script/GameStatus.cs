@@ -4,34 +4,34 @@ using UnityEngine;
 
 public class GameStatus : MonoBehaviour
 {
-    public static float GAIN_REPAIRMENT_IRON = 0.20f;
+    public static float GAIN_REPAIRMENT_IRON = 0.10f;
     //  static float GAIN_REPAIRMENT_PLANT = 0.10f;
 
     // 철광석, 사과, 식물을 운반했을 때 각각의 체력 소모 정도.
-    public static float CONSUME_SATIETY_IRON = 0.02f;
-    public static float CONSUME_SATIETY_APPLE = 0.05f;
+    public static float CONSUME_SATIETY_IRON = 0.03f;
+    public static float CONSUME_SATIETY_APPLE = 0.01f;
     public static float CONSUME_SATIETY_PLANT = 0.01f;
 
     // 스트레스, 힐템을 운반했을 때 각각의 체력 소모 정도
-    public static float CONSUME_SATIETY_STRESS = 0.03f;
-    public static float CONSUME_SATIETY_HEAL = 0.05f;
+    public static float CONSUME_SATIETY_STRESS = 0.01f;
+    public static float CONSUME_SATIETY_HEAL = 0.03f;
 
     // 항상 감소하는 배고픔 수치
-    public static float CONSUME_SATIETY_ALWAYS = 0.03f;
+    public static float CONSUME_SATIETY_ALWAYS = 0.02f;
 
     // 항상 증가하는 감정 수치
-    public static float CONSUME_EMOTION_ALWAYS = 0.01f;
+    public static float CONSUME_EMOTION_ALWAYS = 0.007f;
 
     // 스트레스,힐이 차는 속도
     public static float CONSUME_EMOTION_STRESS = 0.0f;
     public static float CONSUME_RESCUE_HEAL = 0.0f;
 
     // 사과, 식물을 먹었을 때 각각의 체력 회복 정도.
-    public static float REGAIN_SATIETY_APPLE = 0.6f;
+    public static float REGAIN_SATIETY_APPLE = 0.5f;
     public static float REGAIN_SATIETY_PLANT = 0.15f;
 
     // 스트레스 아이템을 사용했을 때 게이지가 감소하는 정도
-    public static float REGAIN_EMOTION_STRESS = 0.25f;
+    public static float REGAIN_EMOTION_STRESS = 0.15f;
 
     public static float REGAIN_GAUGE_HEAL = 0.1f;
 

@@ -25,7 +25,7 @@ public class TitleScene : MonoBehaviour
     // How to Play Text UI position
     Vector2 textPos1 = new Vector2(239f, 195f);
     Vector2 textPos2 = new Vector2(-201f, 367f);
-    Vector2 textPos3 = new Vector2(-164f, 367f);
+    Vector2 textPos3 = new Vector2(-164f, 272f);
 
     [SerializeField] GameObject CopyRight;
     [SerializeField] GameObject ScreenResolution;
@@ -89,6 +89,7 @@ public class TitleScene : MonoBehaviour
         HealItemMessage.text =
            "Purple: Heal Item, Can Only Use to NPC \n"+
            "How To Use: Pick item and Go to the NPC and Press X key\n"+
+           "If NPC is Rescued, Bonus Time will be given to Player!\n"+
            "\n"+
            "Press Enter to Start Game!";
         HealItemMessage.enableAutoSizing= true;
@@ -189,7 +190,6 @@ public class TitleScene : MonoBehaviour
 
         SetTexts();
     }
-
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space) && !isPressed && PageNum == 0)
