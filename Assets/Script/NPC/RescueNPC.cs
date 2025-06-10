@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RescueNPC : NPCRoot
 {
-    [SerializeField] bool isRescued;
+    public bool isRescued;
 
     void setGauges()
     {
@@ -26,7 +26,6 @@ public class RescueNPC : NPCRoot
     public override void addGauge(float number) 
     {
         Gauge += number;
-        // Debug.Log($"[addGauge] 호출됨, 기존 Gauge: {Gauge}, 증가량: {number}");
     }
 
     void Start()
@@ -35,7 +34,6 @@ public class RescueNPC : NPCRoot
         this.isRescued = false;
         base.setVariable();
         setGauges();    
-
     }
 
     void Update()

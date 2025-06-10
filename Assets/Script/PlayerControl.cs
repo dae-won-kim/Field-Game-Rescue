@@ -7,7 +7,7 @@ public class PlayerControl : MonoBehaviour
     public static float MOVE_AREA_RADIUS = 20.0f; // 섬의 반지름.
     public float MoveSpeed = 7.0f; // 이동 속도.
     public bool isTrapped = false;
-    public bool isFeverTime = false;
+    public bool isFeverTime;
 
     private struct Key
     { // 키 조작 정보 구조체.
@@ -56,28 +56,31 @@ public class PlayerControl : MonoBehaviour
     }
     private void ChangeMoveSpeed()
     {
-        // 트랩에 걸렸을 때의 예외처리
-        if(isFeverTime)
+        // 피버타임, 트랩에 걸렸을 때의 예외처리
+        if (rescueNPC.isRescued && !isFeverTime)
         {
-            MoveSpeed = 10.0f;
+            StartCoroutine(FeverTime());
         }
-        else if(isTrapped) return;
+        else if (isTrapped) return;
 
-        if (game_status.emotion <= 0.4f) 
-        {
-            MoveSpeed = 7.0f;
-        }
-        else if (game_status.emotion <= 0.65f)
-        {
-            MoveSpeed = 6.0f;
-        }
-        else if (game_status.emotion <= 0.8f)
-        {
-            MoveSpeed = 5.0f;
-        }
         else
         {
-            MoveSpeed = 4.5f;
+            if (game_status.emotion <= 0.4f)
+            {
+                MoveSpeed = 7.0f;
+            }
+            else if (game_status.emotion <= 0.65f)
+            {
+                MoveSpeed = 6.0f;
+            }
+            else if (game_status.emotion <= 0.8f)
+            {
+                MoveSpeed = 5.0f;
+            }
+            else
+            {
+                MoveSpeed = 4.5f;
+            }
         }
     }
     private void get_input()
@@ -113,6 +116,8 @@ public class PlayerControl : MonoBehaviour
         Vector3 move_vector = Vector3.zero; // 이동용 벡터.
         Vector3 position = this.transform.position; // 현재 위치를 보관.
         bool is_moved = false;
+
+        // 방향키 입력
         if (this.key.right)
         { // →키가 눌렸으면.
             move_vector += Vector3.right; // 이동용 벡터를 오른쪽으로 향한다.
@@ -133,7 +138,9 @@ public class PlayerControl : MonoBehaviour
             move_vector += Vector3.back;
             is_moved = true;
         }
-        if (is_moved)
+
+        ChangeMoveSpeed(); // 원래 위치
+        if (is_moved && !isFeverTime)
         {
             // 들고 있는 아이템에 따라 '체력 소모 정도'를 조사한다.
             float consume = this.item_root.getConsumeSatiety(this.carried_item);
@@ -143,7 +150,6 @@ public class PlayerControl : MonoBehaviour
         }
 
         move_vector.Normalize(); // 길이를 1로.
-        ChangeMoveSpeed();
         move_vector *= MoveSpeed * Time.deltaTime; // 속도×시간＝거리.
         position += move_vector; // 위치를 이동.
         position.y = 0.0f; // 높이를 0으로 한다.
@@ -169,6 +175,22 @@ public class PlayerControl : MonoBehaviour
             this.transform.rotation =
             Quaternion.Lerp(this.transform.rotation, q, 0.2f);
         }
+    }
+
+    IEnumerator FeverTime()
+    {
+        isFeverTime = true;
+        AudioController.Instance?.PlayerFeverTime();
+        float OriginalMoveSpeed = MoveSpeed;
+        MoveSpeed = 10.0f;
+        this.game_status.satiety = 100f;
+        this.game_status.emotion = 0f;
+        Debug.Log("It's FeverTime");
+        yield return new WaitForSeconds(7f);
+
+        Debug.Log("FeverTime Over");
+        MoveSpeed = OriginalMoveSpeed;
+        isFeverTime = false;
     }
 
     // 물건을 줍거나 떨어뜨린다.
@@ -343,7 +365,7 @@ public class PlayerControl : MonoBehaviour
             {
                 GUI.Label(new Rect(x + 100.0f, y, 200.0f, 20.0f), "X:구출한다", guistyle);
             }
-            else if(this.carried_item.tag == "Iron")
+            else if (this.carried_item.tag == "Iron")
                 GUI.Label(new Rect(x + 100.0f, y, 200.0f, 20.0f), "", guistyle);
         }
         else
@@ -373,9 +395,8 @@ public class PlayerControl : MonoBehaviour
                 GUI.Label(new Rect(x + 200.0f, y, 200.0f, 20.0f), "수리중", guistyle);
                 break;
         }
-        
-    }
 
+    }
 
     void Start()
     {
@@ -390,6 +411,7 @@ public class PlayerControl : MonoBehaviour
         this.game_status = GameObject.Find("GameRoot").GetComponent<GameStatus>();
 
         this.rescueNPC = GameObject.Find("RescueNPC").GetComponentInChildren<RescueNPC>();
+        isFeverTime = false;    
     }
 
     void Update()
@@ -398,8 +420,8 @@ public class PlayerControl : MonoBehaviour
                           // 상태가 변화했을 때------------.
 
         this.step_timer += Time.deltaTime;
-        float eat_time = 1.0f; 
-        float repair_time = 1.0f; 
+        float eat_time = 1.0f;
+        float repair_time = 1.0f;
 
         float stress_time = 1.5f;
         float rescue_time = 2.0f;
@@ -433,7 +455,7 @@ public class PlayerControl : MonoBehaviour
                                     this.next_step = STEP.REPAIRING;
                                     break;
                                 case Event.TYPE.RESCUE:
-                                    this.next_step = STEP.RESCUE; 
+                                    this.next_step = STEP.RESCUE;
                                     break;
                             }
                             break;
@@ -461,25 +483,25 @@ public class PlayerControl : MonoBehaviour
 
                 case STEP.EATING: // '식사 중' 상태의 처리.
                     if (this.step_timer > eat_time)
-                    { 
+                    {
                         this.next_step = STEP.MOVE; // '이동' 상태로 이행.
                     }
                     break;
                 case STEP.EMOTION: // '감정' 상태의 처리.
                     if (this.step_timer > stress_time)
-                    { 
+                    {
                         this.next_step = STEP.MOVE; // '이동' 상태로 이행.
                     }
                     break;
                 case STEP.RESCUE: // '구조' 상태의 처리.
                     if (this.step_timer > rescue_time)
-                    { 
+                    {
                         this.next_step = STEP.MOVE; // '이동' 상태로 이행.
                     }
                     break;
                 case STEP.REPAIRING: // '수리 중' 상태의 처리.
                     if (this.step_timer > repair_time)
-                    { 
+                    {
                         this.next_step = STEP.MOVE; // '이동' 상태로 이행.
                     }
                     break;
@@ -554,9 +576,12 @@ public class PlayerControl : MonoBehaviour
                 this.move_control();
                 this.pick_or_drop_control();
 
-                // 이동 가능한 경우는 항상 배가 고파진다.
-                this.game_status.alwaysSatiety();
-                this.game_status.alwaysEmotion();
+                if(!isFeverTime)
+                {
+                    // 이동 가능한 경우는 항상 배가 고파진다.
+                    this.game_status.alwaysSatiety();
+                    this.game_status.alwaysEmotion();
+                }
 
                 break;
             case STEP.REPAIRING:
@@ -567,6 +592,6 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    
+
 }
 
