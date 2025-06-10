@@ -49,6 +49,7 @@ public class PlayerControl : MonoBehaviour
     private GameStatus game_status = null;
 
     private Animator animator;
+    private GameObject FeverEffect;
 
     public void SetTrapped(bool value)
     {
@@ -191,6 +192,7 @@ public class PlayerControl : MonoBehaviour
         float originalSpeed = MoveSpeed;
         float originalSatiety = this.game_status.satiety;
         float originalEmotion = this.game_status.emotion;
+        FeverEffect.SetActive(true);
 
         MoveSpeed = 10.0f;
         game_status.satiety = 1f;
@@ -198,6 +200,7 @@ public class PlayerControl : MonoBehaviour
 
         yield return new WaitForSeconds(7f);
 
+        FeverEffect.SetActive(false);
         MoveSpeed = originalSpeed; // 속도 복원
         this.game_status.satiety = originalSatiety; // 배고픔 복원
         this.game_status.emotion = originalEmotion; // emotion수치 복원
@@ -205,6 +208,45 @@ public class PlayerControl : MonoBehaviour
 
     }
 
+    // 물건을 줍거나 떨어뜨린다.
+    private void pick_or_drop_control()
+    {
+        do
+        {
+            if (!this.key.pick)
+            { // '줍기/버리기'키가 눌리지 않았으면.
+                break; // 아무것도 하지 않고 메소드 종료.
+            }
+            if (this.carried_item == null)
+            { // 들고 있는 아이템이 없고.
+                if (this.closest_item == null)
+                {// 주목 중인 아이템이 없으면.
+                    break; // 아무것도 하지 않고 메소드 종료.
+                }
+                // 주목 중인 아이템을 들어올린다.
+                this.carried_item = this.closest_item;
+
+                // 들고 있는 아이템을 자신의 자식으로 설정.
+                this.carried_item.transform.parent = this.transform;
+
+                // 2.0f 위에 배치(머리 위로 이동).
+                this.carried_item.transform.localPosition = Vector3.up * 2.0f;
+
+                // 주목 중 아이템을 없앤다.
+                this.closest_item = null;
+            }
+            else
+            { // 들고 있는 아이템이 있을 경우.
+              // 들고 있는 아이템을 약간(1.0f) 앞으로 이동시켜서.
+                this.carried_item.transform.localPosition = Vector3.forward * 1.0f;
+                this.carried_item.transform.parent = null;// 자식 설정을 해제.
+                this.carried_item = null; // 들고 있던 아이템을 없앤다.
+            }
+        } while (false);
+    }
+
+    // 애니메이션 실패
+    /*
     // 물건을 줍거나 떨어뜨린다.
     private void pick_or_drop_control()
     {
@@ -224,7 +266,6 @@ public class PlayerControl : MonoBehaviour
                     // 주목 중인 아이템이 없으면 아무것도 하지 않고 종료.
                     break;
                 }
-
                 // Coroutine을 시작하여 pick 애니메이션을 재생하고 끝나기를 기다림.
                 StartCoroutine(PickItemCoroutine());
             }
@@ -239,24 +280,21 @@ public class PlayerControl : MonoBehaviour
     // 아이템을 줍는 애니메이션과 행동을 처리하는 코루틴
     private IEnumerator PickItemCoroutine()
     {
-        // 트리거를 초기화 후 다시 설정하여 중복 트리거 방지
-        animator.ResetTrigger("pick");
-        animator.SetTrigger("pick");
-
-        // 지정된 상태로 전환될 때까지 대기
-        yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).IsName("09_pickup"));
-
+        animator.SetTrigger("PickTrigger");
         // 아이템을 들어올림
         this.carried_item = this.closest_item;
 
         // 들고 있는 아이템을 자신의 자식으로 설정
         this.carried_item.transform.parent = this.transform;
+        yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).IsName("09_pickup"));
+      
 
         // 2.0f 위에 배치 (머리 위로 이동)
         this.carried_item.transform.localPosition = Vector3.up * 2.0f;
 
         // 주목 중 아이템을 없앰
         this.closest_item = null;
+
 
         // 해당 애니메이션의 길이만큼 대기
         float animDuration = animator.GetCurrentAnimatorStateInfo(0).length;
@@ -268,11 +306,7 @@ public class PlayerControl : MonoBehaviour
     // 아이템을 내려놓는 애니메이션과 행동을 처리하는 코루틴
     private IEnumerator PutItemCoroutine()
     {
-        // 트리거를 초기화 후 다시 설정하여 중복 트리거 방지
-        animator.ResetTrigger("put");
-        animator.SetTrigger("put");
-
-        // 지정된 상태로 전환될 때까지 대기
+        animator.SetTrigger("PutTrigger");
         yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).IsName("10_put"));
 
         // 아이템을 약간 앞으로 이동
@@ -284,10 +318,12 @@ public class PlayerControl : MonoBehaviour
         // 들고 있던 아이템을 없앰
         this.carried_item = null;
 
+
         // 해당 애니메이션의 길이만큼 대기
         float animDuration = animator.GetCurrentAnimatorStateInfo(0).length;
         yield return new WaitForSeconds(animDuration);
     }
+    */
 
 
     // 접촉한 물건이 자신의 정면에 있는지 판단한다.
@@ -471,7 +507,11 @@ public class PlayerControl : MonoBehaviour
         this.game_status = GameObject.Find("GameRoot").GetComponent<GameStatus>();
 
         this.rescueNPC = GameObject.Find("RescueNPC").GetComponentInChildren<RescueNPC>();
+
         animator = GetComponentInChildren<Animator>();
+        FeverEffect = GameObject.Find("MuzzleFlash");
+        FeverEffect.SetActive(false);
+
     }
 
     void Update()
