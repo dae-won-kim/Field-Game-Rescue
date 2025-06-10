@@ -2,8 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
+
+public enum GameState
+{
+    Normal,
+    FeverTime
+}
+
+
 public class GameStatus : MonoBehaviour
 {
+    // 아이템 이벤트 이외의 이벤트
+    public static GameState CurrentState { get; private set; } = GameState.Normal;
+
+    public static void SetState(GameState newState)
+    {
+        CurrentState = newState;
+        Debug.Log($"[GameStatus] State changed to {newState}");
+    }
+
+    // fevertime 관련
+    public static void StartFeverTime() => CurrentState = GameState.FeverTime;
+    public static void EndFeverTime() => CurrentState = GameState.Normal;
+    public static bool IsFeverTime => CurrentState == GameState.FeverTime;
+
+    // 아이템 관련은 아래
+
     public static float GAIN_REPAIRMENT_IRON = 0.10f;
     //  static float GAIN_REPAIRMENT_PLANT = 0.10f;
 

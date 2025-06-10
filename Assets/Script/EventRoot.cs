@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-// 처음에 이벤트의 종류를 나타내는 class.
+// 처음에 아이템에 관한 이벤트의 종류를 나타내는 class.
 public class Event
 { // 이벤트 종류.
     public enum TYPE

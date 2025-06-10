@@ -5,6 +5,7 @@ using UnityEngine;
 public class RescueNPC : NPCRoot
 {
     public bool isRescued;
+    public bool feverTimeTriggered = false;
 
     void setGauges()
     {

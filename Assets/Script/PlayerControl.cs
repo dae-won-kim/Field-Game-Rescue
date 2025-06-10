@@ -7,7 +7,6 @@ public class PlayerControl : MonoBehaviour
     public static float MOVE_AREA_RADIUS = 20.0f; // 섬의 반지름.
     public float MoveSpeed = 7.0f; // 이동 속도.
     public bool isTrapped = false;
-    public bool isFeverTime;
 
     private struct Key
     { // 키 조작 정보 구조체.
@@ -56,33 +55,29 @@ public class PlayerControl : MonoBehaviour
     }
     private void ChangeMoveSpeed()
     {
-        // 피버타임, 트랩에 걸렸을 때의 예외처리
-        if (rescueNPC.isRescued && !isFeverTime)
+        if (GameStatus.IsFeverTime) return;
+
+        if (rescueNPC.isRescued && !GameStatus.IsFeverTime && !rescueNPC.feverTimeTriggered)
         {
             StartCoroutine(FeverTime());
         }
-        else if (isTrapped) return;
-
+        else if (isTrapped)
+        {
+            return;
+        }
         else
         {
             if (game_status.emotion <= 0.4f)
-            {
                 MoveSpeed = 7.0f;
-            }
             else if (game_status.emotion <= 0.65f)
-            {
                 MoveSpeed = 6.0f;
-            }
             else if (game_status.emotion <= 0.8f)
-            {
                 MoveSpeed = 5.0f;
-            }
             else
-            {
                 MoveSpeed = 4.5f;
-            }
         }
     }
+
     private void get_input()
     {
         this.key.up = false;
@@ -140,7 +135,7 @@ public class PlayerControl : MonoBehaviour
         }
 
         ChangeMoveSpeed(); // 원래 위치
-        if (is_moved && !isFeverTime)
+        if (is_moved && !GameStatus.IsFeverTime)
         {
             // 들고 있는 아이템에 따라 '체력 소모 정도'를 조사한다.
             float consume = this.item_root.getConsumeSatiety(this.carried_item);
@@ -177,20 +172,26 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    IEnumerator FeverTime()
+    private IEnumerator FeverTime()
     {
-        isFeverTime = true;
-        AudioController.Instance?.PlayerFeverTime();
-        float OriginalMoveSpeed = MoveSpeed;
+        rescueNPC.feverTimeTriggered = true;
+        GameStatus.StartFeverTime();   // GameState 변경
+
+        float originalSpeed = MoveSpeed;
+        float originalSatiety = this.game_status.satiety;
+        float originalEmotion = this.game_status.emotion;
+
         MoveSpeed = 10.0f;
-        this.game_status.satiety = 100f;
-        this.game_status.emotion = 0f;
-        Debug.Log("It's FeverTime");
+        game_status.satiety = 1f;
+        game_status.emotion = 0f;
+
         yield return new WaitForSeconds(7f);
 
-        Debug.Log("FeverTime Over");
-        MoveSpeed = OriginalMoveSpeed;
-        isFeverTime = false;
+        MoveSpeed = originalSpeed; // 속도 복원
+        this.game_status.satiety = originalSatiety; // 배고픔 복원
+        this.game_status.emotion = originalEmotion; // emotion수치 복원
+        GameStatus.EndFeverTime();  // GameState 변경
+
     }
 
     // 물건을 줍거나 떨어뜨린다.
@@ -411,7 +412,6 @@ public class PlayerControl : MonoBehaviour
         this.game_status = GameObject.Find("GameRoot").GetComponent<GameStatus>();
 
         this.rescueNPC = GameObject.Find("RescueNPC").GetComponentInChildren<RescueNPC>();
-        isFeverTime = false;    
     }
 
     void Update()
@@ -576,7 +576,7 @@ public class PlayerControl : MonoBehaviour
                 this.move_control();
                 this.pick_or_drop_control();
 
-                if(!isFeverTime)
+                if(!GameStatus.IsFeverTime)
                 {
                     // 이동 가능한 경우는 항상 배가 고파진다.
                     this.game_status.alwaysSatiety();
