@@ -1,105 +1,384 @@
 fileFormatVersion: 2
 guid: 097baf1f5be821641abf8cdc10995e25
 ModelImporter:
-  serializedVersion: 16
-  fileIDToRecycleName:
-    100000: J_atama
-    100002: J_kosi
-    100004: J_L_asi
-    100006: J_L_hiji
-    100008: J_L_hiza
-    100010: J_L_kata
-    100012: J_L_momo
-    100014: J_L_te
-    100016: J_mant01
-    100018: J_mant02
-    100020: J_mune
-    100022: J_R_asi
-    100024: J_R_hiji
-    100026: J_R_hiza
-    100028: J_R_kata
-    100030: J_R_momo
-    100032: J_R_te
-    100034: L_mant
-    100036: locator_01
-    100038: unito
-    100040: //RootNode
-    400000: J_atama
-    400002: J_kosi
-    400004: J_L_asi
-    400006: J_L_hiji
-    400008: J_L_hiza
-    400010: J_L_kata
-    400012: J_L_momo
-    400014: J_L_te
-    400016: J_mant01
-    400018: J_mant02
-    400020: J_mune
-    400022: J_R_asi
-    400024: J_R_hiji
-    400026: J_R_hiza
-    400028: J_R_kata
-    400030: J_R_momo
-    400032: J_R_te
-    400034: L_mant
-    400036: locator_01
-    400038: unito
-    400040: //RootNode
-    4300000: unito
-    7400000: Take 001
-    9500000: //RootNode
-    11100000: //RootNode
-    13700000: unito
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: J_atama
+  - first:
+      1: 100002
+    second: J_kosi
+  - first:
+      1: 100004
+    second: J_L_asi
+  - first:
+      1: 100006
+    second: J_L_hiji
+  - first:
+      1: 100008
+    second: J_L_hiza
+  - first:
+      1: 100010
+    second: J_L_kata
+  - first:
+      1: 100012
+    second: J_L_momo
+  - first:
+      1: 100014
+    second: J_L_te
+  - first:
+      1: 100016
+    second: J_mant01
+  - first:
+      1: 100018
+    second: J_mant02
+  - first:
+      1: 100020
+    second: J_mune
+  - first:
+      1: 100022
+    second: J_R_asi
+  - first:
+      1: 100024
+    second: J_R_hiji
+  - first:
+      1: 100026
+    second: J_R_hiza
+  - first:
+      1: 100028
+    second: J_R_kata
+  - first:
+      1: 100030
+    second: J_R_momo
+  - first:
+      1: 100032
+    second: J_R_te
+  - first:
+      1: 100034
+    second: L_mant
+  - first:
+      1: 100036
+    second: locator_01
+  - first:
+      1: 100038
+    second: unito
+  - first:
+      1: 100040
+    second: //RootNode
+  - first:
+      4: 400000
+    second: J_atama
+  - first:
+      4: 400002
+    second: J_kosi
+  - first:
+      4: 400004
+    second: J_L_asi
+  - first:
+      4: 400006
+    second: J_L_hiji
+  - first:
+      4: 400008
+    second: J_L_hiza
+  - first:
+      4: 400010
+    second: J_L_kata
+  - first:
+      4: 400012
+    second: J_L_momo
+  - first:
+      4: 400014
+    second: J_L_te
+  - first:
+      4: 400016
+    second: J_mant01
+  - first:
+      4: 400018
+    second: J_mant02
+  - first:
+      4: 400020
+    second: J_mune
+  - first:
+      4: 400022
+    second: J_R_asi
+  - first:
+      4: 400024
+    second: J_R_hiji
+  - first:
+      4: 400026
+    second: J_R_hiza
+  - first:
+      4: 400028
+    second: J_R_kata
+  - first:
+      4: 400030
+    second: J_R_momo
+  - first:
+      4: 400032
+    second: J_R_te
+  - first:
+      4: 400034
+    second: L_mant
+  - first:
+      4: 400036
+    second: locator_01
+  - first:
+      4: 400038
+    second: unito
+  - first:
+      4: 400040
+    second: //RootNode
+  - first:
+      43: 4300000
+    second: unito
+  - first:
+      74: 7400000
+    second: 02_Move
+  - first:
+      95: 9500000
+    second: //RootNode
+  - first:
+      111: 11100000
+    second: //RootNode
+  - first:
+      137: 13700000
+    second: unito
+  externalObjects: {}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
+    resampleCurves: 1
     optimizeGameObjects: 0
-    animationCompression: 1
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 2
     extraExposedTransformPaths: []
-    clipAnimations: []
+    extraUserProperties: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: 02_Move
+      takeName: Take 001
+      internalID: 7400000
+      firstFrame: 0
+      lastFrame: 19
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: .00999999978
+    globalScale: 0.01
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 0
+    importVisibility: 0
     importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
+    keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
+    useFileScale: 0
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 1
+    tangentImportMode: 4
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
+    serializedVersion: 3
     human: []
-    skeleton: []
-    armTwist: .5
-    foreArmTwist: .5
-    upperLegTwist: .5
-    legTwist: .5
-    armStretch: .0500000007
-    legStretch: .0500000007
+    skeleton:
+    - name: unito@02_Move(Clone)
+      parentName: 
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: locator_01
+      parentName: unito@02_Move(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: J_kosi
+      parentName: locator_01
+      position: {x: -0, y: 0.53, z: 0}
+      rotation: {x: 0.00000004656613, y: -0.0000000014551913, z: 0.0000000014551913, w: 1}
+      scale: {x: 1, y: 0.99999994, z: 1}
+    - name: J_mune
+      parentName: J_kosi
+      position: {x: -0, y: 0.049999997, z: 0}
+      rotation: {x: -0.00000004656613, y: 0.0000000014551914, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1.0000001}
+    - name: L_mant
+      parentName: J_mune
+      position: {x: 1.2237976e-16, y: 0.34, z: -0.099999994}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: J_mant01
+      parentName: L_mant
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: -0.000000011641532, y: -0, z: -0.000000002182787, w: 1}
+      scale: {x: 1, y: 1.0000001, z: 1}
+    - name: J_mant02
+      parentName: J_mant01
+      position: {x: -3.1554436e-32, y: 1.4210854e-16, z: -0.21}
+      rotation: {x: 0.000000017462298, y: 0.0000000014551912, z: 0.0000000010913935, w: 1}
+      scale: {x: 1, y: 1, z: 0.9999999}
+    - name: J_atama
+      parentName: J_mune
+      position: {x: -0.000000107633305, y: 0.39999998, z: 0}
+      rotation: {x: 0.000000005820766, y: -0.000000002910383, z: -0.0000000021827868, w: 1}
+      scale: {x: 1, y: 1.0000001, z: 1}
+    - name: J_L_kata
+      parentName: J_mune
+      position: {x: -0.20000003, y: 0.22999996, z: 0.00000059350793}
+      rotation: {x: -0.000000005820766, y: -0.000000011641532, z: -0.0000000014551914, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: J_L_hiji
+      parentName: J_L_kata
+      position: {x: -0.17999999, y: 0.0000000028991096, z: -6.7762634e-23}
+      rotation: {x: 0.000000017462298, y: 0.000000023283064, z: -0.00000004656613, w: 1}
+      scale: {x: 1, y: 1.0000001, z: 1}
+    - name: J_L_te
+      parentName: J_L_hiji
+      position: {x: -0.19, y: 0.0000000020401147, z: 0}
+      rotation: {x: -0, y: -0, z: -4.0657581e-16, w: 1}
+      scale: {x: 1, y: 1.0000001, z: 1.0000001}
+    - name: J_R_kata
+      parentName: J_mune
+      position: {x: 0.19999996, y: 0.23000003, z: 0}
+      rotation: {x: -0.00000006984919, y: 1.110223e-16, z: -0.0000000014551913, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: J_R_hiji
+      parentName: J_R_kata
+      position: {x: 0.17999999, y: -0.0000000028991092, z: 0}
+      rotation: {x: 0.00000011641532, y: 0.000000034924597, z: 0.000000011641533, w: 1}
+      scale: {x: 1, y: 1, z: 1.0000001}
+    - name: J_R_te
+      parentName: J_R_hiji
+      position: {x: 0.19, y: -0.0000000020401147, z: 0}
+      rotation: {x: -0, y: -0, z: 3.7513395e-16, w: 1}
+      scale: {x: 1, y: 1, z: 1.0000001}
+    - name: J_L_momo
+      parentName: J_kosi
+      position: {x: -0.14, y: -0.19, z: -5.6897434e-12}
+      rotation: {x: -0.00000006984919, y: -0.000000003637979, z: 3.4819153e-16, w: 1}
+      scale: {x: 1, y: 1, z: 0.99999994}
+    - name: J_L_hiza
+      parentName: J_L_momo
+      position: {x: -1.7763568e-17, y: -0.13, z: 1.0339757e-27}
+      rotation: {x: 0.00000004656613, y: 0.00000000691216, z: -0.0000000038198777, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: J_L_asi
+      parentName: J_L_hiza
+      position: {x: 1.7763568e-17, y: -0.17999999, z: 5.6906073e-12}
+      rotation: {x: -0, y: -0, z: 1.2221666e-16, w: 1}
+      scale: {x: 1, y: 1.0000001, z: 1}
+    - name: J_R_momo
+      parentName: J_kosi
+      position: {x: 0.14, y: -0.19, z: -5.691456e-12}
+      rotation: {x: -0.00000004656613, y: 0.0000000043655746, z: 0.0000000014551916, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: J_R_hiza
+      parentName: J_R_momo
+      position: {x: 1.7763568e-17, y: -0.13, z: 1.0339757e-27}
+      rotation: {x: 0.000000011641532, y: -0.0000000043655746, z: -0.000000002910383, w: 1}
+      scale: {x: 1, y: 1.0000001, z: 0.99999994}
+    - name: J_R_asi
+      parentName: J_R_hiza
+      position: {x: -1.7763568e-17, y: -0.17999999, z: 5.6913346e-12}
+      rotation: {x: -0, y: -0, z: 5.0821977e-17, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: unito
+      parentName: unito@02_Move(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
     feetSpacing: 0
+    globalScale: 0.01
     rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 1
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -16,40 +16,79 @@ public class ObjectPool : MonoBehaviour
 
     private List<IObject> useObjectList = new List<IObject>();
 
+    private GameObject originGameObject;  // GameObject prefab
+
+
     // Method ───────────────────────────────────────────────────────────
     private IObject InstantiatePoolObject()
     {
-        IObject newObj = GameObject.Instantiate<IObject>(origin);
+        GameObject go = GameObject.Instantiate(originGameObject);
+        IObject newObj = go.GetComponent<IObject>();
+
+        if (newObj == null)
+        {
+            Debug.LogError("Prefab에 IObject 인터페이스가 구현된 컴포넌트가 없습니다.");
+            return null;
+        }
 
         newObj.OnEnter();
         newObj.ConnectPool(this);
 
-        newObj.gameObject.SetActive(false);
-        newObj.transform.SetParent(poolObject.transform);
+        go.SetActive(false);
+        go.transform.SetParent(poolObject.transform);
 
         useObjectList.Add(newObj);
 
         return newObj;
     }
 
-    public ObjectPool(IObject prefab, Transform parent = null, int count = 1)
+    public void Init(GameObject prefab, Transform parent, int initialSize)
     {
-        origin = prefab;
-
-        GameObject poolObject = new GameObject();
-
-        poolObject.name = prefab.gameObject.name + "Pool";
-        poolObject.transform.SetParent(parent);
-        poolObject.transform.localScale = Vector3.one;
-        poolObject.transform.localPosition = Vector3.zero;
-
-        this.poolObject = poolObject;
-
-        for (int i = 0; i < count; i++)
+        if (prefab == null)
         {
-            _pool.Enqueue(InstantiatePoolObject());
+            Debug.LogError("Init에서 전달된 prefab이 null입니다.");
+            return;
+        }
+
+        originGameObject = prefab;
+        origin = prefab.GetComponent<IObject>();
+
+        if (origin == null)
+        {
+            Debug.LogError("Prefab에 IObject 인터페이스가 구현된 컴포넌트가 없습니다.");
+            return;
+        }
+
+        poolObject = new GameObject(prefab.name + "_Pool");
+        poolObject.transform.SetParent(parent);
+        poolObject.transform.localPosition = Vector3.zero;
+        poolObject.transform.localScale = Vector3.one;
+
+        for (int i = 0; i < initialSize; i++)
+        {
+            IObject obj = InstantiatePoolObject();
+            if (obj != null) _pool.Enqueue(obj);
         }
     }
+
+    //public ObjectPool(IObject prefab, Transform parent = null, int count = 1)
+    //{
+    //    origin = prefab;
+
+    //    GameObject poolObject = new GameObject();
+
+    //    poolObject.name = prefab.gameObject.name + "Pool";
+    //    poolObject.transform.SetParent(parent);
+    //    poolObject.transform.localScale = Vector3.one;
+    //    poolObject.transform.localPosition = Vector3.zero;
+
+    //    this.poolObject = poolObject;
+
+    //    for (int i = 0; i < count; i++)
+    //    {
+    //        _pool.Enqueue(InstantiatePoolObject());
+    //    }
+    //}
 
     public void DestroyPool()
     {

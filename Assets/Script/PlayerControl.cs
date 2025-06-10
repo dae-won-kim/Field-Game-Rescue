@@ -48,6 +48,8 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] RescueNPC rescueNPC = null;
     private GameStatus game_status = null;
 
+    private Animator animator;
+
     public void SetTrapped(bool value)
     {
         isTrapped = value;
@@ -63,6 +65,7 @@ public class PlayerControl : MonoBehaviour
         }
         else if (isTrapped)
         {
+            animator.Play("05_died");
             return;
         }
         else
@@ -108,15 +111,15 @@ public class PlayerControl : MonoBehaviour
     }
     private void move_control()
     {
-        Vector3 move_vector = Vector3.zero; // 이동용 벡터.
-        Vector3 position = this.transform.position; // 현재 위치를 보관.
+        Vector3 move_vector = Vector3.zero;
+        Vector3 position = this.transform.position;
         bool is_moved = false;
 
         // 방향키 입력
         if (this.key.right)
-        { // →키가 눌렸으면.
-            move_vector += Vector3.right; // 이동용 벡터를 오른쪽으로 향한다.
-            is_moved = true; // '이동 중' 플래그.
+        {
+            move_vector += Vector3.right;
+            is_moved = true;
         }
         if (this.key.left)
         {
@@ -134,43 +137,51 @@ public class PlayerControl : MonoBehaviour
             is_moved = true;
         }
 
-        ChangeMoveSpeed(); // 원래 위치
+        ChangeMoveSpeed();
+
         if (is_moved && !GameStatus.IsFeverTime)
         {
-            // 들고 있는 아이템에 따라 '체력 소모 정도'를 조사한다.
             float consume = this.item_root.getConsumeSatiety(this.carried_item);
-
-            // 가져온 '소모 정도'를 체력에서 뺀다.
             this.game_status.addSatiety(-consume * Time.deltaTime);
         }
 
-        move_vector.Normalize(); // 길이를 1로.
-        move_vector *= MoveSpeed * Time.deltaTime; // 속도×시간＝거리.
-        position += move_vector; // 위치를 이동.
-        position.y = 0.0f; // 높이를 0으로 한다.
+        // 애니메이션 제어 (중복 방지)
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if (is_moved)
+        {
+            if (!stateInfo.IsName("02_Move"))
+            {
+                animator.Play("02_Move");
+            }
+        }
+        else
+        {
+            if (!stateInfo.IsName("01_Idle"))
+            {
+                animator.Play("01_Idle");
+            }
+        }
 
-        // 세계의 중앙에서 갱신한 위치까지의 거리가 섬의 반지름보다 크면.
+        move_vector.Normalize();
+        move_vector *= MoveSpeed * Time.deltaTime;
+        position += move_vector;
+        position.y = 0.0f;
+
         if (position.magnitude > MOVE_AREA_RADIUS)
         {
             position.Normalize();
-            position *= MOVE_AREA_RADIUS; // 위치를 섬의 끝자락에 머물게 한다.
+            position *= MOVE_AREA_RADIUS;
         }
-        // 새로 구한 위치(position)의 높이를 현재 높이로 되돌린다.
         position.y = this.transform.position.y;
-
-        // 실제 위치를 새로 구한 위치로 변경한다.
         this.transform.position = position;
 
-        // 이동 벡터의 길이가 0.01보다 큰 경우.
-        // =어느 정도 이상의 이동한 경우.
-        if (move_vector.magnitude > 0.01f)
+        if (is_moved)
         {
-            // 캐릭터의 방향을 천천히 바꾼다.
             Quaternion q = Quaternion.LookRotation(move_vector, Vector3.up);
-            this.transform.rotation =
-            Quaternion.Lerp(this.transform.rotation, q, 0.2f);
+            this.transform.rotation = Quaternion.Lerp(this.transform.rotation, q, 0.2f);
         }
     }
+
 
     private IEnumerator FeverTime()
     {
@@ -200,36 +211,84 @@ public class PlayerControl : MonoBehaviour
         do
         {
             if (!this.key.pick)
-            { // '줍기/버리기'키가 눌리지 않았으면.
-                break; // 아무것도 하지 않고 메소드 종료.
+            {
+                // '줍기/버리기'키가 눌리지 않았으면 아무것도 하지 않고 메소드 종료.
+                break;
             }
+
             if (this.carried_item == null)
-            { // 들고 있는 아이템이 없고.
+            {
+                // 들고 있는 아이템이 없을 경우.
                 if (this.closest_item == null)
-                {// 주목 중인 아이템이 없으면.
-                    break; // 아무것도 하지 않고 메소드 종료.
+                {
+                    // 주목 중인 아이템이 없으면 아무것도 하지 않고 종료.
+                    break;
                 }
-                // 주목 중인 아이템을 들어올린다.
-                this.carried_item = this.closest_item;
 
-                // 들고 있는 아이템을 자신의 자식으로 설정.
-                this.carried_item.transform.parent = this.transform;
-
-                // 2.0f 위에 배치(머리 위로 이동).
-                this.carried_item.transform.localPosition = Vector3.up * 2.0f;
-
-                // 주목 중 아이템을 없앤다.
-                this.closest_item = null;
+                // Coroutine을 시작하여 pick 애니메이션을 재생하고 끝나기를 기다림.
+                StartCoroutine(PickItemCoroutine());
             }
             else
-            { // 들고 있는 아이템이 있을 경우.
-              // 들고 있는 아이템을 약간(1.0f) 앞으로 이동시켜서.
-                this.carried_item.transform.localPosition = Vector3.forward * 1.0f;
-                this.carried_item.transform.parent = null;// 자식 설정을 해제.
-                this.carried_item = null; // 들고 있던 아이템을 없앤다.
+            {
+                // 들고 있는 아이템이 있을 경우, put 애니메이션과 함께 내려놓기.
+                StartCoroutine(PutItemCoroutine());
             }
         } while (false);
     }
+
+    // 아이템을 줍는 애니메이션과 행동을 처리하는 코루틴
+    private IEnumerator PickItemCoroutine()
+    {
+        // 트리거를 초기화 후 다시 설정하여 중복 트리거 방지
+        animator.ResetTrigger("pick");
+        animator.SetTrigger("pick");
+
+        // 지정된 상태로 전환될 때까지 대기
+        yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).IsName("09_pickup"));
+
+        // 아이템을 들어올림
+        this.carried_item = this.closest_item;
+
+        // 들고 있는 아이템을 자신의 자식으로 설정
+        this.carried_item.transform.parent = this.transform;
+
+        // 2.0f 위에 배치 (머리 위로 이동)
+        this.carried_item.transform.localPosition = Vector3.up * 2.0f;
+
+        // 주목 중 아이템을 없앰
+        this.closest_item = null;
+
+        // 해당 애니메이션의 길이만큼 대기
+        float animDuration = animator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSeconds(animDuration);
+
+        
+    }
+
+    // 아이템을 내려놓는 애니메이션과 행동을 처리하는 코루틴
+    private IEnumerator PutItemCoroutine()
+    {
+        // 트리거를 초기화 후 다시 설정하여 중복 트리거 방지
+        animator.ResetTrigger("put");
+        animator.SetTrigger("put");
+
+        // 지정된 상태로 전환될 때까지 대기
+        yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).IsName("10_put"));
+
+        // 아이템을 약간 앞으로 이동
+        this.carried_item.transform.localPosition = Vector3.forward * 1.0f;
+
+        // 자식 설정을 해제
+        this.carried_item.transform.parent = null;
+
+        // 들고 있던 아이템을 없앰
+        this.carried_item = null;
+
+        // 해당 애니메이션의 길이만큼 대기
+        float animDuration = animator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSeconds(animDuration);
+    }
+
 
     // 접촉한 물건이 자신의 정면에 있는지 판단한다.
     private bool is_other_in_view(GameObject other)
@@ -412,6 +471,7 @@ public class PlayerControl : MonoBehaviour
         this.game_status = GameObject.Find("GameRoot").GetComponent<GameStatus>();
 
         this.rescueNPC = GameObject.Find("RescueNPC").GetComponentInChildren<RescueNPC>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     void Update()
@@ -523,6 +583,11 @@ public class PlayerControl : MonoBehaviour
                         AudioController.Instance?.PlayerEating();
 
                         // 들고 있는 아이템의 '체력 회복 정도'를 가져와서 설정.
+                        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+                        if (!stateInfo.IsName("08_eat"))
+                        {
+                            animator.Play("08_eat");
+                        }
                         this.game_status.addSatiety(this.item_root.getRegainSatiety(this.carried_item));
 
                         GameObject.Destroy(this.carried_item);
@@ -534,6 +599,11 @@ public class PlayerControl : MonoBehaviour
                     {
                         // 스트레스 수치 낮추기
                         AudioController.Instance?.PlayerStressDown();
+                        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+                        if (!stateInfo.IsName("08_eat"))
+                        {
+                            animator.Play("08_eat");
+                        }
                         this.game_status.subtractEmotion(this.item_root.getRegainEmotion(this.carried_item));
 
                         GameObject.Destroy(this.carried_item);
@@ -545,6 +615,11 @@ public class PlayerControl : MonoBehaviour
                     {
                         // NPC의 게이지 채우기
                         AudioController.Instance?.PlayerHealing();
+                        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+                        if (!stateInfo.IsName("07_repair"))
+                        {
+                            animator.Play("07_repair");
+                        }
                         // this.RescueNPC.addGauge(this.item_root.getRegainNPCGauge(this.carried_item));
                         this.rescueNPC.addGauge(0.2f);
 
@@ -558,7 +633,13 @@ public class PlayerControl : MonoBehaviour
                     if (this.carried_item != null)
                     {
                         // 들고 있는 아이템의 '수리 진척 상태'를 가져와서 설정.
+                        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+                        if (!stateInfo.IsName("07_repair"))
+                        {
+                            animator.Play("07_repair");
+                        }
                         AudioController.Instance?.PlayerRepairing();
+
                         this.game_status.addRepairment(this.item_root.getGainRepairment(this.carried_item));
 
                         GameObject.Destroy(this.carried_item);
@@ -576,7 +657,7 @@ public class PlayerControl : MonoBehaviour
                 this.move_control();
                 this.pick_or_drop_control();
 
-                if(!GameStatus.IsFeverTime)
+                if (!GameStatus.IsFeverTime)
                 {
                     // 이동 가능한 경우는 항상 배가 고파진다.
                     this.game_status.alwaysSatiety();

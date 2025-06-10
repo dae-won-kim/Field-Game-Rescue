@@ -2,15 +2,14 @@ using UnityEngine;
 
 public class TrapManager : MonoBehaviour
 {
-    public Trap trapPrefab;
+    public GameObject trapPrefab;
     private GameObject island;
 
     private float TRAP_RESPAWN_TIME = 40f;
-    private ObjectPool trapPool;
+    [SerializeField] ObjectPool trapPool;
     private float timer;
 
-    [Header("Trap Spawn Margin")]
-    public float trapSpawnMargin = 8f; // x, z 방향에서 얼마나 안쪽으로 제한할지 설정
+    private float trapSpawnMargin = 8f; // x, z 방향에서 얼마나 안쪽으로 제한할지 설정
 
     private void SpawnTrapAtRandomPosition()
     {
@@ -30,7 +29,10 @@ public class TrapManager : MonoBehaviour
     void Start()
     {
         island = GameObject.Find("Island");
-        trapPool = new ObjectPool(trapPrefab, this.transform, 10);
+        // trapPool =  new ObjectPool(trapPrefab, this.transform, 10);
+        trapPool = this.gameObject.AddComponent<ObjectPool>();
+        trapPool.Init(trapPrefab, this.transform, 10);
+
         timer = 0f;
     }
 

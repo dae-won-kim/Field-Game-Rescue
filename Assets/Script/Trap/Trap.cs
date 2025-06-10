@@ -21,7 +21,7 @@ public class Trap : IObject // 풀링할 오브젝트라서 상속
                 { 
                     PlayerControl player_control = t.GetComponent<PlayerControl>();
                     Debug.Log(player_control.name);
-                    StartCoroutine(ChangePlayerSetting(player_control));
+                    StartCoroutine(HandleTrap(player_control));
                 }
             }
 
@@ -36,14 +36,12 @@ public class Trap : IObject // 풀링할 오브젝트라서 상속
         }
     }
 
-    IEnumerator ChangePlayerSetting(PlayerControl player)
+    private IEnumerator HandleTrap(PlayerControl player)
     {
-        
-        player.SetTrapped(true);      // 트랩에 걸림
-        player.MoveSpeed = 0f;       
-        yield return new WaitForSeconds(2f);
-        player.SetTrapped(false);     // 트랩 해제
-
+        player.SetTrapped(true);                 
+        yield return new WaitForSeconds(2f);    
+        player.SetTrapped(false);                
+        this.gameObject.SetActive(false);        
     }
 
     public override void OnEnter()
@@ -81,7 +79,7 @@ public class Trap : IObject // 풀링할 오브젝트라서 상속
         this.transform.position = pos;
 
         waitTime = new WaitForSeconds(1);
-        Event_Area = GetComponent<Collider>();
+        Event_Area = GetComponent<BoxCollider>();
     }
 
     // Update is called once per frame

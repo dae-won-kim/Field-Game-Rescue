@@ -10,7 +10,7 @@ public class CameraSetting : MonoBehaviour
     void Start()
     {
         playerTransform = GameObject.Find("Player").GetComponentInChildren<Transform>();
-        offset = new Vector3(0f, 16f, -15f);
+        offset = new Vector3(0f, 10f, -7f);
     }
 
     void LateUpdate()

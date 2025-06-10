@@ -24,7 +24,7 @@ public class RescueNPC : NPCRoot
             GaugeFill.transform.localScale = new Vector3(0.05f, 0.5f, 0.25f * Gauge);
         }
     }
-    public override void addGauge(float number) 
+    public override void addGauge(float number)
     {
         Gauge += number;
     }
@@ -34,13 +34,17 @@ public class RescueNPC : NPCRoot
         this.Gauge = 0f;
         this.isRescued = false;
         base.setVariable();
-        setGauges();    
+        setGauges();
     }
 
     void Update()
     {
-        updateGauge();
-        if (this.Gauge >=1.0f)
+        if (Gauge <= 1.0f)
+        {
+            updateGauge();
+        }
+
+        if (this.Gauge >= 1.0f)
         {
             isRescued = true;
         }
