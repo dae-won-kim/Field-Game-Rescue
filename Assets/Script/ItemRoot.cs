@@ -68,7 +68,7 @@ public class ItemRoot : MonoBehaviour
         // 철광석의 출현 포인트를 취득.
         Vector3 pos = GameObject.Find("IronRespawn").transform.position;
         // 출현 위치를 조정.
-        pos.y = 1.0f;
+        pos.y = 1.3f;
         pos.x += Random.Range(-3.0f, 3.0f);
         pos.z += Random.Range(-3.0f, 3.0f);
         // 철광석의 위치를 이동.
@@ -82,7 +82,7 @@ public class ItemRoot : MonoBehaviour
         // 사과의 출현 포인트를 취득.
         Vector3 pos = GameObject.Find("AppleRespawn").transform.position;
         // 출현 위치를 조정.
-        pos.y = 1.0f;
+        pos.y = 1.3f;
         pos.x += Random.Range(-3.0f, 3.0f);
         pos.z += Random.Range(-3.0f, 3.0f);
         // 사과의 위치를 이동.

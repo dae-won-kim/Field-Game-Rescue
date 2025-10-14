@@ -16,6 +16,7 @@ TagManager:
   - NPC
   - Rescue
   - Trap
+  - coin
   layers:
   - Default
   - TransparentFX

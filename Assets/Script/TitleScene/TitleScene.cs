@@ -53,13 +53,15 @@ public class TitleScene : MonoBehaviour
         TextMeshProUGUI GoalMessage = GoalUI.GetComponentInChildren<TextMeshProUGUI>();
         GoalMessage.rectTransform.localPosition = Vector2.zero + new Vector2(-133f,0f);
         GoalMessage.text =
-           "Goal\n" +
-           "Repair Car and Rescue injured person in 5 Min\n"+
+           "Goal\n\n" +
+           "1. Repair Car and Rescue injured person in 5 Min\n"+
+           "2. Get Coins as much as you can\n\n"+
            "Move: Arrow Keys\n"+
            "Pick Item: Z key, Interaction: X key\n"+
            "\n"+
            "Game Over Conditions\n"+
-           "Health goes 0 or time over ";
+           "Health goes 0 or time over\n\n"+
+           "Press Spacebar to go next, BackSpace to go before";
         GoalMessage.enableAutoSizing = true;
         GoalMessage.alignment = TextAlignmentOptions.Center;
 

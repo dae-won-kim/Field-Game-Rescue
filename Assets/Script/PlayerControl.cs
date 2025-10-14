@@ -187,6 +187,7 @@ public class PlayerControl : MonoBehaviour
     private IEnumerator FeverTime()
     {
         rescueNPC.feverTimeTriggered = true;
+        AudioController.Instance?.PlayerFeverTime();
         GameStatus.StartFeverTime();   // GameState 변경
 
         float originalSpeed = MoveSpeed;
@@ -234,13 +235,15 @@ public class PlayerControl : MonoBehaviour
 
                 // 주목 중 아이템을 없앤다.
                 this.closest_item = null;
+                AudioController.Instance?.PlayerPickUp();
             }
             else
             { // 들고 있는 아이템이 있을 경우.
               // 들고 있는 아이템을 약간(1.0f) 앞으로 이동시켜서.
                 this.carried_item.transform.localPosition = Vector3.forward * 1.0f;
-                this.carried_item.transform.parent = null;// 자식 설정을 해제.
+                this.carried_item.transform.parent = null; // 자식 설정을 해제.
                 this.carried_item = null; // 들고 있던 아이템을 없앤다.
+                AudioController.Instance?.PlayerPut();
             }
         } while (false);
     }
@@ -423,6 +426,11 @@ public class PlayerControl : MonoBehaviour
                     this.closest_event = null; // 주목을 그만둔다.
                 }
             }
+        }
+        else if (other_go.tag == "coin")
+        {
+            this.game_status.coin += 1;
+            other_go.SetActive(false);
         }
     }
 

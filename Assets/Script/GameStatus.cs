@@ -4,7 +4,6 @@ using UnityEngine;
 
 
 
-
 public enum GameState
 {
     Normal,
@@ -58,13 +57,13 @@ public class GameStatus : MonoBehaviour
 
     // 스트레스 아이템을 사용했을 때 게이지가 감소하는 정도
     public static float REGAIN_EMOTION_STRESS = 0.15f;
-
     public static float REGAIN_GAUGE_HEAL = 0.1f;
 
 
     public float repairment = 0.0f; // 우주선의 수리 정도(0.0f~1.0f).
     public float satiety = 1.0f; // 배고픔,체력(0.0f~1.0f).
     public float emotion = 0.0f; // 감정 -> stress EMOTION
+    public int coin = 0;
 
     public GUIStyle guistyle; // 폰트 스타일.
 
@@ -136,7 +135,12 @@ public class GameStatus : MonoBehaviour
         x += 350;
         // 수리 정도를 표시.
         GUI.Label(new Rect(x, y, 200.0f, 20.0f),
-            "구급차 " + (this.repairment * 100.0f).ToString("000"), guistyle);
+            "구급차: " + (this.repairment * 100.0f).ToString("000"), guistyle);
+
+        x += 300;
+        // 수리 정도를 표시.
+        GUI.Label(new Rect(x, y, 200.0f, 20.0f),
+            "코인: " + (this.coin).ToString("000"), guistyle);
     }
 
     void Start()

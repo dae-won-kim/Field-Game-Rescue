@@ -18,11 +18,12 @@ public class AudioController : MonoBehaviour
     public AudioClip FeverTimeSound;
 
 
-    // PlayerEffect Sound
+    //// PlayerEffect Sound
     public AudioClip PickSound;
     public AudioClip DropSound;
+    //public AudioClip TrapSound;
 
-    public AudioClip TrapSound;
+
     public AudioClip EatSound;
     public AudioClip RepairSound;
     public AudioClip StressSound;
@@ -65,13 +66,14 @@ public class AudioController : MonoBehaviour
                 break;
             case "GameScene":
                 newBGM = InGameBGM;
-                currAudio.volume = 0.2f;
                 break;
         }
+
 
         if (newBGM != null && currAudio.clip != newBGM)
         {
             currAudio.clip = newBGM;
+            currAudio.volume = 0.2f;
             currAudio.Play();
         }
     }
@@ -103,7 +105,18 @@ public class AudioController : MonoBehaviour
             PlayerEffectAudio.PlayOneShot(HealSound, 1.0f);
     }
 
-    //=========
+    public void PlayerPickUp()
+    {
+        if (PickSound != null)
+            PlayerEffectAudio.PlayOneShot(PickSound,0.5f);
+    }
+
+    public void PlayerPut()
+    {
+        if (DropSound != null)
+            PlayerEffectAudio.PlayOneShot(DropSound, 0.5f);
+    }
+
     public void PlayGameClear()
     {
         if (GameClearSound != null)
@@ -112,7 +125,7 @@ public class AudioController : MonoBehaviour
     public void PlayGameOver()
     {
         if (GameFailSound != null)
-            PlayerEffectAudio.PlayOneShot(GameFailSound, 1.0f);
+            PlayerEffectAudio.PlayOneShot(GameFailSound, 0.5f);
     }
 
 
@@ -138,6 +151,7 @@ public class AudioController : MonoBehaviour
         if (queuedCount > 0)
             Invoke(nameof(PlayNextAudio), queuedClip.length); // 다음 재생 예약
     }
+
     void Awake()
     {
         if (Instance == null)
