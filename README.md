@@ -9,10 +9,13 @@
 
 
 - Genre: 3D, Flash, Field Game
-- 핵심 기능 3~5개
-- 
-- 데모 GIF/이미지
-- 
-- Tech Stack
+  
+- C#, Unity
+  
+- Stack
+  1. Object Pooling
+  2. Audio Manager based on Singleton method
+  3. Create RescueNPC by inheriting from NPCRoot
+     
 - Links
   - https://www.notion.so/daewons-portfolio/Rescue-268620eee35b81439889de7fb2aa82c8
