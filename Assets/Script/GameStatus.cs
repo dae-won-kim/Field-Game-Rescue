@@ -15,6 +15,21 @@ public class GameStatus : MonoBehaviour
 {
     // 아이템 이벤트 이외의 이벤트
     public static GameState CurrentState { get; private set; } = GameState.Normal;
+    public static GameStatus Instance { get; private set; }
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
+        rescueNPC = GameObject.Find("RescueNPC").GetComponentInChildren<RescueNPC>();
+    }
 
     public static void SetState(GameState newState)
     {
@@ -146,7 +161,6 @@ public class GameStatus : MonoBehaviour
     void Start()
     {
         this.guistyle.fontSize = 48;
-        rescueNPC = GameObject.Find("RescueNPC").GetComponentInChildren<RescueNPC>();
     }
 
     // Update is called once per frame
