@@ -10,23 +10,23 @@ public class SceneControl : MonoBehaviour
     private PlayerControl player_control = null;
 
     public enum STEP
-    { // °ÔÀÓ »óÅÂ.
-        NONE = -1, // »óÅÂ Á¤º¸ ¾øÀ½.
-        PLAY = 0, // ÇÃ·¹ÀÌ Áß.
-        CLEAR, // Å¬¸®¾î »óÅÂ.
-        GAMEOVER, // °ÔÀÓ ¿À¹ö »óÅÂ.
-        NUM, // »óÅÂ°¡ ¸î Á¾·ùÀÎÁö ³ªÅ¸³½´Ù(=3).
+    { // ê²Œì„ ìƒíƒœ.
+        NONE = -1, // ìƒíƒœ ì •ë³´ ì—†ìŒ.
+        PLAY = 0, // í”Œë ˆì´ ì¤‘.
+        CLEAR, // í´ë¦¬ì–´ ìƒíƒœ.
+        GAMEOVER, // ê²Œì„ ì˜¤ë²„ ìƒíƒœ.
+        NUM, // ìƒíƒœê°€ ëª‡ ì¢…ë¥˜ì¸ì§€ ë‚˜íƒ€ë‚¸ë‹¤(=3).
     };
 
 
-    public STEP step = STEP.NONE; // Çö´ë ´Ü°è.
-    public STEP next_step = STEP.NONE; // ´ÙÀ½ ´Ü°è.
-    
-    public float step_timer = 000.0f; // Å¸ÀÌ¸Ó.
-    private float clear_time = 0.0f; // Å¬¸®¾î ½Ã°£.
+    public STEP step = STEP.NONE; // í˜„ëŒ€ ë‹¨ê³„.
+    public STEP next_step = STEP.NONE; // ë‹¤ìŒ ë‹¨ê³„.
+
+    public float step_timer = 000.0f; // íƒ€ì´ë¨¸.
+    private float clear_time = 0.0f; // í´ë¦¬ì–´ ì‹œê°„.
     private float GAME_OVER_TIME = 300.0f;
-    
-    public GUIStyle guistyle; // ÆùÆ® ½ºÅ¸ÀÏ.
+
+    public GUIStyle guistyle; // í°íŠ¸ ìŠ¤íƒ€ì¼.
 
 
 
@@ -41,7 +41,7 @@ public class SceneControl : MonoBehaviour
                 timeStyle.fontSize = 40;
                 timeStyle.normal.textColor = Color.black;
 
-                // Á¦ÇÑ ½Ã°£¿¡ µµ´ŞÇÒ ¶§±îÁö ³²Àº ½Ã°£À» Ç¥½Ã.
+                // ì œí•œ ì‹œê°„ì— ë„ë‹¬í•  ë•Œê¹Œì§€ ë‚¨ì€ ì‹œê°„ì„ í‘œì‹œ.
                 float blast_time = GAME_OVER_TIME - this.step_timer;
                 GUI.Label(new Rect(pos_x, pos_y, 200, 60),
                 blast_time.ToString("000.00"), timeStyle);
@@ -50,41 +50,41 @@ public class SceneControl : MonoBehaviour
             case STEP.CLEAR:
                 AudioController.Instance?.PlayGameClear();
                 GUI.color = Color.black;
-                // Å¬¸®¾î ¸Ş½ÃÁö¿Í Å¬¸®¾î ½Ã°£ Ç¥½Ã.
+                // í´ë¦¬ì–´ ë©”ì‹œì§€ì™€ í´ë¦¬ì–´ ì‹œê°„ í‘œì‹œ.
                 GUI.Label(new Rect(pos_x, pos_y, 200, 20),
-                 "Å»Ãâ" + this.clear_time.ToString("000.00"), guistyle);
+                 "íƒˆì¶œ" + this.clear_time.ToString("000.00"), guistyle);
                 pos_y -= 52;
-                int ct = (int)clear_time; // Å¬¸®¾î ½Ã°£(float)¸¦ int·Î º¯È¯.
+                int ct = (int)clear_time; // í´ë¦¬ì–´ ì‹œê°„(float)ë¥¼ intë¡œ ë³€í™˜.
 
                 this.guistyle.fontSize = 60;
                 if (ct < 50)
-                { 
+                {
                     GUI.Label(new Rect(pos_x, pos_y, 200, 120),
-                     "¼º°ø! ´ÙÀ½ ¹ø¿¡ ´õ »¡¸® ´ÜÃàÇÒ µí?", guistyle);
+                     "ì„±ê³µ! ë‹¤ìŒ ë²ˆì— ë” ë¹¨ë¦¬ ë‹¨ì¶•í•  ë“¯?", guistyle);
                 }
                 else if (ct < 40)
-                { 
+                {
                     GUI.Label(new Rect(pos_x, pos_y, 200, 120),
-                     "¼º°ø! ½Ç·ÂÀÌ ÁÁÀ¸½Å µ¥¿ä?", guistyle);
+                     "ì„±ê³µ! ì‹¤ë ¥ì´ ì¢‹ìœ¼ì‹  ë°ìš”?", guistyle);
                 }
                 else if (ct < 30)
-                { 
+                {
                     GUI.Label(new Rect(pos_x, pos_y, 200, 120),
-                     "30ÃÊµµ ¾È³²±â°í ¾Æ½½¾Æ½½ÇÏ°Ô ¼º°ø!", guistyle);
+                     "30ì´ˆë„ ì•ˆë‚¨ê¸°ê³  ì•„ìŠ¬ì•„ìŠ¬í•˜ê²Œ ì„±ê³µ!", guistyle);
                 }
                 else
-                { // Á¦ÀÏ »¡¸® Å»Ãâ 
+                { // ì œì¼ ë¹¨ë¦¬ íƒˆì¶œ 
                     GUI.Label(new Rect(pos_x, pos_y, 200, 120),
-                     "¾öÃ»³­ ¼Óµµ·Î ¼º°ø!", guistyle);
+                     "ì—„ì²­ë‚œ ì†ë„ë¡œ ì„±ê³µ!", guistyle);
                 }
                 break;
             case STEP.GAMEOVER:
                 AudioController.Instance?.PlayGameOver();
                 GUI.color = Color.black;
                 this.guistyle.fontSize = 60;
-                // °ÔÀÓ ¿À¹ö ¸Ş½ÃÁö¸¦ Ç¥½Ã.
+                // ê²Œì„ ì˜¤ë²„ ë©”ì‹œì§€ë¥¼ í‘œì‹œ.
                 GUI.Label(new Rect(pos_x, pos_y, 200, 120),
-                 "°ÔÀÓ ¿À¹ö, ÁÂÅ¬¸¯ ½Ã ½ÃÀÛ Àü È­¸éÀ¸·Î ÀÌµ¿", guistyle);
+                 "ê²Œì„ ì˜¤ë²„, ì¢Œí´ë¦­ ì‹œ ì‹œì‘ ì „ í™”ë©´ìœ¼ë¡œ ì´ë™", guistyle);
                 break;
         }
     }
@@ -110,32 +110,32 @@ public class SceneControl : MonoBehaviour
                 case STEP.PLAY:
                     if (this.game_status.isGameClear())
                     {
-                        // Å¬¸®¾î »óÅÂ·Î ÀÌµ¿.
+                        // í´ë¦¬ì–´ ìƒíƒœë¡œ ì´ë™.
                         this.next_step = STEP.CLEAR;
                     }
                     if (this.game_status.isGameOver())
                     {
-                        // °ÔÀÓ ¿À¹ö »óÅÂ·Î ÀÌµ¿.
+                        // ê²Œì„ ì˜¤ë²„ ìƒíƒœë¡œ ì´ë™.
                         this.next_step = STEP.GAMEOVER;
                     }
                     if (this.step_timer > GAME_OVER_TIME)
                     {
-                        // Á¦ÇÑ ½Ã°£À» ³Ñ¾úÀ¸¸é °ÔÀÓ ¿À¹ö.
+                        // ì œí•œ ì‹œê°„ì„ ë„˜ì—ˆìœ¼ë©´ ê²Œì„ ì˜¤ë²„.
                         this.next_step = STEP.GAMEOVER;
                     }
                     break;
-                // Å¬¸®¾î ½Ã ¹× °ÔÀÓ ¿À¹ö ½ÃÀÇ Ã³¸®.
+                // í´ë¦¬ì–´ ì‹œ ë° ê²Œì„ ì˜¤ë²„ ì‹œì˜ ì²˜ë¦¬.
                 case STEP.CLEAR:
                     if (Input.GetMouseButtonDown(0))
                     {
-                        // ¸¶¿ì½º ¹öÆ°ÀÌ ´­·ÈÀ¸¸é TitleSceneÀ» ´Ù½Ã ÀĞ´Â´Ù.
+                        // ë§ˆìš°ìŠ¤ ë²„íŠ¼ì´ ëˆŒë ¸ìœ¼ë©´ TitleSceneì„ ë‹¤ì‹œ ì½ëŠ”ë‹¤.
                         SceneManager.LoadScene("TitleScene");
                     }
                     break;
                 case STEP.GAMEOVER:
                     if (Input.GetMouseButtonDown(0))
                     {
-                        // ¸¶¿ì½º ¹öÆ°ÀÌ ´­·ÈÀ¸¸é TitleSceneÀ» ´Ù½Ã ÀĞ´Â´Ù.
+                        // ë§ˆìš°ìŠ¤ ë²„íŠ¼ì´ ëˆŒë ¸ìœ¼ë©´ TitleSceneì„ ë‹¤ì‹œ ì½ëŠ”ë‹¤.
                         SceneManager.LoadScene("TitleScene");
                     }
                     break;
@@ -148,14 +148,14 @@ public class SceneControl : MonoBehaviour
             switch (this.step)
             {
                 case STEP.CLEAR:
-                    // PlayerControlÀ» Á¦¾î ºÒ°¡·Î.
+                    // PlayerControlì„ ì œì–´ ë¶ˆê°€ë¡œ.
                     this.player_control.enabled = false;
 
-                    // Å¬¸®¾î ½Ã°£ °»½Å.
+                    // í´ë¦¬ì–´ ì‹œê°„ ê°±ì‹ .
                     this.clear_time = this.GAME_OVER_TIME - this.step_timer;
                     break;
                 case STEP.GAMEOVER:
-                    // PlayerControl¸¦ Á¦¾î ºÒ°¡.
+                    // PlayerControlë¥¼ ì œì–´ ë¶ˆê°€.
                     this.player_control.enabled = false;
                     break;
             }

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
-    public static float MOVE_AREA_RADIUS = 20.0f; // 섬의 반지름.
+    public static float MoveAreaRadius = 20.0f; // 섬의 반지름.
     public float MoveSpeed = 7.0f; // 이동 속도.
-    public bool isTrapped = false;
+    public bool IsTrapped = false;
 
     private struct Key
     { // 키 조작 정보 구조체.
@@ -20,40 +20,40 @@ public class PlayerControl : MonoBehaviour
 
     private Key key; // 키 조작 정보를 보관하는 변수.
 
-    public enum STEP
+    public enum Step
     { // 플레이어의 상태를 나타내는 열거체.
-        NONE = -1, // 상태 정보 없음.
-        MOVE = 0, // 이동 중.
-        REPAIRING, // 수리 중.
-        EATING, // 식사 중.
-        EMOTION, // 감정 관련 처리
-        RESCUE,  // 구조자 치료 관련 처리
-        NUM, // 상태가 몇 종류 있는지 나타낸다(=3).
+        None = -1, // 상태 정보 없음.
+        Move = 0, // 이동 중.
+        Repairing, // 수리 중.
+        Eating, // 식사 중.
+        Emotion, // 감정 관련 처리
+        Rescue,  // 구조자 치료 관련 처리
+        Num, // 상태가 몇 종류 있는지 나타낸다(=3).
     };
-    public STEP step = STEP.NONE; // 현재 상태.
-    public STEP next_step = STEP.NONE; // 다음 상태.
-    public float step_timer = 0.0f; // 타이머.
-                                    // Use this for initialization
+    public Step step = Step.None; // 현재 상태.
+    public Step nextStep = Step.None; // 다음 상태.
+    public float stepTimer = 0.0f; // 타이머.
+                                   // Use this for initialization
 
     // 다음 네 개의 멤버 변수를 PlayerControl class에 추가.
-    private GameObject closest_item = null; // 플레이어의 정면에 있는 GameObject.
-    private GameObject carried_item = null; // 플레이어가 들어올린 GameObject.
-    private ItemRoot item_root = null; // ItemRoot 스크립트를 가짐.
-    public GUIStyle guistyle; // 폰트 스타일.
+    private GameObject closestItem = null; // 플레이어의 정면에 있는 GameObject.
+    private GameObject carriedItem = null; // 플레이어가 들어올린 GameObject.
+    private ItemRoot itemRoot = null; // ItemRoot 스크립트를 가짐.
+    public GUIStyle guiStyle; // 폰트 스타일.
 
-    private GameObject closest_event = null;// 주목하고 있는 이벤트를 저장
-    private EventRoot event_root = null; // EventRoot 클래스를 사용
-    private GameObject rocket_model = null; // 우주선의 모델을 사용
+    private GameObject closestEvent = null;// 주목하고 있는 이벤트를 저장
+    private EventRoot eventRoot = null; // EventRoot 클래스를 사용
+    private GameObject rocketModel = null; // 우주선의 모델을 사용
 
     [SerializeField] RescueNPC rescueNPC = null;
-    private GameStatus game_status = null;
+    private GameStatus gameStatus = null;
 
     private Animator animator;
-    private GameObject FeverEffect;
+    private GameObject feverEffect;
 
     public void SetTrapped(bool value)
     {
-        isTrapped = value;
+        IsTrapped = value;
         if (value) MoveSpeed = 0f;
     }
     private void ChangeMoveSpeed()
@@ -64,25 +64,25 @@ public class PlayerControl : MonoBehaviour
         {
             StartCoroutine(FeverTime());
         }
-        else if (isTrapped)
+        else if (IsTrapped)
         {
             animator.Play("05_died");
             return;
         }
         else
         {
-            if (game_status.emotion <= 0.4f)
+            if (gameStatus.emotion <= 0.4f)
                 MoveSpeed = 7.0f;
-            else if (game_status.emotion <= 0.65f)
+            else if (gameStatus.emotion <= 0.65f)
                 MoveSpeed = 6.0f;
-            else if (game_status.emotion <= 0.8f)
+            else if (gameStatus.emotion <= 0.8f)
                 MoveSpeed = 5.0f;
             else
                 MoveSpeed = 4.5f;
         }
     }
 
-    private void get_input()
+    private void GetInput()
     {
         this.key.up = false;
         this.key.down = false;
@@ -110,7 +110,7 @@ public class PlayerControl : MonoBehaviour
         // X 키가 눌렸으면 true를 대입.
         this.key.action = Input.GetKeyDown(KeyCode.X);
     }
-    private void move_control()
+    private void MoveControl()
     {
         Vector3 move_vector = Vector3.zero;
         Vector3 position = this.transform.position;
@@ -142,8 +142,8 @@ public class PlayerControl : MonoBehaviour
 
         if (is_moved && !GameStatus.IsFeverTime)
         {
-            float consume = this.item_root.getConsumeSatiety(this.carried_item);
-            this.game_status.addSatiety(-consume * Time.deltaTime);
+            float consume = this.itemRoot.getConsumeSatiety(this.carriedItem);
+            this.gameStatus.addSatiety(-consume * Time.deltaTime);
         }
 
         // 애니메이션 제어 (중복 방지)
@@ -168,15 +168,15 @@ public class PlayerControl : MonoBehaviour
         position += move_vector;
         position.y = 0.0f;
 
-        if (position.magnitude > MOVE_AREA_RADIUS)
+        if (position.magnitude > MoveAreaRadius)
         {
             position.Normalize();
-            position *= MOVE_AREA_RADIUS;
+            position *= MoveAreaRadius;
         }
         position.y = this.transform.position.y;
         this.transform.position = position;
 
-        if (is_moved)
+        if (is_moved && move_vector != Vector3.zero)
         {
             Quaternion q = Quaternion.LookRotation(move_vector, Vector3.up);
             this.transform.rotation = Quaternion.Lerp(this.transform.rotation, q, 0.2f);
@@ -191,26 +191,26 @@ public class PlayerControl : MonoBehaviour
         GameStatus.StartFeverTime();   // GameState 변경
 
         float originalSpeed = MoveSpeed;
-        float originalSatiety = this.game_status.satiety;
-        float originalEmotion = this.game_status.emotion;
-        FeverEffect.SetActive(true);
+        float originalSatiety = this.gameStatus.satiety;
+        float originalEmotion = this.gameStatus.emotion;
+        feverEffect.SetActive(true);
 
         MoveSpeed = 10.0f;
-        game_status.satiety = 1f;
-        game_status.emotion = 0f;
+        gameStatus.satiety = 1f;
+        gameStatus.emotion = 0f;
 
         yield return new WaitForSeconds(7f);
 
-        FeverEffect.SetActive(false);
+        feverEffect.SetActive(false);
         MoveSpeed = originalSpeed; // 속도 복원
-        this.game_status.satiety = originalSatiety; // 배고픔 복원
-        this.game_status.emotion = originalEmotion; // emotion수치 복원
+        this.gameStatus.satiety = originalSatiety; // 배고픔 복원
+        this.gameStatus.emotion = originalEmotion; // emotion수치 복원
         GameStatus.EndFeverTime();  // GameState 변경
 
     }
 
     // 물건을 줍거나 떨어뜨린다.
-    private void pick_or_drop_control()
+    private void PickOrDropControl()
     {
         do
         {
@@ -218,119 +218,40 @@ public class PlayerControl : MonoBehaviour
             { // '줍기/버리기'키가 눌리지 않았으면.
                 break; // 아무것도 하지 않고 메소드 종료.
             }
-            if (this.carried_item == null)
+            if (this.carriedItem == null)
             { // 들고 있는 아이템이 없고.
-                if (this.closest_item == null)
+                if (this.closestItem == null)
                 {// 주목 중인 아이템이 없으면.
                     break; // 아무것도 하지 않고 메소드 종료.
                 }
                 // 주목 중인 아이템을 들어올린다.
-                this.carried_item = this.closest_item;
+                this.carriedItem = this.closestItem;
 
                 // 들고 있는 아이템을 자신의 자식으로 설정.
-                this.carried_item.transform.parent = this.transform;
+                this.carriedItem.transform.parent = this.transform;
 
                 // 2.0f 위에 배치(머리 위로 이동).
-                this.carried_item.transform.localPosition = Vector3.up * 2.0f;
+                this.carriedItem.transform.localPosition = Vector3.up * 2.0f;
 
                 // 주목 중 아이템을 없앤다.
-                this.closest_item = null;
+                this.closestItem = null;
                 AudioController.Instance?.PlayerPickUp();
             }
             else
             { // 들고 있는 아이템이 있을 경우.
               // 들고 있는 아이템을 약간(1.0f) 앞으로 이동시켜서.
-                this.carried_item.transform.localPosition = Vector3.forward * 1.0f;
-                this.carried_item.transform.parent = null; // 자식 설정을 해제.
-                this.carried_item = null; // 들고 있던 아이템을 없앤다.
+                this.carriedItem.transform.localPosition = Vector3.forward * 1.0f;
+                this.carriedItem.transform.parent = null; // 자식 설정을 해제.
+                this.carriedItem = null; // 들고 있던 아이템을 없앤다.
                 AudioController.Instance?.PlayerPut();
             }
         } while (false);
     }
 
-    // 애니메이션 실패
-    /*
-    // 물건을 줍거나 떨어뜨린다.
-    private void pick_or_drop_control()
-    {
-        do
-        {
-            if (!this.key.pick)
-            {
-                // '줍기/버리기'키가 눌리지 않았으면 아무것도 하지 않고 메소드 종료.
-                break;
-            }
-
-            if (this.carried_item == null)
-            {
-                // 들고 있는 아이템이 없을 경우.
-                if (this.closest_item == null)
-                {
-                    // 주목 중인 아이템이 없으면 아무것도 하지 않고 종료.
-                    break;
-                }
-                // Coroutine을 시작하여 pick 애니메이션을 재생하고 끝나기를 기다림.
-                StartCoroutine(PickItemCoroutine());
-            }
-            else
-            {
-                // 들고 있는 아이템이 있을 경우, put 애니메이션과 함께 내려놓기.
-                StartCoroutine(PutItemCoroutine());
-            }
-        } while (false);
-    }
-
-    // 아이템을 줍는 애니메이션과 행동을 처리하는 코루틴
-    private IEnumerator PickItemCoroutine()
-    {
-        animator.SetTrigger("PickTrigger");
-        // 아이템을 들어올림
-        this.carried_item = this.closest_item;
-
-        // 들고 있는 아이템을 자신의 자식으로 설정
-        this.carried_item.transform.parent = this.transform;
-        yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).IsName("09_pickup"));
-      
-
-        // 2.0f 위에 배치 (머리 위로 이동)
-        this.carried_item.transform.localPosition = Vector3.up * 2.0f;
-
-        // 주목 중 아이템을 없앰
-        this.closest_item = null;
-
-
-        // 해당 애니메이션의 길이만큼 대기
-        float animDuration = animator.GetCurrentAnimatorStateInfo(0).length;
-        yield return new WaitForSeconds(animDuration);
-
-        
-    }
-
-    // 아이템을 내려놓는 애니메이션과 행동을 처리하는 코루틴
-    private IEnumerator PutItemCoroutine()
-    {
-        animator.SetTrigger("PutTrigger");
-        yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).IsName("10_put"));
-
-        // 아이템을 약간 앞으로 이동
-        this.carried_item.transform.localPosition = Vector3.forward * 1.0f;
-
-        // 자식 설정을 해제
-        this.carried_item.transform.parent = null;
-
-        // 들고 있던 아이템을 없앰
-        this.carried_item = null;
-
-
-        // 해당 애니메이션의 길이만큼 대기
-        float animDuration = animator.GetCurrentAnimatorStateInfo(0).length;
-        yield return new WaitForSeconds(animDuration);
-    }
-    */
 
 
     // 접촉한 물건이 자신의 정면에 있는지 판단한다.
-    private bool is_other_in_view(GameObject other)
+    private bool IsOtherInView(GameObject other)
     {
         bool ret = false;
         do
@@ -354,23 +275,23 @@ public class PlayerControl : MonoBehaviour
     }
 
     // 들고 있는 아이템의 종류와 주목하는 이벤트의 종류를 보고 이벤트 시작
-    private bool is_event_ignitable()
+    private bool IsEventIgnitable()
     {
         bool ret = false;
         do
         {
-            if (this.closest_event == null)
+            if (this.closestEvent == null)
             { // 주목 이벤트가 없으면.
                 break; // false를 반환한다.
             }
             // 들고 있는 아이템 종류를 가져온다.
             Item.TYPE carried_item_type =
-            this.item_root.getItemType(this.carried_item);
+            this.itemRoot.getItemType(this.carriedItem);
 
             // 들고 있는 아이템 종류와 주목하는 이벤트의 종류에서.
             // 이벤트가 가능한지 판정하고, 이벤트 불가라면 false를 반환한다.
-            if (!this.event_root.isEventIgnitable(
-            carried_item_type, this.closest_event))
+            if (!this.eventRoot.isEventIgnitable(
+            carried_item_type, this.closestEvent))
             {
                 break;
             }
@@ -390,20 +311,20 @@ public class PlayerControl : MonoBehaviour
         if (other_go.layer == LayerMask.NameToLayer("Item"))
         {
             // 아무 것도 주목하고 있지 않으면.
-            if (this.closest_item == null)
+            if (this.closestItem == null)
             {
-                if (this.is_other_in_view(other_go))
+                if (this.IsOtherInView(other_go))
                 { // 정면에 있으면.
-                    this.closest_item = other_go; // 주목한다.
+                    this.closestItem = other_go; // 주목한다.
                 }
             }
 
             // 뭔가 주목하고 있으면.
-            else if (this.closest_item == other_go)
+            else if (this.closestItem == other_go)
             {
-                if (!this.is_other_in_view(other_go))
+                if (!this.IsOtherInView(other_go))
                 { // 정면에 없으면.
-                    this.closest_item = null; // 주목을 그만둔다.
+                    this.closestItem = null; // 주목을 그만둔다.
                 }
             }
         }
@@ -411,19 +332,19 @@ public class PlayerControl : MonoBehaviour
         else if (other_go.layer == LayerMask.NameToLayer("Event"))
         {
             // 아무것도 주목하고 있지 않으면.
-            if (this.closest_event == null)
+            if (this.closestEvent == null)
             {
-                if (this.is_other_in_view(other_go))
+                if (this.IsOtherInView(other_go))
                 {// 정면에 있으면
-                    this.closest_event = other_go; // 주목한다.
+                    this.closestEvent = other_go; // 주목한다.
                 }
                 // 뭔가에 주목하고 있으면.
             }
-            else if (this.closest_event == other_go)
+            else if (this.closestEvent == other_go)
             {
-                if (!this.is_other_in_view(other_go))
+                if (!this.IsOtherInView(other_go))
                 {// 정면에 없으면
-                    this.closest_event = null; // 주목을 그만둔다.
+                    this.closestEvent = null; // 주목을 그만둔다.
                 }
             }
         }
@@ -433,9 +354,9 @@ public class PlayerControl : MonoBehaviour
     // 주목을 그만두게 한다.
     void OnTriggerExit(Collider other)
     {
-        if (this.closest_item == other.gameObject)
+        if (this.closestItem == other.gameObject)
         {
-            this.closest_item = null; // 주목을 그만둔다.
+            this.closestItem = null; // 주목을 그만둔다.
         }
     }
 
@@ -444,55 +365,55 @@ public class PlayerControl : MonoBehaviour
     {
         float x = 20.0f;
         float y = Screen.height - 40.0f;
-        if (this.is_event_ignitable()) // 이벤트가 시작 가능한 경우.
+        if (this.IsEventIgnitable()) // 이벤트가 시작 가능한 경우.
         {
             // 이벤트용 메시지를 취득.
             string message =
-            this.event_root.getIgnitableMessage(this.closest_event);
+            this.eventRoot.getIgnitableMessage(this.closestEvent);
             GUI.Label(new Rect(x + 100.0f, y, 200.0f, 20.0f),
-            "X:" + message, guistyle);
+            "X:" + message, guiStyle);
         }
         // 들고 있는 아이템이 있다면.
-        if (this.carried_item != null)
+        if (this.carriedItem != null)
         {
-            GUI.Label(new Rect(x, y, 200.0f, 20.0f), "Z:버린다", guistyle);
+            GUI.Label(new Rect(x, y, 200.0f, 20.0f), "Z:버린다", guiStyle);
             // 아이템 종류에 따라 메세지를 나눔.
-            if (this.carried_item.tag == "Stress")
+            if (this.carriedItem.tag == "Stress")
             {
-                GUI.Label(new Rect(x + 100.0f, y, 200.0f, 20.0f), "X:해소한다", guistyle);
+                GUI.Label(new Rect(x + 100.0f, y, 200.0f, 20.0f), "X:해소한다", guiStyle);
             }
-            else if (this.carried_item.tag == "Heal")
+            else if (this.carriedItem.tag == "Heal")
             {
-                GUI.Label(new Rect(x + 100.0f, y, 200.0f, 20.0f), "X:구출한다", guistyle);
+                GUI.Label(new Rect(x + 100.0f, y, 200.0f, 20.0f), "X:구출한다", guiStyle);
             }
-            else if (this.carried_item.tag == "Iron")
-                GUI.Label(new Rect(x + 100.0f, y, 200.0f, 20.0f), "", guistyle);
+            else if (this.carriedItem.tag == "Iron")
+                GUI.Label(new Rect(x + 100.0f, y, 200.0f, 20.0f), "", guiStyle);
         }
         else
         {
             // 주목하고 있는 아이템이 있다면.
-            if (this.closest_item != null)
+            if (this.closestItem != null)
             {
-                GUI.Label(new Rect(x, y, 200.0f, 20.0f), "Z:줍는다", guistyle);
+                GUI.Label(new Rect(x, y, 200.0f, 20.0f), "Z:줍는다", guiStyle);
             }
         }
-        guistyle.fontSize = 24;
+        guiStyle.fontSize = 24;
         switch (this.step)
         {
-            case STEP.EATING:
+            case Step.Eating:
                 GUI.Label(new Rect(x, y, 200.0f, 20.0f),
-                 "우적우적우물우물……", guistyle);
+                 "우적우적우물우물……", guiStyle);
                 break;
-            case STEP.EMOTION:
+            case Step.Emotion:
                 GUI.Label(new Rect(x, y, 200.0f, 20.0f),
-                 "습하...습하....", guistyle);
+                 "습하...습하....", guiStyle);
                 break;
-            case STEP.RESCUE:
+            case Step.Rescue:
                 GUI.Label(new Rect(x, y, 200.0f, 20.0f),
-                 "구해드릴께요!", guistyle);
+                 "구해드릴께요!", guiStyle);
                 break;
-            case STEP.REPAIRING:
-                GUI.Label(new Rect(x + 200.0f, y, 200.0f, 20.0f), "수리중", guistyle);
+            case Step.Repairing:
+                GUI.Label(new Rect(x + 200.0f, y, 200.0f, 20.0f), "수리중", guiStyle);
                 break;
         }
 
@@ -500,30 +421,30 @@ public class PlayerControl : MonoBehaviour
 
     void Start()
     {
-        this.step = STEP.NONE; // 현 단계 상태를 초기화.
-        this.next_step = STEP.MOVE; // 다음 단계 상태를 초기화.
-        this.item_root = GameObject.Find("GameRoot").GetComponent<ItemRoot>();
-        this.guistyle.fontSize = 16;
+        this.step = Step.None; // 현 단계 상태를 초기화.
+        this.nextStep = Step.Move; // 다음 단계 상태를 초기화.
+        this.itemRoot = GameObject.Find("GameRoot").GetComponent<ItemRoot>();
+        this.guiStyle.fontSize = 16;
 
-        this.event_root =
+        this.eventRoot =
         GameObject.Find("GameRoot").GetComponent<EventRoot>();
-        this.rocket_model = GameObject.Find("rocket").transform.Find("rocket_model").gameObject;
-        this.game_status = GameObject.Find("GameRoot").GetComponent<GameStatus>();
+        this.rocketModel = GameObject.Find("rocket").transform.Find("rocket_model").gameObject;
+        this.gameStatus = GameObject.Find("GameRoot").GetComponent<GameStatus>();
 
         this.rescueNPC = GameObject.Find("RescueNPC").GetComponentInChildren<RescueNPC>();
 
         animator = GetComponentInChildren<Animator>();
-        FeverEffect = GameObject.Find("MuzzleFlash");
-        FeverEffect.SetActive(false);
+        feverEffect = GameObject.Find("MuzzleFlash");
+        feverEffect.SetActive(false);
 
     }
 
     void Update()
     {
-        this.get_input(); // 입력 정보 취득.
-                          // 상태가 변화했을 때------------.
+        this.GetInput(); // 입력 정보 취득.
+                         // 상태가 변화했을 때------------.
 
-        this.step_timer += Time.deltaTime;
+        this.stepTimer += Time.deltaTime;
         float eat_time = 1.0f;
         float repair_time = 1.0f;
 
@@ -531,11 +452,11 @@ public class PlayerControl : MonoBehaviour
         float rescue_time = 2.0f;
 
         // 상태를 변화시킨다---------------------.
-        if (this.next_step == STEP.NONE)
+        if (this.nextStep == Step.None)
         { // 다음 예정이 없으면.
             switch (this.step)
             {
-                case STEP.MOVE: // '이동 중' 상태의 처리.
+                case Step.Move: // '이동 중' 상태의 처리.
                     do
                     {
                         if (!this.key.action)
@@ -543,86 +464,84 @@ public class PlayerControl : MonoBehaviour
                             break; // 루프 탈출.
                         }
                         // 주목하는 이벤트가 있을 때.
-                        if (this.closest_event != null)
+                        if (this.closestEvent != null)
                         {
-                            if (!this.is_event_ignitable())
+                            if (!this.IsEventIgnitable())
                             { // 이벤트를 시작할 수 없으면.
                                 break; // 아무 것도 하지 않는다.
                             }
                             // 이벤트 종류를 가져온다.
                             Event.TYPE ignitable_event =
-                            this.event_root.getEventType(this.closest_event);
+                            this.eventRoot.getEventType(this.closestEvent);
                             switch (ignitable_event)
                             {
                                 case Event.TYPE.ROCKET: // 이벤트의 종류가 ROCKET이면.
                                                         // REPAIRING(수리) 상태로 이행.
-                                    this.next_step = STEP.REPAIRING;
+                                    this.nextStep = Step.Repairing;
                                     break;
                                 case Event.TYPE.RESCUE:
-                                    this.next_step = STEP.RESCUE;
+                                    this.nextStep = Step.Rescue;
                                     break;
                             }
                             break;
                         }
-                        if (this.carried_item != null)
+                        if (this.carriedItem != null)
                         {
                             // 가지고 있는 아이템 판별.
-                            Item.TYPE carried_item_type =
-                            this.item_root.getItemType(this.carried_item);
-                            switch (carried_item_type)
+                            Item.TYPE carriedItemType =
+                            this.itemRoot.getItemType(this.carriedItem);
+                            switch (carriedItemType)
                             {
                                 case Item.TYPE.APPLE: // 사과라면.
-                                    this.next_step = STEP.EATING; // ＇식사 중＇ 상태로 이행.
-                                    break;
                                 case Item.TYPE.PLANT: // 식물이라면.
-                                    this.next_step = STEP.EATING; // ＇식사 중＇ 상태로 이행.
+                                    this.nextStep = Step.Eating; // ＇식사 중＇ 상태로 이행.
                                     break;
                                 case Item.TYPE.STRESS: // 스트레스 아이템 이라면
-                                    this.next_step = STEP.EMOTION; // ＇감정＇ 상태로 이행.
+                                    this.nextStep = Step.Emotion; // ＇감정＇ 상태로 이행.
                                     break;
                             }
                         }
                     } while (false);
                     break;
 
-                case STEP.EATING: // '식사 중' 상태의 처리.
-                    if (this.step_timer > eat_time)
+                case Step.Eating: // '식사 중' 상태의 처리.
+                    if (this.stepTimer > eat_time)
                     {
-                        this.next_step = STEP.MOVE; // '이동' 상태로 이행.
+                        this.nextStep = Step.Move; // '이동' 상태로 이행.
                     }
                     break;
-                case STEP.EMOTION: // '감정' 상태의 처리.
-                    if (this.step_timer > stress_time)
+                case Step.Emotion: // '감정' 상태의 처리.
+                    if (this.stepTimer > stress_time)
                     {
-                        this.next_step = STEP.MOVE; // '이동' 상태로 이행.
+                        this.nextStep = Step.Move; // '이동' 상태로 이행.
                     }
                     break;
-                case STEP.RESCUE: // '구조' 상태의 처리.
-                    if (this.step_timer > rescue_time)
+                case Step.Rescue: // '구조' 상태의 처리.
+                    if (this.stepTimer > rescue_time)
                     {
-                        this.next_step = STEP.MOVE; // '이동' 상태로 이행.
+                        this.nextStep = Step.Move; // '이동' 상태로 이행.
                     }
                     break;
-                case STEP.REPAIRING: // '수리 중' 상태의 처리.
-                    if (this.step_timer > repair_time)
+                case Step.Repairing: // '수리 중' 상태의 처리.
+                    if (this.stepTimer > repair_time)
                     {
-                        this.next_step = STEP.MOVE; // '이동' 상태로 이행.
+                        this.nextStep = Step.Move; // '이동' 상태로 이행.
                     }
                     break;
             }
         }
 
         // 상태가 변화했을 때------------.
-        while (this.next_step != STEP.NONE)
+        while (this.nextStep != Step.None)
         {
-            this.step = this.next_step;
-            this.next_step = STEP.NONE;
+            this.step = this.nextStep;
+            this.nextStep = Step.None;
             switch (this.step)
             {
-                case STEP.MOVE:
+                case Step.Move:
                     break;
-                case STEP.EATING:
-                    if (this.carried_item != null)
+                case Step.Eating:
+                    if (this.carriedItem != null)
                     {
                         AudioController.Instance?.PlayerEating();
 
@@ -632,14 +551,14 @@ public class PlayerControl : MonoBehaviour
                         {
                             animator.Play("08_eat");
                         }
-                        this.game_status.addSatiety(this.item_root.getRegainSatiety(this.carried_item));
+                        this.gameStatus.addSatiety(this.itemRoot.getRegainSatiety(this.carriedItem));
 
-                        GameObject.Destroy(this.carried_item);
-                        this.carried_item = null;
+                        GameObject.Destroy(this.carriedItem);
+                        this.carriedItem = null;
                     }
                     break;
-                case STEP.EMOTION:
-                    if (this.carried_item != null)
+                case Step.Emotion:
+                    if (this.carriedItem != null)
                     {
                         // 스트레스 수치 낮추기
                         AudioController.Instance?.PlayerStressDown();
@@ -648,14 +567,14 @@ public class PlayerControl : MonoBehaviour
                         {
                             animator.Play("08_eat");
                         }
-                        this.game_status.subtractEmotion(this.item_root.getRegainEmotion(this.carried_item));
+                        this.gameStatus.subtractEmotion(this.itemRoot.getRegainEmotion(this.carriedItem));
 
-                        GameObject.Destroy(this.carried_item);
-                        this.carried_item = null;
+                        GameObject.Destroy(this.carriedItem);
+                        this.carriedItem = null;
                     }
                     break;
-                case STEP.RESCUE:
-                    if (this.carried_item != null)
+                case Step.Rescue:
+                    if (this.carriedItem != null)
                     {
                         // NPC의 게이지 채우기
                         AudioController.Instance?.PlayerHealing();
@@ -664,17 +583,17 @@ public class PlayerControl : MonoBehaviour
                         {
                             animator.Play("07_repair");
                         }
-                        // this.RescueNPC.addGauge(this.item_root.getRegainNPCGauge(this.carried_item));
+                        // this.RescueNPC.addGauge(this.itemRoot.getRegainNPCGauge(this.carriedItem));
                         this.rescueNPC.addGauge(0.2f);
 
-                        GameObject.Destroy(this.carried_item);
-                        this.carried_item = null;
-                        this.closest_item = null;
+                        GameObject.Destroy(this.carriedItem);
+                        this.carriedItem = null;
+                        this.closestItem = null;
                     }
                     break;
 
-                case STEP.REPAIRING: // ‘수리 중’이 되면.
-                    if (this.carried_item != null)
+                case Step.Repairing: // ‘수리 중’이 되면.
+                    if (this.carriedItem != null)
                     {
                         // 들고 있는 아이템의 '수리 진척 상태'를 가져와서 설정.
                         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
@@ -684,34 +603,34 @@ public class PlayerControl : MonoBehaviour
                         }
                         AudioController.Instance?.PlayerRepairing();
 
-                        this.game_status.addRepairment(this.item_root.getGainRepairment(this.carried_item));
+                        this.gameStatus.addRepairment(this.itemRoot.getGainRepairment(this.carriedItem));
 
-                        GameObject.Destroy(this.carried_item);
-                        this.carried_item = null;
-                        this.closest_item = null;
+                        GameObject.Destroy(this.carriedItem);
+                        this.carriedItem = null;
+                        this.closestItem = null;
                     }
                     break;
             }
-            this.step_timer = 0.0f;
+            this.stepTimer = 0.0f;
         }
         // 각 상황에서 반복할 것----------.
         switch (this.step)
         {
-            case STEP.MOVE:
-                this.move_control();
-                this.pick_or_drop_control();
+            case Step.Move:
+                this.MoveControl();
+                this.PickOrDropControl();
 
                 if (!GameStatus.IsFeverTime)
                 {
                     // 이동 가능한 경우는 항상 배가 고파진다.
-                    this.game_status.alwaysSatiety();
-                    this.game_status.alwaysEmotion();
+                    this.gameStatus.alwaysSatiety();
+                    this.gameStatus.alwaysEmotion();
                 }
 
                 break;
-            case STEP.REPAIRING:
+            case Step.Repairing:
                 // 우주선을 회전시킨다.
-                this.rocket_model.transform.localRotation *=
+                this.rocketModel.transform.localRotation *=
                 Quaternion.AngleAxis(360.0f / 10.0f * Time.deltaTime, Vector3.up);
                 break;
         }

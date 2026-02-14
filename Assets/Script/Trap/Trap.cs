@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Trap : IObject 
+public class Trap : IObject
 {
     [SerializeField] Collider Event_Area;
     [SerializeField] bool isInTrap = false;
@@ -10,27 +10,20 @@ public class Trap : IObject
 
     void OnTriggerEnter(Collider other)
     {
-       // other -> Collider가 있는 player의 capsule 
-        if(other.tag.Contains("Player") && !isInTrap)
+        if (other.CompareTag("Player") && !isInTrap)
         {
-            isInTrap = true;
-            Transform[] transform = other.transform.GetComponentsInParent<Transform>();
-            foreach (Transform t in transform)
+            PlayerControl playerControl = other.GetComponentInParent<PlayerControl>();
+            if (playerControl != null)
             {
-                if(t.name == "Player")
-                { 
-                    PlayerControl player_control = t.GetComponent<PlayerControl>();
-                    Debug.Log(player_control.name);
-                    StartCoroutine(HandleTrap(player_control));
-                }
+                isInTrap = true;
+                StartCoroutine(HandleTrap(playerControl));
             }
-
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag.Contains("Player") && isInTrap)
+        if (other.CompareTag("Player") && isInTrap)
         {
             isInTrap = false;
         }
@@ -38,10 +31,9 @@ public class Trap : IObject
 
     private IEnumerator HandleTrap(PlayerControl player)
     {
-        player.SetTrapped(true);                 
-        yield return new WaitForSeconds(2f);    
-        player.SetTrapped(false);                
-        // this.gameObject.SetActive(false);        
+        player.SetTrapped(true);
+        yield return new WaitForSeconds(2f);
+        player.SetTrapped(false);
         PoolObject();
     }
 
@@ -82,6 +74,6 @@ public class Trap : IObject
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

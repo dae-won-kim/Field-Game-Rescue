@@ -5,16 +5,17 @@ using UnityEngine;
 public class Coin : IObject
 {
 
+    private GameStatus _gameStatus;
+
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player")
+        if (other.CompareTag("Player"))
         {
-            GameStatus gameStatus = GameObject.Find("GameRoot").GetComponent<GameStatus>();
-            if (gameStatus != null)
+            if (_gameStatus != null)
             {
-                gameStatus.coin += 1;
+                _gameStatus.coin += 1;
             }
-            PoolObject();
+            PoolObject(); 
         }
     }
 
@@ -28,9 +29,14 @@ public class Coin : IObject
 
     public override void OnInit()
     {
+        if (_gameStatus == null)
+        {
+            GameObject root = GameObject.Find("GameRoot");
+            if (root != null) _gameStatus = root.GetComponent<GameStatus>();
+        }
+
         Vector3 pos = this.transform.position;
         pos.y = 2.3f;
-
         this.transform.position = pos;
     }
 

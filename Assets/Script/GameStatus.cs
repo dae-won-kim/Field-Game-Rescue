@@ -117,7 +117,7 @@ public class GameStatus : MonoBehaviour
     public bool isGameClear()
     {
         bool is_clear = false;
-        if (this.repairment >= 1.0f && rescueNPC.Gauge >=1.0f)
+        if (this.repairment >= 1.0f && rescueNPC.Gauge >= 1.0f)
         { // 수리 정도가 100% 이상 && NPC 게이지가 100%
             is_clear = true; // 클리어했다.
         }

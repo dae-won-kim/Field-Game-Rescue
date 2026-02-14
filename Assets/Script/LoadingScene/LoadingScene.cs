@@ -1,12 +1,17 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class LoadingScene : MonoBehaviour
 {
     static string nextScene = "GameScene";
-    [SerializeField] Image Progressbar;
+    private Image Progressbar;
+
+    void Awake()
+    {
+        Progressbar = GameObject.Find("Progressbar").GetComponent<Image>();
+    }
 
     AsyncOperation op;
 
