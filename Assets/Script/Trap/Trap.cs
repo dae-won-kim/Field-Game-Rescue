@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Trap : IObject // 풀링할 오브젝트라서 상속
+public class Trap : IObject 
 {
     [SerializeField] Collider Event_Area;
     [SerializeField] bool isInTrap = false;
@@ -41,22 +41,20 @@ public class Trap : IObject // 풀링할 오브젝트라서 상속
         player.SetTrapped(true);                 
         yield return new WaitForSeconds(2f);    
         player.SetTrapped(false);                
-        this.gameObject.SetActive(false);        
+        // this.gameObject.SetActive(false);        
+        PoolObject();
     }
 
     public override void OnEnter()
     {
-        // 예: 트랩이 생성될 때 초기화
     }
 
     public override void OnExit()
     {
-        // 예: 트랩이 삭제될 때 정리
     }
 
     public override void OnInit()
     {
-        // 예: 트랩이 풀에서 재사용될 때 초기화
         isInTrap = false;
         Vector3 pos = this.transform.position;
         pos.y = 2.3f;
@@ -67,7 +65,6 @@ public class Trap : IObject // 풀링할 오브젝트라서 상속
 
     public override void OnDisabled()
     {
-        // 예: 트랩이 비활성화될 때 수행할 작업
     }
 
     // Start is called before the first frame update

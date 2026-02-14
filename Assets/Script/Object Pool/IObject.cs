@@ -7,11 +7,11 @@ public abstract class IObject : MonoBehaviour
 {
     protected ObjectPool _parentPool;
     /*
-     ObjectPool ¿¡¼­ ºÒ·¯¿Ã¶§
-     Enter : »ı¼º
-     Exit : »èÁ¦
-     Init : ºÒ·¯¿Ã¶§¸¶´Ù ÃÊ±âÈ­
-     Disabled : ºñÈ°¼ºÈ­
+     ObjectPool ì—ì„œ ë¶ˆëŸ¬ì˜¬ë•Œ
+     Enter : ìƒì„±
+     Exit : ì‚­ì œ
+     Init : ë¶ˆëŸ¬ì˜¬ë•Œë§ˆë‹¤ ì´ˆê¸°í™”
+     Disabled : ë¹„í™œì„±í™”
      */
 
     public virtual void ConnectPool(ObjectPool pool)

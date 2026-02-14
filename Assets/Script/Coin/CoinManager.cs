@@ -30,7 +30,6 @@ public class CoinManager : MonoBehaviour
     void Start()
     {
         island = GameObject.Find("Island");
-        // coinPool =  new ObjectPool(coinPrefab, this.transform, 10);
         coinPool = this.gameObject.AddComponent<ObjectPool>();
         coinPool.Init(coinPrefab, this.transform, 10);
 

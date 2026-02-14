@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class ObjectPool : MonoBehaviour
 {
-    // Field ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    // Pool Queue·Î °ü¸®
+    // Field â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // Pool Queueë¡œ ê´€ë¦¬
     private Queue<IObject> _pool = new Queue<IObject>();
 
-    /* Pool ±â´É ÃÖÀûÈ­¸¦ À§ÇØ Component »ó¼Ó
-        poolObject : ComponentÀÇ °æ¿ì this.gameObject »ç¿ëºÒ°¡, µû¶ó¼­ ÀÚ±â ÀÚ½ÅÀ» ´ãÀº GameObject »ı¼º
-        origin : ÀÚ½ÅÀÌ ´ã°íÀÖ´Â IObject ¿øº»
+    /* Pool ê¸°ëŠ¥ ìµœì í™”ë¥¼ ìœ„í•´ Component ìƒì†
+        poolObject : Componentì˜ ê²½ìš° this.gameObject ì‚¬ìš©ë¶ˆê°€, ë”°ë¼ì„œ ìê¸° ìì‹ ì„ ë‹´ì€ GameObject ìƒì„±
+        origin : ìì‹ ì´ ë‹´ê³ ìˆëŠ” IObject ì›ë³¸
     */
     private GameObject poolObject;
     private IObject origin;
@@ -19,7 +19,7 @@ public class ObjectPool : MonoBehaviour
     private GameObject originGameObject;  // GameObject prefab
 
 
-    // Method ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
+    // Method â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     private IObject InstantiatePoolObject()
     {
         GameObject go = GameObject.Instantiate(originGameObject);
@@ -27,7 +27,7 @@ public class ObjectPool : MonoBehaviour
 
         if (newObj == null)
         {
-            Debug.LogError("Prefab¿¡ IObject ÀÎÅÍÆäÀÌ½º°¡ ±¸ÇöµÈ ÄÄÆ÷³ÍÆ®°¡ ¾ø½À´Ï´Ù.");
+            Debug.LogError("Prefabì— IObject ì¸í„°í˜ì´ìŠ¤ê°€ êµ¬í˜„ëœ ì»´í¬ë„ŒíŠ¸ê°€ ì—†ìŠµë‹ˆë‹¤.");
             return null;
         }
 
@@ -46,7 +46,7 @@ public class ObjectPool : MonoBehaviour
     {
         if (prefab == null)
         {
-            Debug.LogError("Init¿¡¼­ Àü´ŞµÈ prefabÀÌ nullÀÔ´Ï´Ù.");
+            Debug.LogError("Initì—ì„œ ì „ë‹¬ëœ prefabì´ nullì…ë‹ˆë‹¤.");
             return;
         }
 
@@ -55,7 +55,7 @@ public class ObjectPool : MonoBehaviour
 
         if (origin == null)
         {
-            Debug.LogError("Prefab¿¡ IObject ÀÎÅÍÆäÀÌ½º°¡ ±¸ÇöµÈ ÄÄÆ÷³ÍÆ®°¡ ¾ø½À´Ï´Ù.");
+            Debug.LogError("Prefabì— IObject ì¸í„°í˜ì´ìŠ¤ê°€ êµ¬í˜„ëœ ì»´í¬ë„ŒíŠ¸ê°€ ì—†ìŠµë‹ˆë‹¤.");
             return;
         }
 
@@ -198,11 +198,11 @@ public class ObjectPool : MonoBehaviour
 
         if (_pool.Count == 0)
         {
-            obj = InstantiatePoolObject();  // Ç®¿¡ ¾øÀ¸¸é »õ·Î »ı¼º
+            obj = InstantiatePoolObject();  // í’€ì— ì—†ìœ¼ë©´ ìƒˆë¡œ ìƒì„±
         }
         else
         {
-            obj = _pool.Dequeue();  // Ç®¿¡¼­ ²¨³¿
+            obj = _pool.Dequeue();  // í’€ì—ì„œ êº¼ëƒ„
         }
 
         obj.gameObject.SetActive(true);

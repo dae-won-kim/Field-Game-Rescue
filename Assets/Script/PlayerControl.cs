@@ -427,11 +427,7 @@ public class PlayerControl : MonoBehaviour
                 }
             }
         }
-        else if (other_go.tag == "coin")
-        {
-            this.game_status.coin += 1;
-            other_go.SetActive(false);
-        }
+
     }
 
     // 주목을 그만두게 한다.

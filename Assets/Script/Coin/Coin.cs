@@ -7,6 +7,15 @@ public class Coin : IObject
 
     void OnTriggerEnter(Collider other)
     {
+        if (other.tag == "Player")
+        {
+            GameStatus gameStatus = GameObject.Find("GameRoot").GetComponent<GameStatus>();
+            if (gameStatus != null)
+            {
+                gameStatus.coin += 1;
+            }
+            PoolObject();
+        }
     }
 
     public override void OnEnter()
